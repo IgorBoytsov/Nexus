@@ -7,8 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    <PackageReference Include="Konscious.Security.Cryptography.Argon2" Version="1.3.1" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
+    <ProjectReference Include="..\Nexus.UserManagement.Service.Application.Abstractions\Nexus.UserManagement.Service.Application.Abstractions.csproj" />
     <ProjectReference Include="..\Nexus.UserManagement.Service.Domain\Nexus.UserManagement.Service.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Users\Commands\ChangePassword\" />
+    <Folder Include="Features\Users\Commands\ChangeEmail\" />
+    <Folder Include="Features\Users\Commands\ChangePhonNumber\" />
   </ItemGroup>
 
 </Project>

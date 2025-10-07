@@ -7,9 +7,38 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Persistence\Configurations\Sql\view_countries.sql" />
+    <None Remove="Persistence\Configurations\Sql\view_genders.sql" />
+    <None Remove="Persistence\Configurations\Sql\view_roles.sql" />
+    <None Remove="Persistence\Configurations\Sql\view_statuses.sql" />
+    <None Remove="Persistence\Configurations\Sql\view_users.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Persistence\Configurations\Sql\Views\view_countries.sql" />
+    <EmbeddedResource Include="Persistence\Configurations\Sql\Views\view_genders.sql" />
+    <EmbeddedResource Include="Persistence\Configurations\Sql\Views\view_roles.sql" />
+    <EmbeddedResource Include="Persistence\Configurations\Sql\Views\view_statuses.sql" />
+    <EmbeddedResource Include="Persistence\Configurations\Sql\Views\view_users.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
-    <ProjectReference Include="..\Nexus.UserManagement.Service.Application\Nexus.UserManagement.Service.Application.csproj" />
+    <ProjectReference Include="..\Nexus.UserManagement.Service.Application.Abstractions\Nexus.UserManagement.Service.Application.Abstractions.csproj" />
     <ProjectReference Include="..\Nexus.UserManagement.Service.Domain\Nexus.UserManagement.Service.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Persistence\Migrations\" />
   </ItemGroup>
 
 </Project>
