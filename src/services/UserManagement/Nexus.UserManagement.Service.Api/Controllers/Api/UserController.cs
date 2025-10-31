@@ -5,6 +5,7 @@ using Nexus.UserManagement.Service.Api.Models.Requests;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.Login;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryAccess;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
+using Shared.Contracts.Requests;
 using Shared.Kernel.Results;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api

@@ -4,24 +4,23 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>0940725e-2610-4d9e-b5b1-f9b9afa54f0f</UserSecretsId>
+    <UserSecretsId>3d4740b2-c9e0-4337-97b9-8a4918f7c465</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..\..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
+    <ProjectReference Include="..\..\..\shared\security\Shared.Security\Shared.Security.csproj" />
     <ProjectReference Include="..\..\..\shared\Shared.Contracts\Shared.Contracts.csproj" />
-    <ProjectReference Include="..\Nexus.UserManagement.Service.Application\Nexus.UserManagement.Service.Application.csproj" />
-    <ProjectReference Include="..\Nexus.UserManagement.Service.Infrastructure\Nexus.UserManagement.Service.Infrastructure.csproj" />
+    <ProjectReference Include="..\Nexus.Authentication.Service.Application\Nexus.Authentication.Service.Application.csproj" />
+    <ProjectReference Include="..\Nexus.Authentication.Service.Infrastructure\Nexus.Authentication.Service.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

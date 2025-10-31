@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
-using Nexus.UserManagement.Service.Application.Services.Hasher;
 using Shared.Kernel.Results;
+using Shared.Security.Hasher;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Login
 {

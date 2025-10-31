@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Nexus.UserManagement.Service.Application.Services.Hasher;
+using Shared.Security.Hasher;
 using System.Reflection;
 
 namespace Nexus.UserManagement.Service.Application.Ioc

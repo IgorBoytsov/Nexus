@@ -29,6 +29,28 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.UserManagement.Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.UserManagement.Service.Api", "src\services\UserManagement\Nexus.UserManagement.Service.Api\Nexus.UserManagement.Service.Api.csproj", "{677F769C-1EF3-4F05-865F-C4C6E7543040}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deployment", "deployment", "{CBB0903B-19F8-45FA-B024-3CCB86901BF2}"
+	ProjectSection(SolutionItems) = preProject
+		deployment\nexus-docker-compose.yml = deployment\nexus-docker-compose.yml
+		deployment\UserManagement-Api.Dockerfile = deployment\UserManagement-Api.Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authentication", "Authentication", "{170EF90C-1E6A-42EB-9B68-9A640724BDDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Authentication.Service.Api", "src\services\Authentication\Nexus.Authentication.Service.Api\Nexus.Authentication.Service.Api.csproj", "{30C909F8-E66D-409B-A8E0-382446DA4576}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Contracts", "src\shared\Shared.Contracts\Shared.Contracts.csproj", "{09D1B56B-AB6E-4E2B-B174-245D445929DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "security", "security", "{1E6FB5D1-3518-4A74-8ECC-04DBC5ACFBAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Security", "src\shared\security\Shared.Security\Shared.Security.csproj", "{8A36D02D-2BC8-46E9-B09D-136E84CBCA9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Authentication.Service.Domain", "src\services\Authentication\Nexus.Authentication.Service.Domain\Nexus.Authentication.Service.Domain.csproj", "{F60A7F6A-043E-43D4-B855-70AB26707D9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Authentication.Service.Application", "src\services\Authentication\Nexus.Authentication.Service.Application\Nexus.Authentication.Service.Application.csproj", "{5E186849-F3B0-42DF-BE1D-21A629464B73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Authentication.Service.Infrastructure", "src\services\Authentication\Nexus.Authentication.Service.Infrastructure\Nexus.Authentication.Service.Infrastructure.csproj", "{56527C3D-8338-4148-91EB-F05A96AE3B14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +85,30 @@ Global
 		{677F769C-1EF3-4F05-865F-C4C6E7543040}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{677F769C-1EF3-4F05-865F-C4C6E7543040}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{677F769C-1EF3-4F05-865F-C4C6E7543040}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30C909F8-E66D-409B-A8E0-382446DA4576}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C909F8-E66D-409B-A8E0-382446DA4576}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30C909F8-E66D-409B-A8E0-382446DA4576}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30C909F8-E66D-409B-A8E0-382446DA4576}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09D1B56B-AB6E-4E2B-B174-245D445929DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09D1B56B-AB6E-4E2B-B174-245D445929DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09D1B56B-AB6E-4E2B-B174-245D445929DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09D1B56B-AB6E-4E2B-B174-245D445929DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A36D02D-2BC8-46E9-B09D-136E84CBCA9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A36D02D-2BC8-46E9-B09D-136E84CBCA9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A36D02D-2BC8-46E9-B09D-136E84CBCA9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A36D02D-2BC8-46E9-B09D-136E84CBCA9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F60A7F6A-043E-43D4-B855-70AB26707D9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F60A7F6A-043E-43D4-B855-70AB26707D9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F60A7F6A-043E-43D4-B855-70AB26707D9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F60A7F6A-043E-43D4-B855-70AB26707D9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E186849-F3B0-42DF-BE1D-21A629464B73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E186849-F3B0-42DF-BE1D-21A629464B73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E186849-F3B0-42DF-BE1D-21A629464B73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E186849-F3B0-42DF-BE1D-21A629464B73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56527C3D-8338-4148-91EB-F05A96AE3B14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56527C3D-8338-4148-91EB-F05A96AE3B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56527C3D-8338-4148-91EB-F05A96AE3B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56527C3D-8338-4148-91EB-F05A96AE3B14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +125,14 @@ Global
 		{BB56C15C-1F01-4B8A-9212-E8BBCD88FDF5} = {3899656A-A295-408E-9671-9FBA3160BF87}
 		{A14393FD-BEAC-4CDB-89FF-23BD6EEFAD88} = {BAD0E586-3282-4D8E-8283-31D0A21016C8}
 		{677F769C-1EF3-4F05-865F-C4C6E7543040} = {BAD0E586-3282-4D8E-8283-31D0A21016C8}
+		{170EF90C-1E6A-42EB-9B68-9A640724BDDE} = {0AB4D7E3-8E6A-4E91-ABD7-E3EE943D71E0}
+		{30C909F8-E66D-409B-A8E0-382446DA4576} = {170EF90C-1E6A-42EB-9B68-9A640724BDDE}
+		{09D1B56B-AB6E-4E2B-B174-245D445929DF} = {960762E2-7A70-4461-AE90-7A9A2AB7D74D}
+		{1E6FB5D1-3518-4A74-8ECC-04DBC5ACFBAF} = {960762E2-7A70-4461-AE90-7A9A2AB7D74D}
+		{8A36D02D-2BC8-46E9-B09D-136E84CBCA9F} = {1E6FB5D1-3518-4A74-8ECC-04DBC5ACFBAF}
+		{F60A7F6A-043E-43D4-B855-70AB26707D9F} = {170EF90C-1E6A-42EB-9B68-9A640724BDDE}
+		{5E186849-F3B0-42DF-BE1D-21A629464B73} = {170EF90C-1E6A-42EB-9B68-9A640724BDDE}
+		{56527C3D-8338-4148-91EB-F05A96AE3B14} = {170EF90C-1E6A-42EB-9B68-9A640724BDDE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F2C65A4D-0401-4F09-84BD-967F4424D40D}

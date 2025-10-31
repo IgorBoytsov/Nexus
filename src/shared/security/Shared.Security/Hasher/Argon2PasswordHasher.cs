@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Nexus.UserManagement.Service.Application.Services.Hasher
+namespace Shared.Security.Hasher
 {
     public class Argon2PasswordHasher : IPasswordHasher
     {

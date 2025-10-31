@@ -2,10 +2,10 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
-using Nexus.UserManagement.Service.Application.Services.Hasher;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.SmartEnums;
 using Shared.Kernel.Results;
+using Shared.Security.Hasher;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Register
 {

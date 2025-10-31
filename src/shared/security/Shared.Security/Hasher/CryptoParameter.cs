@@ -1,4 +1,4 @@
-﻿namespace Nexus.UserManagement.Service.Application.Services.Hasher
+﻿namespace Shared.Security.Hasher
 {
     public sealed record class CryptoParameter
     {

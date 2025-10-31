@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
-using Nexus.UserManagement.Service.Application.Services.Hasher;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 using Shared.Kernel.Results;
+using Shared.Security.Hasher;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryAccess
 {
