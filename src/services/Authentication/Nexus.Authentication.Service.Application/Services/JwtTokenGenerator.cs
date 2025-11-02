@@ -13,25 +13,19 @@ namespace Nexus.Authentication.Service.Application.Services
 
         public string GenerateAccessToken(UserAuthDataDto user)
         {
-            // Данные, которые мы хотим "зашить" в токен (Payload)
             var claims = new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()), // Subject - ID пользователя
+                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new(JwtRegisteredClaimNames.Name, user.Login),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // Уникальный ID токена
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            // Добавляем роли пользователя в claims
             foreach (var role in user.Roles)
-            {
                 claims.Add(new Claim(ClaimTypes.Role, role));
-            }
 
-            // Получаем секретный ключ из конфигурации (appsettings.json)
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // Устанавливаем время жизни токена
             var expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JwtSettings:ExpiryMinutes"]));
 
             var token = new JwtSecurityToken(

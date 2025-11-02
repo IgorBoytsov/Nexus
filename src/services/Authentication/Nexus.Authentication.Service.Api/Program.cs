@@ -1,4 +1,6 @@
+using Nexus.Authentication.Service.Application.Features.Commands.Login;
 using Nexus.Authentication.Service.Application.Services;
+using Nexus.Authentication.Service.Infrastructure.Ioc;
 using Shared.Security.Hasher;
 using System.Reflection;
 
@@ -13,6 +15,8 @@ namespace Nexus.Authentication.Service.Api
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
+            builder.Services.AddInfrastructure(builder.Configuration);
+
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             builder.Services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -21,6 +25,8 @@ namespace Nexus.Authentication.Service.Api
             {
                 client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:UserManagement"]!);
             });
+
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly));
 
             var app = builder.Build();
 
