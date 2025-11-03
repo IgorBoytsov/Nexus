@@ -31,8 +31,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.UserManagement.Servic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deployment", "deployment", "{CBB0903B-19F8-45FA-B024-3CCB86901BF2}"
 	ProjectSection(SolutionItems) = preProject
-		deployment\nexus-docker-compose.yml = deployment\nexus-docker-compose.yml
-		deployment\UserManagement-Api.Dockerfile = deployment\UserManagement-Api.Dockerfile
+		deployment\Authentication.Dockerfile = deployment\Authentication.Dockerfile
+		deployment\docker-compose.yml = deployment\docker-compose.yml
+		deployment\UserManagement.Dockerfile = deployment\UserManagement.Dockerfile
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authentication", "Authentication", "{170EF90C-1E6A-42EB-9B68-9A640724BDDE}"
