@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using Shared.Contracts.Responses;
+using Shared.Kernel.Results;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById
 {
-    public sealed record GetUserByIdQuery() : IRequest<UserDto>;
+    public sealed record GetUserByIdQuery(Guid UserId) : IRequest<Result<UserAuthDataDto>>;
 }

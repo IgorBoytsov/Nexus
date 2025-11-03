@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.Authentication.Service.Application.Features.Commands.Login;
+using Nexus.Authentication.Service.Application.Features.Commands.LoginByToken;
+using Nexus.Authentication.Service.Application.Features.Commands.Refresh;
 using Shared.Contracts.Requests;
 
 namespace Nexus.Authentication.Service.Api.Controllers
@@ -20,6 +22,28 @@ namespace Nexus.Authentication.Service.Api.Controllers
 
             return result.Match<IActionResult>(
                 onSuccess:() => Ok(result.Value),
+                onFailure: errors => BadRequest(errors));
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
+        {
+            var command = new RefreshTokenCommand(request.AccessToken, request.RefreshToken);
+            var result = await _mediator.Send(command);
+
+            return result.Match<IActionResult>(
+                onSuccess: () => Ok(result.Value),
+                onFailure: errors => BadRequest(errors));
+        }
+
+        [HttpPost("token-login")]
+        public async Task<IActionResult> TokenLogin([FromBody] TokenLoginRequest request)
+        {
+            var command = new TokenLoginCommand(request.RefreshToken);
+            var result = await _mediator.Send(command);
+
+            return result.Match<IActionResult>(
+                onSuccess: () => Ok(result.Value),
                 onFailure: errors => BadRequest(errors));
         }
     }

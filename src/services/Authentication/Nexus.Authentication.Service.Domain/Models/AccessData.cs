@@ -29,5 +29,7 @@
         {
             return new AccessData(userId, refreshToken, accessToken, creationDate, expiryDate, isUsed, isRevoked);
         }
+
+        public void MarkAsUsed() => IsUsed = true;
     }
 }

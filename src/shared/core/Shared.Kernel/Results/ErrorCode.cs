@@ -11,5 +11,6 @@
         Server = 6,
         Conflict = 7,
         Save = 8,
+        Unauthorized = 9,
     }
 }
