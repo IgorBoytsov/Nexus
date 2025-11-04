@@ -1,0 +1,32 @@
+services:
+
+  authentication-service:
+    build:
+      context: ..
+      dockerfile: deployment/Authentication.Dockerfile
+    image: nexus-authentication-service
+    container_name: nexus-auth
+    ports:
+      - "7001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection= <<ÑÒÐÎÊÀ ÏÎÄÊËÞ×ÅÍÈß Ê ÁÄ>>
+      - JwtSettings__Secret= <<ÐÀÍÄÎÌÍÛÉ ÊËÞ× ÄËÈÍÍÎÉ 32+>>
+      - JwtSettings__ExpiryMinutes= <<ÂÐÅÌß ÄÅÉÑÒÂÈß ACCESS ÒÎÊÅÍÀ, ÍÀÏÐÈÌÅÐ - 15>>
+      - JwtSettings__Issuer= <<ÈÇÄÀÒÅËÜ ÒÎÊÅÍÀ>>
+      - JwtSettings__Audience= <<ÑËÓØÀÒÅËÜ ÒÎÊÅÍÀ>>
+      - ServiceUrls__UserManagement= <<IP ÑÅÐÂÈÑÀ Ñ ÏÎËÜÇÎÂÀÒÅËßÌÈ>>
+    restart: unless-stopped
+
+  usermanagement-service:
+    build:
+      context: ..
+      dockerfile: deployment/UserManagement.Dockerfile
+    image: nexus-usermanagement-service
+    container_name: nexus-usermanagement
+    ports:
+      - "7002:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection= <<ÑÒÐÎÊÀ ÏÎÄÊËÞ×ÅÍÈß Ê ÁÄ>>
+    restart: unless-stopped
