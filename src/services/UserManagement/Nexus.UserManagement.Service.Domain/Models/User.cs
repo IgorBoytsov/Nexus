@@ -21,8 +21,8 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         /*--Связанные данные--*/
 
-        public Guid IdStatus { get; private set; }
-        public Guid IdRole { get; private set; }
+        public Guid? IdStatus { get; private set; }
+        public Guid? IdRole { get; private set; }
         public Guid? IdGender { get; private set; }
         public Guid? IdCountry { get; private set; }
 

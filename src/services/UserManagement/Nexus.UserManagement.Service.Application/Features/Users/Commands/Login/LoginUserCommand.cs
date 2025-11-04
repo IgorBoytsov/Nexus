@@ -4,5 +4,5 @@ using Shared.Kernel.Results;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Login
 {
-    public sealed record LoginUserCommand(string Password, string Login, string Email) : IRequest<Result<UserDto>>;
+    public sealed record LoginUserCommand(string Password, string Login) : IRequest<Result<UserDto>>;
 }

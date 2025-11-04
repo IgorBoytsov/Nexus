@@ -18,7 +18,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Login
         {
             try
             {
-                var storageUser = await _writeContext.Users.FirstOrDefaultAsync(u => u.Login == request.Login && u.Email == request.Email, cancellationToken);
+                var storageUser = await _writeContext.Users.FirstOrDefaultAsync(u => u.Login == request.Login, cancellationToken);
 
                 if (storageUser is null)
                     return Result<UserDto>.Failure(new Error(ErrorCode.NotFound, "Неверный логин или пароль."));

@@ -71,7 +71,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
         {
-            var command = new LoginUserCommand(request.Password, request.Login, request.Email);
+            var command = new LoginUserCommand(request.Password, request.Login);
 
             var result = await _mediator.Send(command);
 
