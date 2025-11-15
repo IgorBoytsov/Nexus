@@ -14,22 +14,15 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByI
         {
             try
             {
-                var user = await _writeContext.Users.FirstOrDefaultAsync(u => u.Id == request.UserId);
+                var user = await _writeContext.Users.Include(u => u.UserRoles).FirstOrDefaultAsync(u => u.Id == request.UserId);
 
                 if (user == null)
                     return Result<UserAuthDataDto>.Failure(new Error(ErrorCode.NotFound, "Такого пользователя нету"));
 
-                List<string> roles = [];
+                var roleIds = user.UserRoles.Select(ur => ur.RoleId);
+                var roleNames = await _writeContext.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToListAsync(cancellationToken);
 
-                if (user.Role is not null)
-                {
-                    roles =
-                    [
-                        user.Role.Name,
-                    ];
-                }
-
-                var userAuth = new UserAuthDataDto(user.Id, user.Login, user.PasswordHash, roles);
+                var userAuth = new UserAuthDataDto(user.Id, user.Login, user.PasswordHash, [.. roleNames.Select(rn => rn.Value)] );
 
                 return Result<UserAuthDataDto>.Success(userAuth);
             }

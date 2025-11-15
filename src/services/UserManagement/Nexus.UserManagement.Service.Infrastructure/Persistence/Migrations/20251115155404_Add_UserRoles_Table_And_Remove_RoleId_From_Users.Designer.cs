@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteContext))]
-    partial class WriteContextModelSnapshot : ModelSnapshot
+    [Migration("20251115155404_Add_UserRoles_Table_And_Remove_RoleId_From_Users")]
+    partial class Add_UserRoles_Table_And_Remove_RoleId_From_Users
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,6 +148,9 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("Phone");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -159,6 +165,8 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                     b.HasIndex("IdGender");
 
                     b.HasIndex("IdStatus");
+
+                    b.HasIndex("RoleId");
 
                     b.HasIndex(new[] { "Email" }, "IX_Users_Email")
                         .IsUnique();
@@ -208,9 +216,17 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Nexus.UserManagement.Service.Domain.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Country");
 
                     b.Navigation("Gender");
+
+                    b.Navigation("Role");
 
                     b.Navigation("Status");
                 });

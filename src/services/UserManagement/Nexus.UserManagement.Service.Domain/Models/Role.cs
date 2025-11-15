@@ -3,19 +3,19 @@ using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
 {
-    public sealed class Role : Entity<Guid>
+    public sealed class Role : Entity<RoleId>
     {
         public RoleName Name { get; set; } = null!;
 
         private Role() { }
 
-        public Role(Guid id, RoleName name) : base(id) => Name = name;
+        public Role(RoleId id, RoleName name) : base(id) => Name = name;
 
         public static Role Create(string name)
         {
             var roleNeame = RoleName.Create(name);
 
-            return new Role(Guid.NewGuid(), roleNeame);
+            return new Role(RoleId.New(), roleNeame);
         }
 
         public void UpdateName(RoleName roleName)

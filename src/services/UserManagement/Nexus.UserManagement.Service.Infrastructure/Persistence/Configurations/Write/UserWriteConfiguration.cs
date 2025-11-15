@@ -99,10 +99,6 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasColumnName("IdStatus")
                 .IsRequired();
 
-            builder.Property(u => u.IdRole)
-                .HasColumnName("IdRole")
-                .IsRequired();
-
             builder.Property(u => u.IdGender)
                 .HasColumnName("IdGender")
                 .IsRequired(false);
@@ -125,12 +121,6 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasOne(u => u.Role)
-                .WithMany()
-                .HasForeignKey(u => u.IdRole)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
-
             builder.HasOne(u => u.Status)
                 .WithMany()
                 .HasForeignKey(u => u.IdStatus)
@@ -138,6 +128,8 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Ignore("_domainEvents");
+
+            builder.Navigation(u => u.UserRoles).HasField("_userRoles").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts
     {
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Role> Roles { get; set; } = null!;
+        public DbSet<UserRoles> UserRoles { get; set; } = null!;
         public DbSet<Status> Statuses { get; set; } = null!;
         public DbSet<Gender> Genders { get; set; } = null!;
         public DbSet<Country> Countries { get; set; } = null!;
@@ -22,6 +23,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts
             modelBuilder.ApplyConfiguration(new RoleWriteConfiguration());
             modelBuilder.ApplyConfiguration(new StatusWriteConfiguration());
             modelBuilder.ApplyConfiguration(new UserWriteConfiguration());
+            modelBuilder.ApplyConfiguration(new UserWriteRolesConfigurations());
         }
     }
 }

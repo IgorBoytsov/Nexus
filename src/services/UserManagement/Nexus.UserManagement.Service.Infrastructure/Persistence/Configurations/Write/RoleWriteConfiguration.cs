@@ -16,6 +16,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
 
             builder.Property(c => c.Id)
               .HasColumnName("Id")
+              .HasConversion(roleId => roleId.Value, dbValue => RoleId.From(dbValue))
               .ValueGeneratedNever();
 
             builder.Property(r => r.Name)

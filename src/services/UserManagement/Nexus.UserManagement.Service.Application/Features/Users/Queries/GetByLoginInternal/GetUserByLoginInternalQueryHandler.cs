@@ -14,25 +14,18 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByL
         {
             try
             {
-                var user = await _writeContext.Users.FirstOrDefaultAsync(u => u.Login == request.Login);
+                var user = await _writeContext.Users.Include(x => x.UserRoles).FirstOrDefaultAsync(u => u.Login == request.Login);
 
                 if (user == null)
                     return Result<UserAuthDataDto>.Failure(new Error(ErrorCode.NotFound, "Такого пользователя нету"));
 
-                List<string> roles = [];
+                var roleIds = user.UserRoles.Select(ur => ur.RoleId);
+                var roleNames = await _writeContext.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToListAsync(cancellationToken);
 
-                if (user.Role is not null)
-                {
-                    roles =
-                    [
-                        user.Role.Name,
-                    ];
-                }
-
-                var userAuth = new UserAuthDataDto(user.Id, user.Login, user.PasswordHash, roles);
+                var userAuth = new UserAuthDataDto(user.Id, user.Login, user.PasswordHash, [.. roleNames.Select(rn => rn.Value)]);
 
                 return Result<UserAuthDataDto>.Success(userAuth);
-            }
+            } 
             catch (Exception)
             {
                 return Result<UserAuthDataDto>.Failure(new Error(ErrorCode.Server, "Произошла непредвиденная серверная ошибка"));

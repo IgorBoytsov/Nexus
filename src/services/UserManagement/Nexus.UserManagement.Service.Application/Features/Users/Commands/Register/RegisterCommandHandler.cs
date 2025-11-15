@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.SmartEnums;
+using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Shared.Kernel.Results;
 using Shared.Security.Hasher;
 
@@ -20,7 +21,9 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
             {
                 string passwordHash = _hasher.HashPassword(request.Password);
 
-                var user = User.Create(request.Login, request.UserName, passwordHash, request.Email, request.Phone, EnumStatus.Active.Id, EnumRole.User.Id, request.IdGender, request.IdCountry);
+                var user = User.Create(request.Login, request.UserName, passwordHash, request.Email, request.Phone, EnumStatus.Active.Id, request.IdGender, request.IdCountry);
+
+                user.AddRole(RoleId.From(EnumRole.User.Id));
 
                 await _writeContext.Users.AddAsync(user, cancellationToken);
                 await _writeContext.SaveChangesAsync(cancellationToken);
