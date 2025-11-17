@@ -6,7 +6,7 @@ using Nexus.UserManagement.Service.Application.Features.Users.Commands.RegisterA
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
 {
     [ApiController]
-    [Route("*api/admin/users")]
+    [Route("api/admin/users")]
     //[Authorize(Roles = "Admin, SuperAdmin")]
     public class AdminController(IMediator mediator) : Controller
     {

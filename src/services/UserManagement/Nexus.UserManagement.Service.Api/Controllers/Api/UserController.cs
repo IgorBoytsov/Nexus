@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.UserManagement.Service.Api.Models.Requests;
-using Nexus.UserManagement.Service.Application.Features.Users.Commands.Login;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryAccess;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
-using Shared.Contracts.Requests;
 using Shared.Kernel.Results;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
@@ -64,30 +62,6 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
                             e.Message
                         })
                     });
-                });
-        }
-
-        [HttpPost("login")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
-        {
-            var command = new LoginUserCommand(request.Password, request.Login);
-
-            var result = await _mediator.Send(command);
-
-            return result.Match<IActionResult>(
-                onSuccess: user =>
-                {
-                    return Ok(user);
-                },
-                onFailure: errors =>
-                {
-                    return Unauthorized(new
-                    {
-                        Title = "Не валидные данные",
-                        Message = result.StringMessage
-                    });
-
                 });
         }
 
