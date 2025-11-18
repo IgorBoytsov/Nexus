@@ -35,7 +35,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
 
         [HttpGet("by-id/{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromRoute] Guid id)
+        public async Task<IActionResult> LoginById([FromRoute] Guid id)
         {
             var command = new GetUserByIdQuery(id);
 

@@ -1,21 +1,21 @@
-services:
+ï»¿services:
 
   authentication-service:
-    build:
-      context: ..
-      dockerfile: deployment/Authentication.Dockerfile
+    # build:
+    #   context: ..
+    #   dockerfile: deployment/Authentication.Dockerfile
     image: nexus-authentication-service
     container_name: nexus-auth
     ports:
       - "7001:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection= <<ÑÒÐÎÊÀ ÏÎÄÊËÞ×ÅÍÈß Ê ÁÄ>>
-      - JwtSettings__Secret= <<ÐÀÍÄÎÌÍÛÉ ÊËÞ× ÄËÈÍÍÎÉ 32+>>
-      - JwtSettings__ExpiryMinutes= <<ÂÐÅÌß ÄÅÉÑÒÂÈß ACCESS ÒÎÊÅÍÀ, ÍÀÏÐÈÌÅÐ - 15>>
-      - JwtSettings__Issuer= <<ÈÇÄÀÒÅËÜ ÒÎÊÅÍÀ>>
-      - JwtSettings__Audience= <<ÑËÓØÀÒÅËÜ ÒÎÊÅÍÀ>>
-      - ServiceUrls__UserManagement= <<IP ÑÅÐÂÈÑÀ Ñ ÏÎËÜÇÎÂÀÒÅËßÌÈ>>
+      - ConnectionStrings__DefaultConnection= <<Ð¡Ð¢Ð ÐžÐšÐ ÐŸÐžÐ”ÐšÐ›Ð®Ð§Ð•ÐÐ˜Ð¯ Ðš Ð‘Ð”>>
+      - JwtSettings__Secret= <<Ð ÐÐÐ”ÐžÐœÐÐ«Ð™ ÐšÐ›Ð®Ð§ Ð”Ð›Ð˜ÐÐÐžÐ™ 32+>>
+      - JwtSettings__ExpiryMinutes= <<Ð’Ð Ð•ÐœÐ¯ Ð”Ð•Ð™Ð¡Ð¢Ð’Ð˜Ð¯ ACCESS Ð¢ÐžÐšÐ•ÐÐ, ÐÐÐŸÐ Ð˜ÐœÐ•Ð  - 15>>
+      - JwtSettings__Issuer= <<Ð˜Ð—Ð”ÐÐ¢Ð•Ð›Ð¬ Ð¢ÐžÐšÐ•ÐÐ>>
+      - JwtSettings__Audience= <<Ð¡Ð›Ð£Ð¨ÐÐ¢Ð•Ð›Ð¬ Ð¢ÐžÐšÐ•ÐÐ>> 
+      - ServiceUrls__UserManagement= <<IP Ð¡Ð•Ð Ð’Ð˜Ð¡Ð Ð¡ ÐŸÐžÐ›Ð¬Ð—ÐžÐ’ÐÐ¢Ð•Ð›Ð¯ÐœÐ˜>> 
     restart: unless-stopped
 
   usermanagement-service:
@@ -28,5 +28,8 @@ services:
       - "7002:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection= <<ÑÒÐÎÊÀ ÏÎÄÊËÞ×ÅÍÈß Ê ÁÄ>>
+      - ConnectionStrings__DefaultConnection= <<Ð¡Ð¢Ð ÐžÐšÐ ÐŸÐžÐ”ÐšÐ›Ð®Ð§Ð•ÐÐ˜Ð¯ Ðš Ð‘Ð”>>
+      - JwtSettings__Secret= <<Ð¢ÐžÐ¢ Ð–Ð• ÐšÐ›Ð®Ð§ Ð”Ð›Ð˜ÐÐÐžÐ™ 32+>>
+      - JwtSettings__Issuer= <<Ð˜Ð—Ð”ÐÐ¢Ð•Ð›Ð¬ Ð¢ÐžÐšÐ•ÐÐ>>
+      - JwtSettings__Audience= <<Ð¡Ð›Ð£Ð¨ÐÐ¢Ð•Ð›Ð¬ Ð¢ÐžÐšÐ•ÐÐ>>
     restart: unless-stopped

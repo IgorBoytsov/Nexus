@@ -1,7 +1,10 @@
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RegisterAdmin;
 using Nexus.UserManagement.Service.Application.Ioc;
 using Nexus.UserManagement.Service.Infrastructure.Ioc;
+using System.Text;
 
 namespace Nexus.UserManagement.Service.Api
 {
@@ -14,6 +17,28 @@ namespace Nexus.UserManagement.Service.Api
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddInfrastructure(builder.Configuration).AddApplication();
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"]!)
+                    )
+                };
+            });
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 

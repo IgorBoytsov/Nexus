@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Nexus.UserManagement.Service.Api.Models.Requests;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryAccess;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
+using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Shared.Kernel.Results;
+using System.Security.Claims;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
 {
@@ -66,6 +68,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
         }
 
         [HttpPost("recovery-access")]
+        [AllowAnonymous]
         public async Task<IActionResult> RecoveryAccess([FromBody] RecoveryAccessRequest request)
         {
             var command = new RecoveryAccessCommand(request.Login, request.Email, request.NewPassword);
@@ -74,6 +77,37 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
 
             return result.Match<IActionResult>(
                 onSuccess: Ok,
+                onFailure: errors =>
+                {
+                    if (errors.Any(e => e.Code == ErrorCode.Server))
+                    {
+                        var serverError = errors.FirstOrDefault(e => e.Code == ErrorCode.Save);
+                        return StatusCode(StatusCodes.Status500InternalServerError, new
+                        {
+                            Tittle = "Внутренняя ошибка сервера",
+                            Details = serverError?.Message,
+                        });
+                    }
+                    return BadRequest(result.StringMessage);
+                });
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdString))
+                return Unauthorized("User ID не найден в токене.");
+
+            if (!Guid.TryParse(userIdString, out var userId))
+                return BadRequest("Не верный User ID формат.");
+
+            var result = await _mediator.Send(new GetUserByIdQuery(userId));
+
+            return result.Match<IActionResult>(
+                onSuccess: () => Ok(result.Value),
                 onFailure: errors =>
                 {
                     if (errors.Any(e => e.Code == ErrorCode.Server))
