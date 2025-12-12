@@ -21,7 +21,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
             {
                 string passwordHash = _hasher.HashPassword(request.Password);
 
-                var user = User.Create(request.Login, request.UserName, passwordHash, request.Email, request.Phone, EnumStatus.Active.Id, request.IdGender, request.IdCountry);
+                var user = User.Create(request.Login, request.UserName, passwordHash, request.ClientSalt, request.EncryptedDek, request.Email, request.Phone, EnumStatus.Active.Id, request.IdGender, request.IdCountry);
 
                 user.AddRole(RoleId.From(EnumRole.User.Id));
 

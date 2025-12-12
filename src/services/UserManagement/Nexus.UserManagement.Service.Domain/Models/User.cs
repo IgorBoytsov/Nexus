@@ -14,6 +14,11 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public Email Email { get; private set; } = null!;
         public Phone? Phone { get; private set; }
 
+        /*--Безопасность (Zero-Knowledge)--*/
+
+        public string ClientSalt { get; private set; } = null!;
+        public string EncryptedDek { get; private set; } = null!;
+
         /*--Даты--*/
 
         public DateTime DateRegistration { get; private set; }
@@ -37,7 +42,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         private User() { }
 
-        private User(UserId id, Login login, UserName userName, PasswordHash passwordHash, Email email, Guid statusId/*, Guid roleId*/)
+        private User(UserId id, Login login, UserName userName, PasswordHash passwordHash, string clientSalt, string encryptedDek, Email email, Guid statusId/*, Guid roleId*/)
             : base(id)
         {
             Login = login;
@@ -46,13 +51,17 @@ namespace Nexus.UserManagement.Service.Domain.Models
             Email = email;
             //IdRole = roleId;
 
+            ClientSalt = clientSalt;
+            EncryptedDek = encryptedDek;
+
             DateRegistration = DateTime.UtcNow;
             DateUpdate = DateTime.UtcNow;
             IdStatus = statusId;
         }
 
         public static User Create(
-            string login, string userName, string passwordHash, string email, string? phone,
+            string login, string userName, string passwordHash, string clientSalt, string encryptedDek, 
+            string email, string? phone,
             Guid statusId, /*Guid roleId,*/ Guid? genderId, Guid? countryId)
         {
             var loginVo = Login.Create(login);
@@ -60,7 +69,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
             var passwordHashVo = PasswordHash.Create(passwordHash);
             var emailVo = Email.Create(email);
 
-            var user = new User(UserId.New(), loginVo, userNameVo, passwordHashVo, emailVo, statusId/*, roleId*/);
+            var user = new User(UserId.New(), loginVo, userNameVo, passwordHashVo, clientSalt, encryptedDek, emailVo, statusId/*, roleId*/);
 
             if (phone is not null)
                 user.Phone = Phone.Create(phone);

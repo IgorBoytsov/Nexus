@@ -22,7 +22,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByI
                 var roleIds = user.UserRoles.Select(ur => ur.RoleId);
                 var roleNames = await _writeContext.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToListAsync(cancellationToken);
 
-                var userAuth = new UserAuthDataDto(user.Id, user.Login, user.PasswordHash, [.. roleNames.Select(rn => rn.Value)] );
+                var userAuth = new UserAuthDataDto(user.Id, user.Login, user.PasswordHash, user.ClientSalt, user.EncryptedDek, [.. roleNames.Select(rn => rn.Value)] );
 
                 return Result<UserAuthDataDto>.Success(userAuth);
             }

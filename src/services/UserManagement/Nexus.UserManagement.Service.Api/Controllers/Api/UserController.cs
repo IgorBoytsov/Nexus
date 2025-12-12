@@ -5,6 +5,7 @@ using Nexus.UserManagement.Service.Api.Models.Requests;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryAccess;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
+using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo;
 using Shared.Kernel.Results;
 using System.Security.Claims;
 
@@ -27,7 +28,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
-            var command = new RegisterCommand(request.Login, request.UserName, request.Password, request.Email, request.Phone, request.IdGender, request.IdCountry);
+            var command = new RegisterCommand(request.Login, request.UserName, request.Password, request.ClientSalt, request.EncryptedDek, request.Email, request.Phone, request.IdGender, request.IdCountry);
 
             var result = await _mediator.Send(command);
 
@@ -105,6 +106,28 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
                 return BadRequest("Не верный User ID формат.");
 
             var result = await _mediator.Send(new GetUserByIdQuery(userId));
+
+            return result.Match<IActionResult>(
+                onSuccess: () => Ok(result.Value),
+                onFailure: errors =>
+                {
+                    if (errors.Any(e => e.Code == ErrorCode.Server))
+                    {
+                        var serverError = errors.FirstOrDefault(e => e.Code == ErrorCode.Save);
+                        return StatusCode(StatusCodes.Status500InternalServerError, new
+                        {
+                            Tittle = "Внутренняя ошибка сервера",
+                            Details = serverError?.Message,
+                        });
+                    }
+                    return BadRequest(result.StringMessage);
+                });
+        }
+
+        [HttpGet("public-encryption-info/{login}")]
+        public async Task<IActionResult> GetPublicEncryptionInnfo([FromRoute] string login)
+        {
+            var result = await _mediator.Send(new GetPublicEncryptionInfoQuery(login));
 
             return result.Match<IActionResult>(
                 onSuccess: () => Ok(result.Value),
