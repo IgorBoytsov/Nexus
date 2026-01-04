@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": [ "es6", "dom" ],
+    "sourceMap": true,
+    "outDir": "wwwroot/js",
+    "rootDir": "Scripts",
+    "removeComments": true,
+    "noImplicitAny": false
+  },
+  "include": [
+    "Scripts/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "wwwroot/lib"
+  ]
+}

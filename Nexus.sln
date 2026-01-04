@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36408.4
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
 EndProject
@@ -32,8 +32,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deployment", "deployment", "{CBB0903B-19F8-45FA-B024-3CCB86901BF2}"
 	ProjectSection(SolutionItems) = preProject
 		deployment\Authentication.Dockerfile = deployment\Authentication.Dockerfile
-		deployment\UserManagement.Dockerfile = deployment\UserManagement.Dockerfile
 		deployment\docker-compose.yml = deployment\docker-compose.yml
+		deployment\UserManagement.Dockerfile = deployment\UserManagement.Dockerfile
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authentication", "Authentication", "{170EF90C-1E6A-42EB-9B68-9A640724BDDE}"
@@ -51,6 +51,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Authentication.Service.Application", "src\services\Authentication\Nexus.Authentication.Service.Application\Nexus.Authentication.Service.Application.csproj", "{5E186849-F3B0-42DF-BE1D-21A629464B73}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Authentication.Service.Infrastructure", "src\services\Authentication\Nexus.Authentication.Service.Infrastructure\Nexus.Authentication.Service.Infrastructure.csproj", "{56527C3D-8338-4148-91EB-F05A96AE3B14}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{3C320343-C497-4E1D-8DDA-95DA2A82110B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{0148E399-5CE0-4619-A60D-DD0CFAA74389}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Account.Web", "src\apps\Identity\Nexus.Account.Web\Nexus.Account.Web.csproj", "{EED67B9A-EE7E-4212-9057-74E958C0E994}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,6 +116,10 @@ Global
 		{56527C3D-8338-4148-91EB-F05A96AE3B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56527C3D-8338-4148-91EB-F05A96AE3B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56527C3D-8338-4148-91EB-F05A96AE3B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EED67B9A-EE7E-4212-9057-74E958C0E994}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EED67B9A-EE7E-4212-9057-74E958C0E994}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EED67B9A-EE7E-4212-9057-74E958C0E994}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EED67B9A-EE7E-4212-9057-74E958C0E994}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,6 +144,9 @@ Global
 		{F60A7F6A-043E-43D4-B855-70AB26707D9F} = {170EF90C-1E6A-42EB-9B68-9A640724BDDE}
 		{5E186849-F3B0-42DF-BE1D-21A629464B73} = {170EF90C-1E6A-42EB-9B68-9A640724BDDE}
 		{56527C3D-8338-4148-91EB-F05A96AE3B14} = {170EF90C-1E6A-42EB-9B68-9A640724BDDE}
+		{3C320343-C497-4E1D-8DDA-95DA2A82110B} = {9C3DD241-E48B-49D5-A58A-263F5D56429B}
+		{0148E399-5CE0-4619-A60D-DD0CFAA74389} = {3C320343-C497-4E1D-8DDA-95DA2A82110B}
+		{EED67B9A-EE7E-4212-9057-74E958C0E994} = {0148E399-5CE0-4619-A60D-DD0CFAA74389}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F2C65A4D-0401-4F09-84BD-967F4424D40D}
