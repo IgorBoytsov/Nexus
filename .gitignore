@@ -368,3 +368,5 @@ FodyWeavers.xsd
 
 # Ќн игнорировать папку lib 
 !**/wwwroot/lib/**
+
+**/wwwroot/lib/**/*.map
