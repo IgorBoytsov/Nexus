@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# »гнорировать все сгенерированные скрипты и их карты отладки
+**/wwwroot/js/*.js
+**/wwwroot/js/*.js.map
+
+# Ќн игнорировать папку lib 
+!**/wwwroot/lib/**
