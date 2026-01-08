@@ -363,7 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # »гнорировать все сгенерированные скрипты и их карты отладки
-Nexus.Account.Web/wwwroot/js/
+**/wwwroot/js/
 
 # Ќн игнорировать папку lib 
 !**/wwwroot/lib/**
