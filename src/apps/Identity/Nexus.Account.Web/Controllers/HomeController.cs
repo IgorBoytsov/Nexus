@@ -8,7 +8,8 @@ namespace Nexus.Account.Web.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Register", "Account");
+            //return View();
         }
 
         public IActionResult Privacy()

@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Регистрация";
+    Layout = "_AuthLayout";
+}
+
+<div class="form-container">
+	<p class="title">Регистрация</p>
+	<form class="form">
+		<div class="input-group">
+			<label for="login">Логин</label>
+			<input type="text" name="login" id="username" placeholder="">
+		</div>
+		<div class="input-group">
+			<label for="username">Никнейм</label>
+			<input type="text" name="username" id="username" placeholder="">
+		</div>
+		<div class="input-group">
+			<label for="password">Пароль</label>
+			<input type="password" name="password" id="password" placeholder="">
+		</div>
+		<div class="input-group">
+			<label for="email">Почта</label>
+			<input type="email" name="email" id="email" placeholder="">
+		</div>
+		<button type="submit">Зарегестрироваться</button>
+	</form>
+</div>
+
+@section Scripts{
+    <script type="module" src="~/js/ui/auth/registration-form.js"></script>
+}
