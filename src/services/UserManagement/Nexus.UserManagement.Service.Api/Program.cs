@@ -14,6 +14,16 @@ namespace Nexus.UserManagement.Service.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowMvcApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5131")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddInfrastructure(builder.Configuration).AddApplication();
@@ -108,10 +118,14 @@ namespace Nexus.UserManagement.Service.Api
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors("AllowMvcApp");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
+            app.MapControllers();
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
