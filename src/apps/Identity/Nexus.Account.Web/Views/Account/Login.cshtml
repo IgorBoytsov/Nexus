@@ -1,0 +1,30 @@
+﻿@{
+	ViewData["Title"] = "Авторизация";
+	Layout = "_AuthLayout";
+}
+
+<div class="form-container">
+	<p class="title">Авторизация</p>
+	<form class="form">
+		<div class="input-group">
+			<label for="login">Логин</label>
+			<input type="text" name="login" id="login" placeholder="">
+		</div>
+		<div class="input-group">
+			<label for="password">Пароль</label>
+			<input type="password" name="password" id="password" placeholder="">
+			<div class="forgot">
+				<a rel="noopener noreferrer" href="#">Востановить пароль ?</a>
+			</div>
+		</div>
+		<button>Войти</button>
+	</form>
+	<p class="signup">
+		Еще нету аккаунта?
+		<a rel="noopener noreferrer" href="#" class="" style="margin-left: 5px;">Создать</a>
+	</p>
+</div>
+
+@section Scripts{
+	<script type="module" src="~/js/ui/auth/login-form.js"></script>
+}
