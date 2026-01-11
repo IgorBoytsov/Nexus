@@ -12,9 +12,19 @@ export interface RegisterRequest {
     IdCountry: string
 }
 
+export interface PublicEncryptionInfoResponse {
+    clientSalt: string,
+    encryptedDek: string
+}
+
 export class UserMenegementApiService extends BaseApiService {
     constructor() {
         super("http://localhost:5017/api/users");
+    }
+
+    async getPublicEncryptionInfo(login: string): Promise<PublicEncryptionInfoResponse> {
+        const endpoint = `/public-encryption-info/${encodeURIComponent(login)}`;
+        return await this.get<PublicEncryptionInfoResponse>(endpoint);
     }
 
     async register(data: RegisterRequest): Promise<void> {
