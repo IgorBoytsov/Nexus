@@ -13,7 +13,7 @@
         const masterKeyBits = await crypto.subtle.deriveBits(
             {
                 name: 'PBKDF2',
-                salt: salt,
+                salt: salt as any,
                 iterations: this.ITERATIONS,
                 hash: 'SHA-256'
             },
@@ -70,7 +70,7 @@
         const plainBytes = encoder.encode(jsonString);
         const nonce = crypto.getRandomValues(new Uint8Array(this.NONCE_SIZE));
 
-        const cryptoKey = await crypto.subtle.importKey('raw', keyBytes, 'AES-GCM', false, ['encrypt']);
+        const cryptoKey = await crypto.subtle.importKey('raw', keyBytes as any, 'AES-GCM', false, ['encrypt']);
 
         const encryptedContent = await crypto.subtle.encrypt(
             {
@@ -103,7 +103,7 @@
 
         const cryptoKey = await crypto.subtle.importKey(
             'raw',
-            keyBytes,
+            keyBytes as any,
             'AES-GCM',
             false,
             ['decrypt']
@@ -131,7 +131,25 @@
 
     generateRandomBytes = (length: number = 32): Uint8Array => crypto.getRandomValues(new Uint8Array(length)); 
 
-    private toBase64 = (bytes: Uint8Array): string => btoa(Array.from(bytes).map(b => String.fromCharCode(b)).join(''));
+    public toBase64 = (bytes: Uint8Array): string => {
+        return btoa(String.fromCharCode(...bytes));
+    };
 
-    private fromBase64 = (base64: string): Uint8Array => Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    public fromBase64 = (base64: string): Uint8Array => {
+        if (!base64) throw new Error("Передана пустая строка в fromBase64");
+
+        const cleaned = base64.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+
+        try {
+            const binString = atob(cleaned);
+            return Uint8Array.from(binString, c => c.charCodeAt(0));
+        } catch (e) {
+            console.error("Критическая ошибка Base64:", cleaned);
+            throw e;
+        }
+    };
+
+    //public toBase64 = (bytes: Uint8Array): string => btoa(Array.from(bytes).map(b => String.fromCharCode(b)).join(''));
+
+    //public fromBase64 = (base64: string): Uint8Array => Uint8Array.from(atob(base64), c => c.charCodeAt(0));
 }
