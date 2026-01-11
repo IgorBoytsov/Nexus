@@ -1,4 +1,4 @@
-﻿namespace Nexus.Authentication.Service.Application.Features.Commands
+﻿namespace Shared.Contracts.Responses
 {
     public record AuthResponse(string AccessToken, string RefreshToken);
 }

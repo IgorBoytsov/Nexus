@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
+using Shared.Contracts.Responses;
 using Shared.Kernel.Results;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.LoginByToken
