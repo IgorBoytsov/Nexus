@@ -1,7 +1,11 @@
+using Nexus.Account.Web.Services.Http;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddHttpClient<IAuthClient, AuthClient>(client => client.BaseAddress = new Uri(builder.Configuration["BaseAuthServiceUrl"]!));
 
 var app = builder.Build();
 
