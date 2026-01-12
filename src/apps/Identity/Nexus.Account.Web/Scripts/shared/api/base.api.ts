@@ -7,10 +7,16 @@
         const cleanEndpoint = endpoint.replace(/^\//, '');
         const url = `${cleanBase}/${cleanEndpoint}`;
 
+        const token = document.querySelector('meta[name="xsrf-token"]')?.getAttribute('content');
+
         const response = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            headers: {
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': token || ''
+            },
+            body: JSON.stringify(data),
+            credentials: 'include' 
         });
 
         return this.handleResponse<T>(response);
