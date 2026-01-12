@@ -1,8 +1,9 @@
-﻿import { SecureDataService } from "../../services/secure-data-service.js";
-import { UserMenegementApiService, RegisterRequest } from "../../auth/user-menagement-api-service.js";
+﻿import { SecureDataService } from "../../../shared/lib/secure-data.service.js";
+import { RegistrationApi } from "../api/registration.api.js";
+import { RegisterRequest } from "../model/register-user.request.js";
 
 const crypto = new SecureDataService();
-const apiClient = new UserMenegementApiService();
+const registrationApiClient = new RegistrationApi();
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.form') as HTMLFormElement;
@@ -45,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     IdCountry: idCountry
                 };
 
-                await apiClient.register(request);
+                await registrationApiClient.register(request);
 
                 alert("Регистрация прошла успешно!");
 

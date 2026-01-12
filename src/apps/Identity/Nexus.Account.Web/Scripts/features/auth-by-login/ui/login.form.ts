@@ -1,11 +1,11 @@
-﻿import { SecureDataService } from "../../services/secure-data-service.js"
-import { AccountApiService } from "../../services/account-api-service.js";
-import { LoginUserRequest } from "../../Requests/login-user-request.js";
-import { UserMenegementApiService, PublicEncryptionInfoResponse } from "../../auth/user-menagement-api-service.js";
+﻿import { SecureDataService } from "../../../shared/lib/secure-data.service.js"
+import { AuthApi } from "../api/auth.api.js";
+import { LoginUserRequest } from "../model/login-user.request.js";
+import { UserApi } from "../../../entities/user/api/user.api.js";
 
 const crypto = new SecureDataService();
-const authApiClient = new AccountApiService();
-const userApiClient = new UserMenegementApiService();
+const accountApiBFF = new AuthApi();
+const userApi = new UserApi();
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.form') as HTMLFormElement;
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
 
-                const userPublicInfo = await userApiClient.getPublicEncryptionInfo(login);
+                const userPublicInfo = await userApi.getPublicEncryptionInfo(login);
                 const saltBytes = crypto.fromBase64(userPublicInfo.clientSalt);
 
                 const { kek, authHash } = await crypto.deriveKeysFromPassword(password, saltBytes); 
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     Password: authHash
                 };
 
-                await authApiClient.login(request);
+                await accountApiBFF.login(request);
 
                 window.location.href = '/Home/Privacy';
 

@@ -65,7 +65,6 @@
             throw new Error(errorMessage);
         }
 
-
         if (response.status === 204 || !responseText) {
             return null as any;
         }
