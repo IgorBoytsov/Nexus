@@ -7,5 +7,6 @@ namespace Nexus.Account.Web.Services.Http
     public interface IAuthClient
     {
         Task<Result<AuthResponse?>> Login(LoginUserRequest request);
+        Task<Result<AuthResponse>> LoginByToken(TokenLoginRequest request);
     }
 }

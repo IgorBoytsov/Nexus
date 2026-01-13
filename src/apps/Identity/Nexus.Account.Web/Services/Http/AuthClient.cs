@@ -27,5 +27,27 @@ namespace Nexus.Account.Web.Services.Http
                 return Result<AuthResponse?>.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден"));
             }
         }
+
+        public async Task<Result<AuthResponse>> LoginByToken(TokenLoginRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("api/auth/token-login", request, _jsonSerializerOptions);
+                response.EnsureSuccessStatusCode();
+
+                var responseData = await response.Content.ReadFromJsonAsync<AuthResponse>();
+
+                return Result<AuthResponse>.Success(responseData!);
+            }
+            catch (HttpRequestException ex)
+            {
+                return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, $"Произошла критическая ошибки при отправки запроса: {ex.Message}"));
+            }
+        }
+
     }
 }

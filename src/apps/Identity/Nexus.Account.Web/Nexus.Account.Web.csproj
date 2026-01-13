@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Scripts\entities\session\model\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
 

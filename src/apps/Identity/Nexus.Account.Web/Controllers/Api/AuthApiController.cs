@@ -47,6 +47,39 @@ namespace Nexus.Account.Web.Controllers.Api
             return Ok(new { message = "Success" });
         }
 
+        [HttpPost("login-by-token")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoginByToken()
+        {
+            var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
+
+            if (string.IsNullOrEmpty(refreshToken))
+                return Unauthorized();
+
+            var result = await _authClient.LoginByToken(new TokenLoginRequest(refreshToken));
+
+            if (result.IsFailure)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return Unauthorized();
+            }
+
+            var tokens = result.Value!;
+
+            var claimsIdentity = new ClaimsIdentity(User.Claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new AuthenticationProperties();
+            authProperties.StoreTokens(
+                [
+                     new AuthenticationToken { Name = "access_token", Value = tokens.AccessToken },
+                     new AuthenticationToken { Name = "refresh_token", Value = tokens.RefreshToken }
+                ]);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+            return Ok();
+        }
+
         public async Task<IActionResult> Logout()
         {
 
