@@ -10,14 +10,8 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         public Login Login { get; private set; } = null!;
         public UserName UserName { get; private set; } = null!;
-        public PasswordHash PasswordHash { get; private set; } = null!;
         public Email Email { get; private set; } = null!;
         public Phone? Phone { get; private set; }
-
-        /*--Безопасность (Zero-Knowledge)--*/
-
-        public string ClientSalt { get; private set; } = null!;
-        public string EncryptedDek { get; private set; } = null!;
 
         /*--Даты--*/
 
@@ -33,22 +27,19 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         /*--Навигационные свойства--*/
 
+        public UserCredentials Credentials { get; private set; } = null!;
+
         private readonly List<UserRoles> _userRoles = [];
         public IReadOnlyCollection<UserRoles> UserRoles => _userRoles.AsReadOnly();
 
         private User() { }
 
-        private User(UserId id, Login login, UserName userName, PasswordHash passwordHash, string clientSalt, string encryptedDek, Email email, Guid statusId/*, Guid roleId*/)
+        private User(UserId id, Login login, UserName userName, Email email, Guid statusId)
             : base(id)
         {
             Login = login;
             UserName = userName;
-            PasswordHash = passwordHash;
             Email = email;
-            //IdRole = roleId;
-
-            ClientSalt = clientSalt;
-            EncryptedDek = encryptedDek;
 
             DateRegistration = DateTime.UtcNow;
             DateUpdate = DateTime.UtcNow;
@@ -65,7 +56,9 @@ namespace Nexus.UserManagement.Service.Domain.Models
             var passwordHashVo = PasswordHash.Create(passwordHash);
             var emailVo = Email.Create(email);
 
-            var user = new User(UserId.New(), loginVo, userNameVo, passwordHashVo, clientSalt, encryptedDek, emailVo, statusId/*, roleId*/);
+            var user = new User(UserId.New(), loginVo, userNameVo, emailVo, statusId);
+
+            user.Credentials = new UserCredentials(user.Id, passwordHashVo, clientSalt, encryptedDek);
 
             if (phone is not null)
                 user.Phone = Phone.Create(phone);
@@ -90,7 +83,8 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         public void UpdatePassword(PasswordHash passwordHash)
         {
-            PasswordHash = passwordHash;
+            Credentials.UpdatePassword(passwordHash);
+            DateUpdate = DateTime.UtcNow;
         }
 
         public void UpdateLastEntryDate() => DateEntry = DateTime.UtcNow;

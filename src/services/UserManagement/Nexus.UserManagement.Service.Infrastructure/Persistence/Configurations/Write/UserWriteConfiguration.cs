@@ -47,15 +47,6 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasColumnName("UserName")
                 .IsRequired();
 
-            /*__PasswordHash__*/
-
-            builder.Property(u => u.PasswordHash)
-                .HasConversion(
-                    passHash => passHash.Value,
-                    dbValue => PasswordHash.Create(dbValue))
-                .HasColumnName("PasswordHash")
-                .IsRequired();
-
             /*__Email__*/
 
             builder.Property(u => u.Email)
@@ -108,6 +99,11 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .IsRequired(false);
 
             /*__Связи__*/
+
+            builder.HasOne(u => u.Credentials)
+                .WithOne()
+                .HasForeignKey<UserCredentials>(uc => uc.Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne<Gender>()
                 .WithMany()

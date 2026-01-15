@@ -23,6 +23,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts
             modelBuilder.ApplyConfiguration(new RoleWriteConfiguration());
             modelBuilder.ApplyConfiguration(new StatusWriteConfiguration());
             modelBuilder.ApplyConfiguration(new UserWriteConfiguration());
+            modelBuilder.ApplyConfiguration(new UserCredentialsWriteConfiguration());
             modelBuilder.ApplyConfiguration(new UserWriteRolesConfigurations());
         }
     }

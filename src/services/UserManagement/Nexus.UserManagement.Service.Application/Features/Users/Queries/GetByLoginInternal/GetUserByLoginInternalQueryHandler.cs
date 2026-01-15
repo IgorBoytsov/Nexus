@@ -14,7 +14,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByL
         {
             try
             {
-                var user = await _writeContext.Users.Include(x => x.UserRoles).FirstOrDefaultAsync(u => u.Login == request.Login, cancellationToken);
+                var user = await _writeContext.Users.Include(x => x.UserRoles).Include(u => u.Credentials).FirstOrDefaultAsync(u => u.Login == request.Login, cancellationToken);
 
                 if (user == null)
                     return Result<UserAuthDataDto>.Failure(new Error(ErrorCode.NotFound, "Такого пользователя нету"));
@@ -22,7 +22,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByL
                 var roleIds = user.UserRoles.Select(ur => ur.RoleId);
                 var roleNames = await _writeContext.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToListAsync(cancellationToken);
 
-                var userAuth = new UserAuthDataDto(user.Id, user.Login, user.PasswordHash, user.ClientSalt, user.EncryptedDek, [.. roleNames.Select(rn => rn.Value)]);
+                var userAuth = new UserAuthDataDto(user.Id, user.Login, user.Credentials.PasswordHash, user.Credentials.ClientSalt, user.Credentials.EncryptedDek, [.. roleNames.Select(rn => rn.Value)]);
 
                 return Result<UserAuthDataDto>.Success(userAuth);
             } 

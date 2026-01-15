@@ -13,12 +13,12 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPub
         {
             try
             {
-                var user = await _writeContext.Users.FirstOrDefaultAsync(u => u.Login == request.Login, cancellationToken);
+                var user = await _writeContext.Users.Include(u => u.Credentials).FirstOrDefaultAsync(u => u.Login == request.Login, cancellationToken);
 
                 if (user == null)
                     return Result<PublicEncryptionInfoDTO>.Failure(new Error(ErrorCode.NotFound, "Такого пользователя нету"));
 
-                var userAuth = new PublicEncryptionInfoDTO(user.ClientSalt, user.EncryptedDek);
+                var userAuth = new PublicEncryptionInfoDTO(user.Credentials.ClientSalt, user.Credentials.EncryptedDek);
 
                 return Result<PublicEncryptionInfoDTO>.Success(userAuth);
             }
