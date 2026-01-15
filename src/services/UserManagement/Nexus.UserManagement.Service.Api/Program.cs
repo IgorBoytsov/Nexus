@@ -20,7 +20,8 @@ namespace Nexus.UserManagement.Service.Api
                 {
                     policy.WithOrigins("http://localhost:5131")
                           .AllowAnyHeader()
-                          .AllowAnyMethod();
+                          .AllowAnyMethod()
+                          .AllowCredentials();
                 });
             });
 
