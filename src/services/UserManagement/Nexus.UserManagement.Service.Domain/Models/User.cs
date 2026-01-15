@@ -36,10 +36,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
         private readonly List<UserRoles> _userRoles = [];
         public IReadOnlyCollection<UserRoles> UserRoles => _userRoles.AsReadOnly();
 
-        public Status Status { get; private set; } = null!;
-        public Gender? Gender { get; private set; }
-        public Country? Country { get; private set; }
-
         private User() { }
 
         private User(UserId id, Login login, UserName userName, PasswordHash passwordHash, string clientSalt, string encryptedDek, Email email, Guid statusId/*, Guid roleId*/)

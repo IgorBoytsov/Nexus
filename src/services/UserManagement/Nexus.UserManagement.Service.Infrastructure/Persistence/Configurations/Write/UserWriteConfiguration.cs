@@ -109,19 +109,19 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
 
             /*__Связи__*/
 
-            builder.HasOne(u => u.Gender)
+            builder.HasOne<Gender>()
                 .WithMany()
                 .HasForeignKey(u => u.IdGender)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasOne(u => u.Country)
+            builder.HasOne<Country>()
                 .WithMany()
                 .HasForeignKey(u => u.IdCountry)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasOne(u => u.Status)
+            builder.HasOne<Status>()
                 .WithMany()
                 .HasForeignKey(u => u.IdStatus)
                 .IsRequired()
