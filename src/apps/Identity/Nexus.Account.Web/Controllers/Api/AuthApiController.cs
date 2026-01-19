@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.Account.Web.Services.Http;
 using Shared.Contracts.Requests;
@@ -13,6 +14,51 @@ namespace Nexus.Account.Web.Controllers.Api
     public class AuthApiController(IAuthClient authClient) : Controller
     {
         private readonly IAuthClient _authClient = authClient;
+
+        [HttpPost("challenge")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Step1([FromBody] SrpChallengeRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Login))
+                return BadRequest("Логин обязателен");
+
+            var result = await _authClient.GetSrpChallenge(request);
+
+            if (result.IsFailure)
+                return NotFound("Пользователь не найден");
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost("verify")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Step2([FromBody] SrpVerifyRequest request)
+        {
+            var result = await _authClient.VerifySrpProof(request);
+
+            if (result.IsFailure)
+                return Unauthorized($"Неверные данные для входа (ZKP proof failed): {result.StringMessage}");
+
+            AuthResponse tokens = result.Value!;
+
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Name, request.Login)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new AuthenticationProperties();
+            authProperties.StoreTokens(
+            [
+                new AuthenticationToken { Name = "access_token", Value = tokens.AccessToken },
+                new AuthenticationToken { Name = "refresh_token", Value = tokens.RefreshToken }
+            ]);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+            return Ok(new { message = "Success" });
+        }
 
         [HttpPost("login")]
         [ValidateAntiForgeryToken]

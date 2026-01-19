@@ -6,22 +6,18 @@ using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.SmartEnums;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Shared.Kernel.Results;
-using Shared.Security.Hasher;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Register
 {
-    public sealed class RegisterCommandHandler(IWriteDbContext writeContext, IPasswordHasher passwordHasher) : IRequestHandler<RegisterCommand, Result>
+    public sealed class RegisterCommandHandler(IWriteDbContext writeContext) : IRequestHandler<RegisterCommand, Result>
     {
         private readonly IWriteDbContext _writeContext = writeContext;
-        private readonly IPasswordHasher _hasher = passwordHasher;
 
         public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                string passwordHash = _hasher.HashPassword(request.Password);
-
-                var user = User.Create(request.Login, request.UserName, passwordHash, request.ClientSalt, request.EncryptedDek, request.Email, request.Phone, EnumStatus.Active.Id, request.IdGender, request.IdCountry);
+                var user = User.Create(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.Email, request.Phone, EnumStatus.Active.Id, request.IdGender, request.IdCountry);
 
                 user.AddRole(RoleId.From(EnumRole.User.Id));
 

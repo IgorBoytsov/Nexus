@@ -28,7 +28,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
-            var command = new RegisterCommand(request.Login, request.UserName, request.Password, request.ClientSalt, request.EncryptedDek, request.Email, request.Phone, request.IdGender, request.IdCountry);
+            var command = new RegisterCommand(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.Email, request.Phone, request.IdGender, request.IdCountry);
 
             var result = await _mediator.Send(command);
 

@@ -23,7 +23,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Recov
 
                 var newPasswordHash = PasswordHash.Create(_hasher.HashPassword(request.NewPassword));
 
-                user.UpdatePassword(newPasswordHash);
+                user.UpdateVerifier(newPasswordHash);
 
                 await _writeContext.SaveChangesAsync(cancellationToken);
 

@@ -1,7 +1,8 @@
 ﻿import { SecureDataService } from "../../../shared/lib/secure-data.service.js"
 import { AuthApi } from "../api/auth.api.js";
-import { LoginUserRequest } from "../model/login-user.request.js";
 import { UserApi } from "../../../entities/user/api/user.api.js";
+import { SrpChallengeRequest } from "../model/srp-challenge.request.js";
+import { SrpVerifyRequest } from "../model/srp-verify.request.js";
 
 const crypto = new SecureDataService();
 const accountApiBFF = new AuthApi();
@@ -19,20 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = formData.get('password') as string;
 
             try {
+                const srpChallengeRequest: SrpChallengeRequest = { login: login };
+                const challenge = await accountApiBFF.GetCrpChallenge(srpChallengeRequest);
 
-                const userPublicInfo = await userApi.getPublicEncryptionInfo(login);
-                const saltBytes = crypto.fromBase64(userPublicInfo.clientSalt);
+                const srpProof = await crypto.generateSrpProof(password, challenge.salt, challenge.b);
 
-                const { kek, authHash } = await crypto.deriveKeysFromPassword(password, saltBytes); 
-
-                const dek = await crypto.decryptData<Uint8Array>(userPublicInfo.encryptedDek, kek);
-
-                const request: LoginUserRequest = {
-                    Login: login,
-                    Password: authHash
+                const srpVerifyRequest: SrpVerifyRequest = {
+                    login: login,
+                    a: srpProof.A,
+                    m1: srpProof.M1
                 };
 
-                await accountApiBFF.login(request);
+                await accountApiBFF.SrpVerifyProof(srpVerifyRequest);
 
                 window.location.href = '/Home/Privacy';
 

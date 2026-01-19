@@ -13,6 +13,26 @@ namespace Nexus.Account.Web.Services.Http
             PropertyNameCaseInsensitive = true,
         };
 
+        public async Task<Result<SrpChallengeResponse>> GetSrpChallenge(SrpChallengeRequest request)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/auth/srp/challenge", request);
+            if (!response.IsSuccessStatusCode) 
+                return Result<SrpChallengeResponse>.Failure(new Error(ErrorCode.Server, await response.Content.ReadAsStringAsync()));
+
+            var data = await response.Content.ReadFromJsonAsync<SrpChallengeResponse>();
+            return Result<SrpChallengeResponse>.Success(data!);
+        }
+
+        public async Task<Result<AuthResponse>> VerifySrpProof(SrpVerifyRequest request)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/auth/srp/verify", request);
+            if (!response.IsSuccessStatusCode)
+                return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, await response.Content.ReadAsStringAsync()));
+
+            var tokens = await response.Content.ReadFromJsonAsync<AuthResponse>();
+            return Result<AuthResponse>.Success(tokens!);
+        }
+
         public async Task<Result<AuthResponse?>> Login(LoginUserRequest request)
         {
             try

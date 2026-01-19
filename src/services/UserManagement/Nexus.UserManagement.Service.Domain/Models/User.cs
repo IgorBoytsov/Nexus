@@ -81,9 +81,9 @@ namespace Nexus.UserManagement.Service.Domain.Models
             }
         }
 
-        public void UpdatePassword(PasswordHash passwordHash)
+        public void UpdateVerifier(string verifier)
         {
-            Credentials.UpdatePassword(passwordHash);
+            Credentials.UpdateVerifier(verifier);
             DateUpdate = DateTime.UtcNow;
         }
 

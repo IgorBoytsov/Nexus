@@ -17,15 +17,14 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasConversion(id => id.Value, dbValue => UserId.From(dbValue))
                 .ValueGeneratedNever();
 
-            builder.Property(c => c.PasswordHash)
-                .HasConversion(
-                    passHash => passHash.Value,
-                    dbValue => PasswordHash.Create(dbValue))
-                .HasColumnName("PasswordHash")
+            builder.Property(c => c.Verifier)
+                .HasColumnName("Verifier")
+                .HasMaxLength(1024)
                 .IsRequired();
 
             builder.Property(c => c.ClientSalt)
                 .HasColumnName("ClientSalt")
+                .HasMaxLength(128)
                 .IsRequired();
 
             builder.Property(c => c.EncryptedDek)

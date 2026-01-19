@@ -1,7 +1,7 @@
 ﻿export interface RegisterRequest {
     Login: string,
     UserName: string,
-    Password: string,
+    Verifier: string,
     ClientSalt: string,
     EncryptedDek: string,
     Email: string,

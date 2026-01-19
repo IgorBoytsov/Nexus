@@ -4,6 +4,10 @@
     private readonly ITERATIONS = 600_000;
     private readonly KEY_SIZE = 32;
 
+    private static readonly N = BigInt("0xAC6BDB41324A9A9BF166DE5E1F403D434A6E1B3B94A7E62AC1211858E002C75AD4455C9D19C0A3180296917A376205164043E20144FF485719D181A99EB574671AC58054457ED444A67032EA17D03AD43464D2397449CA593630A670D90D95A78E846A3C8AF80862098D80F33C42ED7059E75225E0A52718E2379369F65B79680A6560B080092EE71986066735A96A7D42E7597116742B02D3A154471B6A23D84E0D642C790D597A2BB7F5A48F734898BDD138C69493E723491959C1B4BD40C91C1C7924F88D046467A006507E781220A80C55A927906A7C6C9C227E674686DD5D1B855D28F0D604E24586C608630B9A34C4808381A54F0D9080A5F90B60187F");
+    private static readonly g = BigInt(2);
+    private static readonly k = BigInt(3);
+
     async deriveKeysFromPassword(password: string, salt: Uint8Array): Promise<{ kek: Uint8Array, authHash: string }> {
         const encoder = new TextEncoder();
         const passwordBytes = encoder.encode(password);
@@ -131,6 +135,47 @@
 
     generateRandomBytes = (length: number = 32): Uint8Array => crypto.getRandomValues(new Uint8Array(length)); 
 
+    async generateSrpVerifier(authHash: string): Promise<string> {
+        const xBytes = this.fromBase64(authHash);
+        const x = BigInt('0x' + Array.from(xBytes).map(b => b.toString(16).padStart(2, '0')).join(''));
+        const v = this.expMod(SecureDataService.g, x, SecureDataService.N);
+
+        return v.toString(16);
+    }
+
+    async generateSrpProof(password: string, saltBase64: string, B_hex: string): Promise<{ A: string, M1: string }> {
+        const N = SecureDataService.N;
+        const g = SecureDataService.g;
+        const k = SecureDataService.k;
+
+        const salt = this.fromBase64(saltBase64);
+        const { authHash } = await this.deriveKeysFromPassword(password, salt);
+        const x = this.bigIntFromBase64(authHash);
+
+        const aBytes = crypto.getRandomValues(new Uint8Array(32));
+        const a = BigInt('0x' + Array.from(aBytes).map(b => b.toString(16).padStart(2, '0')).join(''));
+
+        const A = this.expMod(g, a, N);
+        const B = BigInt('0x' + B_hex);
+
+        const u = await this.hashBigInt(A, B);
+
+        if (u === BigInt(0)) throw new Error("Недопустимое значение u в SRP");
+
+        const gX = this.expMod(g, x, N);
+        const term = (k * gX) % N;
+        const base = (B - term + N) % N;
+        const exponent = a + (u * x);
+        const S = this.expMod(base, exponent, N);
+
+        const M1 = await this.hashBigInt(A, B, S);
+
+        return {
+            A: A.toString(16),
+            M1: M1.toString(16)
+        }
+    }
+
     public toBase64 = (bytes: Uint8Array): string => {
         return btoa(String.fromCharCode(...bytes));
     };
@@ -149,7 +194,30 @@
         }
     };
 
-    //public toBase64 = (bytes: Uint8Array): string => btoa(Array.from(bytes).map(b => String.fromCharCode(b)).join(''));
+    private expMod(base: bigint, exp: bigint, mod: bigint): bigint {
+        let res = BigInt(1);
+        base = base % mod;
+        while (exp > 0) {
+            if (exp % BigInt(2) === BigInt(1)) res = (res * base) % mod;
+            base = (base * base) % mod;
+            exp = exp / BigInt(2);
+        }
+        return res;
+    }
 
-    //public fromBase64 = (base64: string): Uint8Array => Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    private bigIntFromBase64(base64: string): bigint {
+        const bytes = this.fromBase64(base64);
+        return BigInt('0x' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(''));
+    }
+
+    private async hashBigInt(...args: bigint[]): Promise<bigint> {
+        const encoder = new TextEncoder();
+        const hexString = args.map(a => a.toString(16).toLowerCase().padStart(512, '0')).join('');
+
+        const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(hexString));
+        const hashArray = Array.from(new Uint8Array(buffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        return BigInt('0x' + hashHex);
+    }
 }

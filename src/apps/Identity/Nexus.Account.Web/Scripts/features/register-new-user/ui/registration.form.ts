@@ -31,13 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const salt = crypto.generateRandomBytes(16);
                 const saltBase64 = btoa(String.fromCharCode(...salt));
                 const { kek, authHash } = await crypto.deriveKeysFromPassword(password, salt);
+                const verifierHex = await crypto.generateSrpVerifier(authHash);
                 const dek = crypto.generateRandomBytes(32);
                 const encryptedDek = await crypto.encryptData(dek, kek);
 
                 const request: RegisterRequest = {
                     Login: login,
                     UserName: username,
-                    Password: authHash,
+                    Verifier: verifierHex,
                     ClientSalt: saltBase64,
                     EncryptedDek: encryptedDek,
                     Email: email,
