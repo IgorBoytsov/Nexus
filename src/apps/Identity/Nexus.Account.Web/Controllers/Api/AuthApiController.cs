@@ -126,6 +126,18 @@ namespace Nexus.Account.Web.Controllers.Api
             return Ok();
         }
 
+        [HttpGet("public-key")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPublicKey()
+        {
+            var result = await _authClient.GetPublicKey();
+
+            if (result.IsFailure)
+                return StatusCode(500, "Ошибка получения настроек безопасности");
+
+            return Ok(new { PublicKey = result.Value });
+        }
+
         public async Task<IActionResult> Logout()
         {
 

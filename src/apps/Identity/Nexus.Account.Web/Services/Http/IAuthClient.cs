@@ -9,6 +9,7 @@ namespace Nexus.Account.Web.Services.Http
         Task<Result<SrpChallengeResponse>> GetSrpChallenge(SrpChallengeRequest request);
         Task<Result<AuthResponse>> VerifySrpProof(SrpVerifyRequest request);
         Task<Result<AuthResponse?>> Login(LoginUserRequest request);
+        Task<Result<string>> GetPublicKey();
         Task<Result<AuthResponse>> LoginByToken(TokenLoginRequest request);
     }
 }

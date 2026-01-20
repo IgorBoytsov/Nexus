@@ -1,4 +1,5 @@
-﻿using Shared.Contracts.Requests;
+﻿using Microsoft.AspNetCore.Mvc;
+using Shared.Contracts.Requests;
 using Shared.Contracts.Responses;
 using Shared.Kernel.Results;
 using System.Text.Json;
@@ -31,6 +32,20 @@ namespace Nexus.Account.Web.Services.Http
 
             var tokens = await response.Content.ReadFromJsonAsync<AuthResponse>();
             return Result<AuthResponse>.Success(tokens!);
+        }
+
+        private record PublicKeyDto(string PublicKey);
+
+        public async Task<Result<string>> GetPublicKey()
+        {
+            var response = await _httpClient.GetAsync("api/auth-config/public-key");
+
+            if (!response.IsSuccessStatusCode)
+                return Result<string>.Failure(new Error(ErrorCode.Server, await response.Content.ReadAsStringAsync()));
+
+            var data = await response.Content.ReadFromJsonAsync<PublicKeyDto>(_jsonSerializerOptions);
+
+            return Result<string>.Success(data?.PublicKey ?? string.Empty);
         }
 
         public async Task<Result<AuthResponse?>> Login(LoginUserRequest request)
