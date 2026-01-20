@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
-using Shared.Contracts.Responses;
+using Shared.Contracts.Authentication.Responses;
 using Shared.Kernel.Results;
 using Shared.Security.Hasher;
 

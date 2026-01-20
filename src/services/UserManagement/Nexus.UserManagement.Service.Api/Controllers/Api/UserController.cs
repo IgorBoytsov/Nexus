@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nexus.UserManagement.Service.Api.Models.Requests;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryAccess;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo;
+using Shared.Contracts.UserMenagement.Requests;
 using Shared.Kernel.Results;
 using System.Security.Claims;
 

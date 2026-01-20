@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
-using Shared.Contracts.Responses;
+using Shared.Contracts.Authentication.Responses;
 using Shared.Kernel.Results;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByLoginInternal

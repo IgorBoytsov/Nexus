@@ -1,4 +1,4 @@
-﻿namespace Nexus.UserManagement.Service.Api.Models.Requests
+﻿namespace Shared.Contracts.UserMenagement.Requests
 {
     public sealed record class RegisterUserRequest(
         string Login, string UserName,

@@ -5,7 +5,7 @@ using Nexus.Authentication.Service.Application.Features.Commands.LoginByToken;
 using Nexus.Authentication.Service.Application.Features.Commands.Refresh;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof;
-using Shared.Contracts.Requests;
+using Shared.Contracts.Authentication.Requests;
 using Shared.Kernel.Results;
 
 namespace Nexus.Authentication.Service.Api.Controllers

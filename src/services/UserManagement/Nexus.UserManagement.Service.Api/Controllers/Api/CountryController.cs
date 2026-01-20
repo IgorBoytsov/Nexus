@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Nexus.UserManagement.Service.Api.Models.Requests;
 using Nexus.UserManagement.Service.Application.Features.Countries.Commands.Create;
 using Nexus.UserManagement.Service.Application.Features.Countries.Commands.Delete;
 using Nexus.UserManagement.Service.Application.Features.Countries.Commands.Update;
 using Nexus.UserManagement.Service.Application.Features.Countries.Queries.GetAll;
+using Shared.Contracts.UserMenagement.Requests;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
 {

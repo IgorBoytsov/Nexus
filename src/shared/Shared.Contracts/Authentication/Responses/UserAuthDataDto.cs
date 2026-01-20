@@ -1,4 +1,4 @@
-﻿namespace Shared.Contracts.Responses
+﻿namespace Shared.Contracts.Authentication.Responses
 {
     public sealed record UserAuthDataDto(Guid Id, string Login, string PasswordHash, string ClientSalt, string EncryptedDek, List<string> Roles);
 }

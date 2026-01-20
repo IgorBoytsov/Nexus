@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shared.Contracts.Requests;
-using Shared.Contracts.Responses;
+using Shared.Contracts.Authentication.Requests;
+using Shared.Contracts.Authentication.Responses;
 using Shared.Kernel.Results;
 using System.Text.Json;
 

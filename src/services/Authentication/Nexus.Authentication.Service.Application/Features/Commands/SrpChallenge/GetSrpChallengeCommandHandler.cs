@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using Nexus.Authentication.Service.Application.Services;
-using Shared.Contracts.Responses;
+using Shared.Contracts.Authentication.Responses;
 using Shared.Kernel.Results;
 using Shared.Security.Verifiers;
 using System.Globalization;

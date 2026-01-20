@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
-using Shared.Contracts.Responses;
+using Shared.Contracts.Authentication.Responses;
 using Shared.Kernel.Results;
 using System.Globalization;
 using System.Numerics;

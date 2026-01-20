@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.Account.Web.Services.Http;
-using Shared.Contracts.Requests;
-using Shared.Contracts.Responses;
+using Shared.Contracts.Authentication.Requests;
+using Shared.Contracts.Authentication.Responses;
 using System.Security.Claims;
 
 namespace Nexus.Account.Web.Controllers.Api

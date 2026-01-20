@@ -1,5 +1,5 @@
-﻿using Shared.Contracts.Requests;
-using Shared.Contracts.Responses;
+﻿using Shared.Contracts.Authentication.Requests;
+using Shared.Contracts.Authentication.Responses;
 using Shared.Kernel.Results;
 
 namespace Nexus.Account.Web.Services.Http

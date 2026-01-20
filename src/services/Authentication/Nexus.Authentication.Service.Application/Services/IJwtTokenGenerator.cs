@@ -1,4 +1,4 @@
-﻿using Shared.Contracts.Responses;
+﻿using Shared.Contracts.Authentication.Responses;
 
 namespace Nexus.Authentication.Service.Application.Services
 {
