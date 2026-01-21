@@ -57,7 +57,7 @@ namespace Nexus.Account.Web.Controllers.Api
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-            return Ok(new { message = "Success" });
+            return Ok(new { message = "Success", m2 = tokens.M2 });
         }
 
         [HttpPost("login")]

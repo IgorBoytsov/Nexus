@@ -143,7 +143,7 @@
         return v.toString(16);
     }
 
-    async generateSrpProof(password: string, saltBase64: string, B_hex: string): Promise<{ A: string, M1: string }> {
+    async generateSrpProof(password: string, saltBase64: string, B_hex: string): Promise<{ A: string, M1: string, S: string }> {
         const N = SecureDataService.N;
         const g = SecureDataService.g;
         const k = SecureDataService.k;
@@ -172,8 +172,20 @@
 
         return {
             A: A.toString(16),
-            M1: M1.toString(16)
+            M1: M1.toString(16),
+            S: S.toString(16)
         }
+    }
+
+    async verifyServerM2(A_hex: string, M1_hex: string, S_hex: string, serverM2_hex: string): Promise<boolean> {
+        const A = BigInt('0x' + A_hex);
+        const M1 = BigInt('0x' + M1_hex);
+        const S = BigInt('0x' + S_hex);
+
+        const computedM2 = await this.hashBigInt(A, M1, S);
+        const expectedM2Hex = computedM2.toString(16).toLowerCase().padStart(64, '0');
+
+        return serverM2_hex.toLowerCase().replace(/^0+/, '') === expectedM2Hex.replace(/^0+/, '');
     }
 
     /*                          

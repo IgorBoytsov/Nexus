@@ -26,16 +26,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const srpProof = await crypto.generateSrpProof(password, challenge.salt, challenge.b);
 
                 const srpVerifyRequest: SrpVerifyRequest = {
-                    login: login,
-                    a: srpProof.A,
-                    m1: srpProof.M1
+                    Login: login,
+                    A: srpProof.A,
+                    M1: srpProof.M1
                 };
 
-                await accountApiBFF.SrpVerifyProof(srpVerifyRequest);
+                const response = await accountApiBFF.SrpVerifyProof(srpVerifyRequest) as any;
+                const serverM2 = response.m2;
+
+                const isServerValid = await crypto.verifyServerM2(srpProof.A, srpProof.M1, srpProof.S, serverM2);
+
+                if (!isServerValid) {
+                    throw new Error("Критическая ошибка: Подлинность сервера не подтверждена!");
+                }
 
                 window.location.href = '/Home/Privacy';
 
             } catch (error) {
+                if (error instanceof Error && error.message.includes("400")) {
+                    console.warn("Возможно токен безопасности устарен. Обновлям страницу...");
+                    window.location.reload();
+                }
                 console.error("Ошибка в процессе входа:", error);
                 alert(`Ошибка входа: ${error instanceof Error ? error.message : error}`);
             }

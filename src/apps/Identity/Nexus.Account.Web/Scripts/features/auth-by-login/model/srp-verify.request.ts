@@ -1,5 +1,5 @@
 ﻿export interface SrpVerifyRequest {
-    login: string;
-    a: string;
-    m1: string;
+    Login: string;
+    A: string;
+    M1: string;
 }

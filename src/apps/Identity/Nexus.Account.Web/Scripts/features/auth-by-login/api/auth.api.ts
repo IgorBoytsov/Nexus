@@ -13,8 +13,8 @@ export class AuthApi extends BaseApiService {
         return await this.post<SrpChallengeResponse>('/challenge', data);
     }
 
-    async SrpVerifyProof(data: SrpVerifyRequest): Promise<void> {
-        return await this.post<void>('/verify', data);
+    async SrpVerifyProof(data: SrpVerifyRequest): Promise<any> {
+        return await this.post<any>('/verify', data);
     }
 
     async login(data: LoginUserRequest): Promise<void> {

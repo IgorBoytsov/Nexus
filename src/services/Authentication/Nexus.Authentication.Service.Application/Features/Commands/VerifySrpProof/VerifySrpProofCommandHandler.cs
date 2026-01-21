@@ -45,6 +45,8 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             if (M1_server != M1_client)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.InvalidPassword, "Неверный логин или пароль"));
 
+            BigInteger M2_server = CalculateSrpM2(A, M1_client, S);
+
             var userData = await userManagementClient.GetUserByLoginAsync(request.Login);
             var accessToken = jwtTokenGenerator.GenerateAccessToken(userData!);
             var refreshToken = jwtTokenGenerator.GenerateRefreshToken();
@@ -59,12 +61,19 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             await context.SaveChangesAsync(cancellationToken);
 
             cache.Remove($"srp_{request.Login}");
-            return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken));
+            return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, M2_server.ToString("x")));
         }
 
         private BigInteger CalculateSrpM1(BigInteger A, BigInteger B, BigInteger S)
         {
             string combined = ToHex512(A) + ToHex512(B) + ToHex512(S);
+            byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(combined));
+            return BigInteger.Parse("0" + Convert.ToHexString(hash), NumberStyles.HexNumber);
+        }
+
+        private BigInteger CalculateSrpM2(BigInteger A, BigInteger M1, BigInteger S)
+        {
+            string combined = ToHex512(A) + ToHex512(M1) + ToHex512(S);
             byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(combined));
             return BigInteger.Parse("0" + Convert.ToHexString(hash), NumberStyles.HexNumber);
         }
