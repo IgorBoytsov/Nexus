@@ -176,23 +176,43 @@
         }
     }
 
+    /*                          
+        Публичные вспомогательные методы
+    */
+
     public toBase64 = (bytes: Uint8Array): string => {
-        return btoa(String.fromCharCode(...bytes));
+        let binary = '';
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
     };
 
     public fromBase64 = (base64: string): Uint8Array => {
-        if (!base64) throw new Error("Передана пустая строка в fromBase64");
+        if (!base64) {
+            throw new Error("Передана пустая строка в fromBase64");
+        }
 
         const cleaned = base64.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
 
         try {
-            const binString = atob(cleaned);
-            return Uint8Array.from(binString, c => c.charCodeAt(0));
+            const binary_string = window.atob(cleaned);
+            const len = binary_string.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binary_string.charCodeAt(i);
+            }
+            return bytes;
         } catch (e) {
-            console.error("Критическая ошибка Base64:", cleaned);
-            throw e;
+            console.error("Критическая ошибка Base64:", cleaned, e);
+            throw new Error("Некорректная строка Base64.");
         }
     };
+
+    /*
+        Приватные вспомогательные методы
+    */
 
     private expMod(base: bigint, exp: bigint, mod: bigint): bigint {
         let res = BigInt(1);
