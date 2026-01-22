@@ -148,6 +148,9 @@
         const g = SecureDataService.g;
         const k = SecureDataService.k;
 
+        if (!B_hex || !/^[0-9a-fA-F]+$/.test(B_hex))
+            throw new Error("Некорректный формат параметра B от сервера");
+
         const salt = this.fromBase64(saltBase64);
         const { authHash } = await this.deriveKeysFromPassword(password, salt);
         const x = this.bigIntFromBase64(authHash);
@@ -156,17 +159,33 @@
         const a = BigInt('0x' + Array.from(aBytes).map(b => b.toString(16).padStart(2, '0')).join(''));
 
         const A = this.expMod(g, a, N);
+        if (A % N === 0n)
+            throw new Error("Критическая ошибка: A % N === 0");
+
+        if (A <= 0n || A >= N)
+            throw new Error("Критическая ошибка: сгенерировано недопустимое значение A");
+
         const B = BigInt('0x' + B_hex);
+        if (B % N === 0n)
+            throw new Error("Критическая ошибка: сервер прислал некорректное значение B");
+
+        if (B <= 0n || B >= N) 
+            throw new Error("Критическая ошибка: сервер прислал недопустимое значение B");
 
         const u = await this.hashBigInt(A, B);
-
-        if (u === BigInt(0)) throw new Error("Недопустимое значение u в SRP");
+        if (u === 0n)
+            throw new Error("Недопустимое значение u в SRP");
 
         const gX = this.expMod(g, x, N);
         const term = (k * gX) % N;
         const base = (B - term + N) % N;
+        if (base === 0n)
+            throw new Error("Ошибка вычисления секрета: база S равна 0");
+
         const exponent = a + (u * x);
         const S = this.expMod(base, exponent, N);
+        if (S === 0n) 
+            throw new Error("Критическая ошибка: общий секрет S равен 0");
 
         const M1 = await this.hashBigInt(A, B, S);
 

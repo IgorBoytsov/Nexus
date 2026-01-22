@@ -22,6 +22,9 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
 
         public async Task<Result<AuthResponse>> Handle(VerifySrpProofCommand request, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(request.A) || string.IsNullOrWhiteSpace(request.M1))
+                return Result<AuthResponse>.Failure(new Error(ErrorCode.Validation, "Параметры SRP не могут быть пустыми"));
+
             if (!cache.TryGetValue($"srp_{request.Login}", out SrpSessionState? session))
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.NotFound, "Сессия просрочена"));
 
@@ -31,10 +34,19 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             BigInteger v = BigInteger.Parse("0" + session.VerifierV, NumberStyles.HexNumber);
             BigInteger B = BigInteger.Parse("0" + session.ServerPublicKeyB, NumberStyles.HexNumber);
 
+            if (v <= 0)
+                return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Внутренняя ошибка данных: верификатор поврежден"));
+
             if (A % N == 0)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Не верное значение А"));
 
+            if (A <= 0 || A >= N)
+                return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Некорректное значение A (out of range)"));
+
             BigInteger u = CalculateSrpU(A, B);
+
+            if (u == 0)
+                return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Ошибка вычисления параметра u"));
 
             BigInteger vU = BigInteger.ModPow(v, u, N);
             BigInteger baseS = (A * vU) % N;
