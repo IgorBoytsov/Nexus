@@ -61,15 +61,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     ["encrypt"]
                 );
 
-                const verifierBuffer = hexToUint8Array(verifierHex);
+                const verifierBase64 = await crypto.generateSrpVerifier(authHash);
+                const verifierBytes = crypto.fromBase64(verifierBase64);
 
                 const encryptedVerifierBuffer = await window.crypto.subtle.encrypt(
                     { name: "RSA-OAEP" },
                     rsaPublicKey,
-                    verifierBuffer.buffer as ArrayBuffer
+                    verifierBytes.buffer as ArrayBuffer
                 );
 
-                const encryptedVerifierBase64 = btoa(String.fromCharCode(...new Uint8Array(encryptedVerifierBuffer)));
+                const encryptedVerifierBase64 = crypto.toBase64(new Uint8Array(encryptedVerifierBuffer));
 
                 const dek = crypto.generateRandomBytes(32);
                 const encryptedDek = await crypto.encryptData(dek, kek);

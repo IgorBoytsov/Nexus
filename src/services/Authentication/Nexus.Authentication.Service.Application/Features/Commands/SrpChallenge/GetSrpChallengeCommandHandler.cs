@@ -30,26 +30,30 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
             if (userData == null)
                 return Result<SrpChallengeResponse>.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден"));
 
-            var decryptedVerifier = _verifierProtector.Unprotect(userData.PasswordHash);
+            var decryptedVerifierBase64 = _verifierProtector.Unprotect(userData.PasswordHash);
+            byte[] vBytes = Convert.FromBase64String(decryptedVerifierBase64);
+            BigInteger v = new(vBytes, isUnsigned: true, isBigEndian: true);
 
             byte[] bBytes = new byte[32];
             RandomNumberGenerator.Fill(bBytes);
-            BigInteger b = new(bBytes, true, true);
+            BigInteger b = new(bBytes, isUnsigned: true, isBigEndian: true);
 
-            BigInteger v = BigInteger.Parse("0" + decryptedVerifier, NumberStyles.HexNumber);
             BigInteger gB = BigInteger.ModPow(g, b, N);
             BigInteger B = (k * v + gB) % N;
 
             var session = new SrpSessionState(
                 request.Login,
-                b.ToString("x"),
-                decryptedVerifier,
-                B.ToString("x")
+                Convert.ToBase64String(bBytes),
+                Convert.ToBase64String(vBytes),
+                Convert.ToBase64String(B.ToByteArray(isUnsigned: true, isBigEndian: true))
             );
 
             _cache.Set($"srp_{request.Login}", session, TimeSpan.FromMinutes(2));
 
-            return Result<SrpChallengeResponse>.Success(new SrpChallengeResponse(userData.ClientSalt, B.ToString("x")));
+            return Result<SrpChallengeResponse>.Success(new SrpChallengeResponse(
+                userData.ClientSalt,
+                session.ServerPublicKeyB
+            ));
         }
     }
 }

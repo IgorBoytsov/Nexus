@@ -20,7 +20,7 @@ namespace Nexus.Authentication.Service.Application.Secure
             var encryptedData = Convert.FromBase64String(protectedVerifier);
             var decryptedBytes = rsa.Decrypt(encryptedData, RSAEncryptionPadding.OaepSHA256);
 
-            return Convert.ToHexString(decryptedBytes).ToLower();
+            return Convert.ToBase64String(decryptedBytes);
         }
     }
 }

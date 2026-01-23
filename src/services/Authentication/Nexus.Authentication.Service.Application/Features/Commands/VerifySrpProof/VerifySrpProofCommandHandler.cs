@@ -8,7 +8,6 @@ using Shared.Kernel.Results;
 using System.Globalization;
 using System.Numerics;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {
@@ -28,11 +27,11 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             if (!cache.TryGetValue($"srp_{request.Login}", out SrpSessionState? session))
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.NotFound, "Сессия просрочена"));
 
-            BigInteger A = BigInteger.Parse("0" + request.A, NumberStyles.HexNumber);
-            BigInteger M1_client = BigInteger.Parse("0" + request.M1, NumberStyles.HexNumber);
-            BigInteger b = BigInteger.Parse("0" + session!.ServerPrivateKeyB, NumberStyles.HexNumber);
-            BigInteger v = BigInteger.Parse("0" + session.VerifierV, NumberStyles.HexNumber);
-            BigInteger B = BigInteger.Parse("0" + session.ServerPublicKeyB, NumberStyles.HexNumber);
+            BigInteger A = new(Convert.FromBase64String(request.A), isUnsigned: true, isBigEndian: true);
+            BigInteger M1_client = new(Convert.FromBase64String(request.M1), isUnsigned: true, isBigEndian: true);
+            BigInteger b = new(Convert.FromBase64String(session!.ServerPrivateKeyB), isUnsigned: true, isBigEndian: true);
+            BigInteger v = new(Convert.FromBase64String(session.VerifierV), isUnsigned: true, isBigEndian: true);
+            BigInteger B = new(Convert.FromBase64String(session.ServerPublicKeyB), isUnsigned: true, isBigEndian: true);
 
             if (v <= 0)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Внутренняя ошибка данных: верификатор поврежден"));
@@ -43,21 +42,20 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             if (A <= 0 || A >= N)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Некорректное значение A (out of range)"));
 
-            BigInteger u = CalculateSrpU(A, B);
+            BigInteger u = CalculateSrpHash(A, B);
 
             if (u == 0)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Ошибка вычисления параметра u"));
 
             BigInteger vU = BigInteger.ModPow(v, u, N);
-            BigInteger baseS = (A * vU) % N;
-            BigInteger S = BigInteger.ModPow(baseS, b, N);
+            BigInteger S = BigInteger.ModPow((A * vU) % N, b, N);
 
-            BigInteger M1_server = CalculateSrpM1(A, B, S);
+            BigInteger M1_server = CalculateSrpHash(A, B, S);
 
             if (M1_server != M1_client)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.InvalidPassword, "Неверный логин или пароль"));
 
-            BigInteger M2_server = CalculateSrpM2(A, M1_client, S);
+            BigInteger M2_server = CalculateSrpHash(A, M1_client, S);
 
             var userData = await userManagementClient.GetUserByLoginAsync(request.Login);
             var accessToken = jwtTokenGenerator.GenerateAccessToken(userData!);
@@ -73,35 +71,28 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             await context.SaveChangesAsync(cancellationToken);
 
             cache.Remove($"srp_{request.Login}");
-            return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, M2_server.ToString("x")));
+            return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, Convert.ToBase64String(M2_server.ToByteArray(true, true))));
         }
 
-        private BigInteger CalculateSrpM1(BigInteger A, BigInteger B, BigInteger S)
+        private BigInteger CalculateSrpHash(params BigInteger[] values)
         {
-            string combined = ToHex512(A) + ToHex512(B) + ToHex512(S);
-            byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(combined));
-            return BigInteger.Parse("0" + Convert.ToHexString(hash), NumberStyles.HexNumber);
-        }
+            using var sha256 = SHA256.Create();
+            var combinedBytes = new List<byte>();
 
-        private BigInteger CalculateSrpM2(BigInteger A, BigInteger M1, BigInteger S)
-        {
-            string combined = ToHex512(A) + ToHex512(M1) + ToHex512(S);
-            byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(combined));
-            return BigInteger.Parse("0" + Convert.ToHexString(hash), NumberStyles.HexNumber);
-        }
+            foreach (var v in values)
+            {
+                byte[] b = v.ToByteArray(isUnsigned: true, isBigEndian: true);
+                // Если число большое (A, B, S), дополняем до 384 байт. 
+                // Если маленькое (M1, u), то до 32 байт.
+                int targetLen = b.Length > 32 ? 384 : 32;
 
-        private BigInteger CalculateSrpU(BigInteger A, BigInteger B)
-        {
-            string combined = ToHex512(A) + ToHex512(B);
-            byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(combined));
-            return BigInteger.Parse("0" + Convert.ToHexString(hash), NumberStyles.HexNumber);
-        }
+                byte[] padded = new byte[targetLen];
+                Buffer.BlockCopy(b, 0, padded, targetLen - b.Length, b.Length);
+                combinedBytes.AddRange(padded);
+            }
 
-        private string ToHex512(BigInteger value)
-        {
-            string hex = value.ToString("x");
-            if (hex.Length > 1 && hex.StartsWith("0")) hex = hex.Substring(1);
-            return hex.PadLeft(512, '0').ToLower();
+            byte[] hash = sha256.ComputeHash(combinedBytes.ToArray());
+            return new BigInteger(hash, isUnsigned: true, isBigEndian: true);
         }
     }
 }
