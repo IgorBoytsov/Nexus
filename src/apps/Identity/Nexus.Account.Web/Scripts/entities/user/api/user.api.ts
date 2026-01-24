@@ -2,8 +2,8 @@
 import { PublicEncryptionInfoResponse } from "../model/public-encryption.response.js";
 
 export class UserApi extends BaseApiService {
-    constructor() {
-        super("http://localhost:5131/api/users"); // BFF
+    constructor(baseUrl: string) {
+        super(baseUrl); // BFF
     }
 
     async getPublicEncryptionInfo(login: string): Promise<PublicEncryptionInfoResponse> {

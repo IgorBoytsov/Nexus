@@ -2,11 +2,11 @@
 import { RegisterRequest } from "../model/register-user.request.js";
 
 export class RegistrationApi extends BaseApiService {
-    constructor() {
-        super("http://localhost:5017/api/users");
+    constructor(baseUrl: string) {
+        super(baseUrl); // UserMenagement (Микро сервис)
     }
 
     async register(data: RegisterRequest): Promise<void> {
-        return await this.post<void>("", data);
+        return await this.post<void>("api/users", data);
     }
 }

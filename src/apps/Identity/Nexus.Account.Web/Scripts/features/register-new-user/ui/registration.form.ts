@@ -3,9 +3,11 @@ import { RegistrationApi } from "../api/registration.api.js";
 import { RegisterRequest } from "../model/register-user.request.js";
 import { AuthApi } from "../../../entities/session/api/auth.api.js";
 
+const config = (window as any).AppConfig;
+
 const crypto = new SecureDataService();
-const registrationApiClient = new RegistrationApi();
-const authApi = new AuthApi();
+const registrationApiClient = new RegistrationApi(config.baseUserManagement);
+const authApi = new AuthApi(config.baseBFF);
 
 
 const hexToUint8Array = (hex: string): Uint8Array => {

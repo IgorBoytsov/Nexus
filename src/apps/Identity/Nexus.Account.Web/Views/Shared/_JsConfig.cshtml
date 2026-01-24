@@ -1,0 +1,14 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    var baseBFF = Configuration["BaseBFF"];
+    var baseUserManagement = Configuration["BaseUserManagement"];
+}
+
+<script>
+    window.AppConfig = {
+        baseBFF: "@baseBFF",
+        baseUserManagement: "@baseUserManagement"
+    };
+
+    Object.freeze(window.AppConfig);
+</script>

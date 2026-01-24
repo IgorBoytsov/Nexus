@@ -1,6 +1,8 @@
 ﻿import { AuthApi } from "../entities/session/api/auth.api.js";
 
-const sessionApi = new AuthApi();
+const config = (window as any).AppConfig;
+
+const sessionApi = new AuthApi(config.baseBFF);
 
 document.addEventListener("DOMContentLoaded", async () => {
     try {

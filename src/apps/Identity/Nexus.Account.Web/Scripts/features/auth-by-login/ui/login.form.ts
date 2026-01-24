@@ -4,9 +4,11 @@ import { UserApi } from "../../../entities/user/api/user.api.js";
 import { SrpChallengeRequest } from "../model/srp-challenge.request.js";
 import { SrpVerifyRequest } from "../model/srp-verify.request.js";
 
+const config = (window as any).AppConfig;
+
 const crypto = new SecureDataService();
-const accountApiBFF = new AuthApi();
-const userApi = new UserApi();
+const accountApiBFF = new AuthApi(config.baseBFF);
+const userApi = new UserApi(config.baseBFF);
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.form') as HTMLFormElement;
