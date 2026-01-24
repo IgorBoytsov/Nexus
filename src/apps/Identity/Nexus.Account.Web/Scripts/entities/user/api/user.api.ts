@@ -3,7 +3,7 @@ import { PublicEncryptionInfoResponse } from "../model/public-encryption.respons
 
 export class UserApi extends BaseApiService {
     constructor() {
-        super("http://localhost:5017/api/users");
+        super("http://localhost:5131/api/users"); // BFF
     }
 
     async getPublicEncryptionInfo(login: string): Promise<PublicEncryptionInfoResponse> {

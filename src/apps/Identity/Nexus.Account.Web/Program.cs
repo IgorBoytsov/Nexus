@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient<IAuthClient, AuthClient>(client => client.BaseAddress = new Uri(builder.Configuration["BaseAuthServiceUrl"]!));
+builder.Services.AddHttpClient<IUserMenagementClient, UserMenagementClient>(client => client.BaseAddress = new Uri(builder.Configuration["BaseUserManagement"]!));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
