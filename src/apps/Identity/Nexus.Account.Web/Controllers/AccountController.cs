@@ -14,7 +14,12 @@ namespace Nexus.Account.Web.Controllers
             return View();
         }
 
-        public IActionResult FargotPassword()
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        public IActionResult ResetPassword()
         {
             return View();
         }

@@ -8,7 +8,7 @@ namespace Nexus.Account.Web.Controllers
     {
         public IActionResult Index()
         {
-            return RedirectToAction("Register", "Account");
+            return RedirectToAction("Login", "Account");
             //return View();
         }
 

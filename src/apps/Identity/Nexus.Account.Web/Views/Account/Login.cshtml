@@ -14,15 +14,19 @@
 			<label for="password">Пароль</label>
 			<input type="password" name="password" id="password" placeholder="">
 			<div class="forgot">
-				<a rel="noopener noreferrer" href="#">Востановить пароль ?</a>
+				<a rel="noopener noreferrer" href="/Account/ForgotPassword">Востановить пароль ?</a>
 			</div>
 		</div>
 		<button>Войти</button>
 	</form>
 	<p class="signup">
 		Еще нету аккаунта?
-		<a rel="noopener noreferrer" href="#" class="" style="margin-left: 5px;">Создать</a>
+		<a rel="noopener noreferrer" href="/Account/Register" class="" style="margin-left: 5px;">Создать</a>
 	</p>
+@* 	<p class="signup">
+		Не помните пароль?
+		<a rel="noopener noreferrer" href="/Account/ForgotPassword" class="" style="margin-left: 5px;">Востановить доступ</a>
+	</p> *@
 </div>
 
 @section Scripts{
