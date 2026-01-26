@@ -13,5 +13,8 @@
         Save = 8,
         Unauthorized = 9,
         Validation = 10,
+        Epmpty = 11,
+        Security = 12,
+        Duplicate = 13,
     }
 }

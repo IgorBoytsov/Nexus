@@ -100,10 +100,10 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
 
             /*__Связи__*/
 
-            builder.HasOne(u => u.Credentials)
-                .WithOne()
-                .HasForeignKey<UserCredentials>(uc => uc.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+            //builder.HasOne(u => u.Credentials)
+            //    .WithOne()
+            //    .HasForeignKey<UserCredentials>(uc => uc.Id)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne<Gender>()
                 .WithMany()
@@ -123,9 +123,26 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Ignore("_domainEvents");
+            builder.HasMany(u => u.UserRoles)
+                .WithOne()
+                .HasForeignKey(ur => ur.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.UserAuthenticators)
+                .WithOne()
+                .HasForeignKey(ur => ur.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.UserSecurityAssets)
+                .WithOne()
+                .HasForeignKey(us => us.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Navigation(u => u.UserRoles).HasField("_userRoles").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Navigation(u => u.UserAuthenticators).HasField("_userAuthenticators").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Navigation(u => u.UserSecurityAssets).HasField("_userSecurityAssets").UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            builder.Ignore("_domainEvents");
         }
     }
 }
