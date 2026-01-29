@@ -29,7 +29,6 @@ namespace Nexus.Authentication.Service.Api
 
             builder.Services.AddHttpClient<IUserManagementServiceClient, UserManagementServiceClient>(client => client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:UserManagement"]!));
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly));
-            builder.Services.AddMemoryCache();
 
             var app = builder.Build();
 
