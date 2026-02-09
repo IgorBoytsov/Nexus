@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Nexus.Authentication.Service.Application.Features.Commands.Login;
 using Nexus.Authentication.Service.Application.Features.Commands.LoginByToken;
 using Nexus.Authentication.Service.Application.Features.Commands.Refresh;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
@@ -43,18 +42,6 @@ namespace Nexus.Authentication.Service.Api.Controllers
 
                     return BadRequest(new { Title = "Ошибка проверки", Errors = errors });
                 });
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
-        {
-            var command = new LoginCommand(request.Login, request.Password);
-
-            var result = await _mediator.Send(command);
-
-            return result.Match<IActionResult>(
-                onSuccess:() => Ok(result.Value),
-                onFailure: errors => BadRequest(errors));
         }
 
         [HttpPost("refresh")]
