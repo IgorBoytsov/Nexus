@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Nexus.Authentication.Service.Application.Common.Abstractions;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
+using Nexus.Authentication.Service.Application.Secure;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Shared.Contracts.Authentication.Responses;
 using Shared.Kernel.Results;
-using System.Globalization;
 using System.Numerics;
 using System.Security.Cryptography;
 
@@ -21,8 +21,6 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
         private readonly IRedisCacheService _redisCacheService = redisCacheService;
         private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
         private readonly IUserManagementServiceClient _userManagementServiceClient = userManagementClient;
-
-        private readonly BigInteger N = BigInteger.Parse("00AC6BDB41324A9A9BF166DE5E1F403D434A6E1B3B94A7E62AC1211858E002C75AD4455C9D19C0A3180296917A376205164043E20144FF485719D181A99EB574671AC58054457ED444A67032EA17D03AD43464D2397449CA593630A670D90D95A78E846A3C8AF80862098D80F33C42ED7059E75225E0A52718E2379369F65B79680A6560B080092EE71986066735A96A7D42E7597116742B02D3A154471B6A23D84E0D642C790D597A2BB7F5A48F734898BDD138C69493E723491959C1B4BD40C91C1C7924F88D046467A006507E781220A80C55A927906A7C6C9C227E674686DD5D1B855D28F0D604E24586C608630B9A34C4808381A54F0D9080A5F90B60187F", NumberStyles.HexNumber);
 
         public async Task<Result<AuthResponse>> Handle(VerifySrpProofCommand request, CancellationToken cancellationToken)
         {
@@ -43,26 +41,26 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             if (v <= 0)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Внутренняя ошибка данных: верификатор поврежден"));
 
-            if (A % N == 0)
+            if (A % SrpConstants.N == 0)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Не верное значение А"));
 
-            if (A <= 0 || A >= N)
+            if (A <= 0 || A >= SrpConstants.N)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Некорректное значение A (out of range)"));
 
-            BigInteger u = CalculateSrpHash(A, B);
+            BigInteger u = CalculateSrpHash((A, 384), (B, 384));
 
             if (u == 0)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.Server, "Ошибка вычисления параметра u"));
 
-            BigInteger vU = BigInteger.ModPow(v, u, N);
-            BigInteger S = BigInteger.ModPow((A * vU) % N, b, N);
+            BigInteger vU = BigInteger.ModPow(v, u, SrpConstants.N);
+            BigInteger S = BigInteger.ModPow((A * vU) % SrpConstants.N, b, SrpConstants.N);
 
-            BigInteger M1_server = CalculateSrpHash(A, B, S);
+            BigInteger M1_server = CalculateSrpHash((A, 384), (B, 384), (S, 384));
 
             if (M1_server != M1_client)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.InvalidPassword, "Неверный логин или пароль"));
 
-            BigInteger M2_server = CalculateSrpHash(A, M1_client, S);
+            BigInteger M2_server = CalculateSrpHash((A, 384), (M1_client, 32), (S, 384));
 
             var userData = await _userManagementServiceClient.GetUserByLoginAsync(request.Login);
             var accessToken = _jwtTokenGenerator.GenerateAccessToken(userData!);
@@ -78,27 +76,34 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             await _context.SaveChangesAsync(cancellationToken);
 
             await _redisCacheService.RemoveAsync($"srp_{request.Login}");
-            return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, Convert.ToBase64String(M2_server.ToByteArray(true, true))));
+            return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, Convert.ToBase64String(ToFixedLength(M2_server, 32))));
         }
 
-        private BigInteger CalculateSrpHash(params BigInteger[] values)
+        private byte[] ToFixedLength(BigInteger value, int length)
+        {
+            byte[] bytes = value.ToByteArray(isUnsigned: true, isBigEndian: true);
+
+            if (bytes.Length > length)
+                throw new ArgumentException("Значение слишком большое для заданной длины", nameof(value));
+
+            if (bytes.Length == length)
+                return bytes;
+
+            byte[] padded = new byte[length];
+            Buffer.BlockCopy(bytes, 0, padded, length - bytes.Length, bytes.Length);
+
+            return padded;
+        }
+
+        private BigInteger CalculateSrpHash(params (BigInteger value, int length)[] values)
         {
             using var sha256 = SHA256.Create();
-            var combinedBytes = new List<byte>();
+            var all = new List<byte>();
 
-            foreach (var v in values)
-            {
-                byte[] b = v.ToByteArray(isUnsigned: true, isBigEndian: true);
-                // Если число большое (A, B, S), дополняем до 384 байт. 
-                // Если маленькое (M1, u), то до 32 байт.
-                int targetLen = b.Length > 32 ? 384 : 32;
+            foreach (var (val, len) in values)
+                all.AddRange(ToFixedLength(val, len));
 
-                byte[] padded = new byte[targetLen];
-                Buffer.BlockCopy(b, 0, padded, targetLen - b.Length, b.Length);
-                combinedBytes.AddRange(padded);
-            }
-
-            byte[] hash = sha256.ComputeHash(combinedBytes.ToArray());
+            byte[] hash = sha256.ComputeHash(all.ToArray());
             return new BigInteger(hash, isUnsigned: true, isBigEndian: true);
         }
     }
