@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } catch (error) {
                 if (error instanceof Error && error.message.includes("400")) {
-                    console.warn("Возможно токен безопасности устарен. Обновлям страницу...");
+                    console.warn("Возможно токен безопасности устарел. Обновляю страницу...");
                     window.location.reload();
                 }
                 console.error("Ошибка в процессе входа:", error);
