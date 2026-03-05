@@ -94,7 +94,7 @@ namespace Nexus.Authentication.Service.Infrastructure.Redis
 
                 try
                 {
-                    var result = JsonSerializer.Deserialize<T>(json!, _jsonSerializerOptions);
+                    var result = JsonSerializer.Deserialize<T>(json!.ToString(), _jsonSerializerOptions);
 
                     return result;
                 }
