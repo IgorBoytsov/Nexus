@@ -1,10 +1,10 @@
-﻿using Shared.Contracts.Authentication.Responses;
+﻿using Shared.Contracts.UserMenagement.Responses;
 
 namespace Nexus.Authentication.Service.Application.Services
 {
     public interface IUserManagementServiceClient
     {
-        Task<UserAuthDataDto?> GetUserByIdAsync(Guid userId);
-        Task<UserAuthDataDto?> GetUserByLoginAsync(string login);
+        Task<UserAuthDataResponse?> GetUserByIdAsync(Guid userId);
+        Task<UserAuthDataResponse?> GetUserByLoginAsync(string login);
     }
 }

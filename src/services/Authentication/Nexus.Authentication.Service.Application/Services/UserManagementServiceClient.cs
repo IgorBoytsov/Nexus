@@ -1,4 +1,4 @@
-﻿using Shared.Contracts.Authentication.Responses;
+﻿using Shared.Contracts.UserMenagement.Responses;
 using System.Net.Http.Json;
 
 namespace Nexus.Authentication.Service.Application.Services
@@ -7,11 +7,11 @@ namespace Nexus.Authentication.Service.Application.Services
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<UserAuthDataDto?> GetUserByIdAsync(Guid userId)
+        public async Task<UserAuthDataResponse?> GetUserByIdAsync(Guid userId)
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<UserAuthDataDto>($"/internal/api/users/by-id/{userId}");
+                return await _httpClient.GetFromJsonAsync<UserAuthDataResponse>($"/internal/api/users/by-id/{userId}");
             }
             catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -19,11 +19,11 @@ namespace Nexus.Authentication.Service.Application.Services
             }
         }
 
-        public async Task<UserAuthDataDto?> GetUserByLoginAsync(string login)
+        public async Task<UserAuthDataResponse?> GetUserByLoginAsync(string login)
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<UserAuthDataDto>($"/internal/api/users/by-login/{login}");
+                return await _httpClient.GetFromJsonAsync<UserAuthDataResponse>($"/internal/api/users/by-login/{login}");
             }
             catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {

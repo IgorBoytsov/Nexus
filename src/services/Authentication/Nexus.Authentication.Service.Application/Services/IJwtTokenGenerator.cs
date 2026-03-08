@@ -1,10 +1,10 @@
-﻿using Shared.Contracts.Authentication.Responses;
+﻿using Shared.Contracts.UserMenagement.Responses;
 
 namespace Nexus.Authentication.Service.Application.Services
 {
     public interface IJwtTokenGenerator
     {
-        string GenerateAccessToken(UserAuthDataDto user);
+        string GenerateAccessToken(UserAuthDataResponse user);
         string GenerateRefreshToken();
     }
 }
