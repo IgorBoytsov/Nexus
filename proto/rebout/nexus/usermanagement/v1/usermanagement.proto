@@ -4,7 +4,12 @@ package rebout.nexus.usermanagement.v1;
 
 option csharp_namespace = "Rebout.Nexus.Contracts.UserManagement.V1";
 
+//Requests
 message CreateCountryRequest {
+  string name = 1;
+}
+
+message UpdateCountryRequest {
   string name = 1;
 }
 
@@ -12,11 +17,23 @@ message CreateGenderRequest {
   string name = 1;
 }
 
+message UpdateGenderRequest {
+  string name = 1;
+}
+
 message CreateRoleRequest {
   string name = 1;
 }
 
+message UpdateRoleRequest {
+  string name = 1;
+}
+
 message CreateStatusRequest {
+  string name = 1;
+}
+
+message UpdateStatusRequest {
   string name = 1;
 }
 
@@ -35,7 +52,17 @@ message RegisterUserRequest {
   optional string id_country = 12;
 }
 
+//Responses
 message PublicEncryptionInfoResponse {
   string client_salt = 1;
   string encrypted_dek = 2;
+}
+
+message UserAuthDataResponse {
+  string id = 1;
+  string login = 2;
+  string verifier = 3;
+  string client_salt = 4;
+  string encrypted_dek = 5;
+  repeated string roles = 6;
 }
