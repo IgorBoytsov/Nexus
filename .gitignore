@@ -14,7 +14,6 @@ bld/
 *.log
 
 # ─── Generated Code (CRITICAL for your project) ─────
-# Сгенерированный код из .proto не должен быть в Git
 # Он восстанавливается командой ./scripts/generate.sh
 **/Generated/
 **/generated/
@@ -109,7 +108,6 @@ coverage*.info
 [Mm]utation/
 
 # ─── Secrets & Local Config (SECURITY) ──────────────
-# Никогда не коммитьте секреты!
 appsettings.Local.json
 appsettings.*.local.json
 secrets.json
@@ -118,6 +116,64 @@ secrets.json
 *.key
 connectionstrings.json
 azuredeploy.publishsettings
+
+# ─── TypeScript / Node.js (add if your project uses TS) ─
+# Зависимости (восстанавливаются через npm/yarn/pnpm)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Папки сборки TypeScript (общие имена)
+dist/
+build/
+out/
+release-ts/
+
+# Специфично для ASP.NET Core SPA-шаблонов (Angular/React)
+wwwroot/dist/
+wwwroot/app/
+ClientApp/dist/
+ClientApp/build/
+
+# Файлы информации о сборке TypeScript
+*.tsbuildinfo
+
+# Кэш инструментов и тестов
+.eslintcache
+.cache/
+.parcel-cache/
+.stylelintcache
+.tscache
+.coverage/
+.nyc_output/
+coverage/
+.turbo/
+
+# Папки фреймворков (если используются)
+.angular/
+.next/
+.nuxt/
+.output/
+.vercel/
+.serverless/
+.serverless_nextjs/
+.storybook-storybook/
+storybook-static/
+
+# Логи менеджеров пакетов
+lerna-debug.log*
+
+# Файлы окружения (могут содержать секреты)
+.env
+.env.local
+.env.*.local
+
+# Тестовые артефакты (Jest, Mocha и др.)
+junit.xml
+test-results/
+test-reports/
 
 # ─── Misc ───────────────────────────────────────────
 # Символьные ссылки
