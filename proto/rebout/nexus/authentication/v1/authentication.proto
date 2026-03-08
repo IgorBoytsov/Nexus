@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package rebout.nexus.authentication.v1;
+
+option csharp_namespace = "Rebout.Nexus.Contracts.Authentication.V1";
+
+message SrpChallengeRequest {
+  string login = 1;
+}
+
+message SrpVerifyRequest {
+  string login = 1;
+  string a = 2;
+  string m1 = 3;
+}
+
+message AuthResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  optional string m2 = 3;
+}
+
+message SrpChallengeResponse {
+  string salt = 1;
+  string b = 2;
+}

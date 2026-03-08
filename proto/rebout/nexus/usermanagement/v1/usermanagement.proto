@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package rebout.nexus.usermanagement.v1;
+
+option csharp_namespace = "Rebout.Nexus.Contracts.UserManagement.V1";
+
+message CreateCountryRequest {
+  string name = 1;
+}
+
+message CreateGenderRequest {
+  string name = 1;
+}
+
+message CreateRoleRequest {
+  string name = 1;
+}
+
+message CreateStatusRequest {
+  string name = 1;
+}
+
+message RegisterUserRequest {
+  string login = 1;
+  string user_name = 2;
+  string verifier = 3;
+  string client_salt = 4;
+  string encrypted_dek = 5;
+  string encryption_algorithm = 6;
+  int32 iterations = 7;
+  string kdf_type = 8;
+  string email = 9;
+  optional string phone = 10;
+  optional string id_gender = 11;
+  optional string id_country = 12;
+}
+
+message PublicEncryptionInfoResponse {
+  string client_salt = 1;
+  string encrypted_dek = 2;
+}
