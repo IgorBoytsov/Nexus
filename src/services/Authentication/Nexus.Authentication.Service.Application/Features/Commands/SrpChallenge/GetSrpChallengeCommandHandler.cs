@@ -26,7 +26,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
             if (userData == null)
                 return Result<SrpChallengeResponse>.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден"));
 
-            var decryptedVerifierBase64 = _verifierProtector.Unprotect(userData.PasswordHash);
+            var decryptedVerifierBase64 = _verifierProtector.Unprotect(userData.Verifier);
             byte[] vBytes = Convert.FromBase64String(decryptedVerifierBase64);
 
             var sessionState = _srpServer.GetSrpChallenge(request.Login, vBytes);

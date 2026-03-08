@@ -60,39 +60,6 @@ namespace Nexus.Account.Web.Controllers.Api
             return Ok(new { message = "Success", m2 = tokens.M2 });
         }
 
-        [HttpPost("login")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
-        {
-            if (request == null)
-                return BadRequest("Данные были не заполнены.");
-
-            var result = await _authClient.Login(request);
-
-            if (result.IsFailure)
-                return Unauthorized("Неверные данные для входа.");
-
-            AuthResponse tokens = result.Value!;
-
-            var claims = new List<Claim>
-            {
-                new(ClaimTypes.Name, request.Login)
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties();
-            authProperties.StoreTokens(
-            [
-                new AuthenticationToken { Name = "access_token", Value = tokens.AccessToken },
-                new AuthenticationToken { Name = "refresh_token", Value = tokens.RefreshToken }
-            ]);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-            return Ok(new { message = "Success" });
-        }
-
         [HttpPost("login-by-token")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginByToken()

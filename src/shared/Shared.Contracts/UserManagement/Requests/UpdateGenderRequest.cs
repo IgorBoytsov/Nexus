@@ -1,4 +1,4 @@
-﻿namespace Shared.Contracts.UserMenagement.Requests
+﻿namespace Shared.Contracts.UserManagement.Requests
 {
     public sealed record UpdateGenderRequest(string Name);
 }

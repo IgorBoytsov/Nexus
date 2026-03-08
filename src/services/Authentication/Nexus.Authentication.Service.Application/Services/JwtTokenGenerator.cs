@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Shared.Contracts.Authentication.Responses;
+using Shared.Contracts.UserManagement.Responses;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -11,7 +11,7 @@ namespace Nexus.Authentication.Service.Application.Services
     {
         private readonly IConfiguration _configuration = configuration;
 
-        public string GenerateAccessToken(UserAuthDataDto user)
+        public string GenerateAccessToken(UserAuthDataResponse user)
         {
             var claims = new List<Claim>
             {
