@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using Quantropic.Toolkit.Results;
 using Shared.Contracts.Authentication.Responses;
-using Shared.Kernel.Results;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.LoginByToken
 {

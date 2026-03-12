@@ -4,8 +4,9 @@ using Nexus.Authentication.Service.Application.Features.Commands.LoginByToken;
 using Nexus.Authentication.Service.Application.Features.Commands.Refresh;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof;
+using Quantropic.Toolkit.Results;
 using Shared.Contracts.Authentication.Requests;
-using Shared.Kernel.Results;
+using Shared.Kernel.Errors;
 
 namespace Nexus.Authentication.Service.Api.Controllers
 {
@@ -37,7 +38,7 @@ namespace Nexus.Authentication.Service.Api.Controllers
                 onFailure: errors =>
                 {
                     var error = errors.FirstOrDefault();
-                    if (error!.Code == ErrorCode.InvalidPassword || error.Code == ErrorCode.NotFound)
+                    if (error!.Code == AppErrors.InvalidPassword || error.Code == ErrorCode.NotFound)
                         return Unauthorized(new { Title = "Ошибка аутентификации", Detail = error.Message });
 
                     return BadRequest(new { Title = "Ошибка проверки", Errors = errors });

@@ -5,8 +5,8 @@ using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryA
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo;
+using Quantropic.Toolkit.Results;
 using Shared.Contracts.UserManagement.Requests;
-using Shared.Kernel.Results;
 using System.Security.Claims;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api

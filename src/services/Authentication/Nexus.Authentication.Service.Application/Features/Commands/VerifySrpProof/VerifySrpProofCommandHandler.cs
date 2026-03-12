@@ -4,7 +4,8 @@ using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Quantropic.Security.Abstractions;
 using Shared.Contracts.Authentication.Responses;
-using Shared.Kernel.Results;
+using Quantropic.Toolkit.Results;
+using Shared.Kernel.Errors;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {
@@ -24,7 +25,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
         public async Task<Result<AuthResponse>> Handle(VerifySrpProofCommand request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(request.A) || string.IsNullOrWhiteSpace(request.M1))
-                return Result<AuthResponse>.Failure(new Error(ErrorCode.Validation, "Параметры SRP не могут быть пустыми"));
+                return Result<AuthResponse>.Failure(new Error(AppErrors.Validation, "Параметры SRP не могут быть пустыми"));
 
             var session = await _redisCacheService.GetJsonAsync<SrpSessionState>($"srp_{request.Login}");
 

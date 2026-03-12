@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
-using Shared.Kernel.Results;
+using Quantropic.Toolkit.Results;
 
 namespace Nexus.UserManagement.Service.Application.Features.Roles.Commands.Delete
 {

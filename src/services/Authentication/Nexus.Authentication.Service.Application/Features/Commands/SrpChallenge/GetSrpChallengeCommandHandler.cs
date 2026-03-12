@@ -3,7 +3,7 @@ using Nexus.Authentication.Service.Application.Common.Abstractions;
 using Nexus.Authentication.Service.Application.Services;
 using Quantropic.Security.Abstractions;
 using Shared.Contracts.Authentication.Responses;
-using Shared.Kernel.Results;
+using Quantropic.Toolkit.Results;
 using Shared.Security.Verifiers;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge

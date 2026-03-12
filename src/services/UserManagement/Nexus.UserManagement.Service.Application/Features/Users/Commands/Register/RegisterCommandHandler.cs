@@ -8,9 +8,8 @@ using Nexus.UserManagement.Service.Domain.SmartEnums;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
+using Quantropic.Toolkit.Results;
 using Shared.Kernel.Exceptions;
-using Shared.Kernel.Results;
-
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Register
 {
     public sealed class RegisterCommandHandler(IWriteDbContext writeContext) : IRequestHandler<RegisterCommand, Result>

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
-using Shared.Kernel.Results;
+using Quantropic.Toolkit.Results;
 using Shared.Security.Hasher;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryAccess

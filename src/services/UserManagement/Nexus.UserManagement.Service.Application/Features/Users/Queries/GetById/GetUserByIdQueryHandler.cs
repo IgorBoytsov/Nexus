@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Enums;
+using Quantropic.Toolkit.Results;
 using Shared.Contracts.UserManagement.Responses;
-using Shared.Kernel.Results;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById
 {

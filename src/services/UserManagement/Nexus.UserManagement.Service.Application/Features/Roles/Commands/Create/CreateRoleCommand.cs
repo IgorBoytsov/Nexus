@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Shared.Kernel.Results;
+using Quantropic.Toolkit.Results;
 
 namespace Nexus.UserManagement.Service.Application.Features.Roles.Commands.Create
 {
