@@ -12,7 +12,7 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset
         public static EncryptedAssetValue Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new EmptyValueExeption(new Error(ErrorCode.Empty, "Зашифрованное значение не может быть пустым"));
+                throw new EmptyValueException(new Error(ErrorCode.Empty, "Зашифрованное значение не может быть пустым"));
 
             return new EncryptedAssetValue(value);
         }

@@ -148,7 +148,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public void AddUserSecurityAssets(AssetType assetType, EncryptedAssetValue encryptedAssetValue, EncryptionMetadata encryptionMetadata)
         {
             if (assetType == AssetType.MainDek && _userSecurityAssets.Any(us => us.AssetType == AssetType.MainDek))
-                throw new UserSecurityAssetsExeption(new Error(AppErrors.Duplicate, "Основной ключ шифрования уже существуе. Для его смены используйтся процедуру ротации."));
+                throw new UserSecurityAssetsException(new Error(AppErrors.Duplicate, "Основной ключ шифрования уже существуе. Для его смены используйтся процедуру ротации."));
 
             var userSecurity = Models.UserSecurityAsset.Create(this.Id, assetType, encryptedAssetValue, encryptionMetadata);
             _userSecurityAssets.Add(userSecurity);

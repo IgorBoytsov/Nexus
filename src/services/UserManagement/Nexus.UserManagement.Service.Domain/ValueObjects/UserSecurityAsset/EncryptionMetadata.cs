@@ -23,7 +23,7 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset
         public static EncryptionMetadata Create(string algorithm, int iterations, string kdfType)
         {
             if (MIN_COUNT_ITERATIONS < 100_000)
-                throw new IterationsExecption(new Error(AppErrors.Security, $"Слишком маленькое кол-во итераций являеться не безопасным. Меньше {MIN_COUNT_ITERATIONS} указать нельзя."));
+                throw new IterationsException(new Error(AppErrors.Security, $"Слишком маленькое кол-во итераций являеться не безопасным. Меньше {MIN_COUNT_ITERATIONS} указать нельзя."));
 
             return new EncryptionMetadata(algorithm, iterations, kdfType);
         }
