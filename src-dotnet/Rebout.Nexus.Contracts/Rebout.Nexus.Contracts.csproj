@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Rebout.Nexus.Contracts</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Igor Boytsov</Authors>
     <Company>Rebout-Tech</Company>
     <PackageDescription>Contracts for Nexus</PackageDescription>
