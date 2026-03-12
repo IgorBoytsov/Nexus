@@ -1,5 +1,5 @@
-﻿using Shared.Kernel.Exceptions;
-using Shared.Kernel.Results;
+﻿using Quantropic.Toolkit.Results;
+using Shared.Kernel.Exceptions;
 
 namespace Nexus.UserManagement.Service.Domain.Exceptions
 {

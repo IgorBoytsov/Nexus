@@ -1,5 +1,5 @@
 ﻿using Nexus.UserManagement.Service.Domain.Exceptions;
-using Shared.Kernel.Results;
+using Quantropic.Toolkit.Results;
 
 namespace Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator
 {
@@ -12,7 +12,7 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator
         public static CredentialBlob Create(string value)
         {
             if(string.IsNullOrWhiteSpace(value))
-                throw new EmptyValueExeption(new Error(ErrorCode.Epmpty, "Данные верификации не могут быть пустыми."));
+                throw new EmptyValueExeption(new Error(ErrorCode.Empty, "Данные верификации не могут быть пустыми."));
 
             return new CredentialBlob(value);
         }

@@ -1,5 +1,5 @@
 ﻿using Nexus.UserManagement.Service.Domain.Exceptions;
-using Shared.Kernel.Results;
+using Quantropic.Toolkit.Results;
 
 namespace Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator
 {
@@ -12,7 +12,7 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator
         public static IdentityIdentifier Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new EmptyValueExeption(new Error(ErrorCode.Epmpty, "Идентификатор аунтетификации не может быть пустым."));
+                throw new EmptyValueExeption(new Error(ErrorCode.Empty, "Идентификатор аунтетификации не может быть пустым."));
 
             return new IdentityIdentifier(value);
         }

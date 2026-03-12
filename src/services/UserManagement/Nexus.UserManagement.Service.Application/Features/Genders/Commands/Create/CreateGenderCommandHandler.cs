@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Models;
-using Shared.Kernel.Results;
+using Quantropic.Toolkit.Results;
 
 namespace Nexus.UserManagement.Service.Application.Features.Genders.Commands.Create
 {

@@ -1,5 +1,5 @@
-﻿using Shared.Contracts.UserManagement.Responses;
-using Shared.Kernel.Results;
+﻿using Quantropic.Toolkit.Results;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.Account.Web.Services.Http
 {

@@ -4,8 +4,9 @@ using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
+using Quantropic.Toolkit.Results;
+using Shared.Kernel.Errors;
 using Shared.Kernel.Primitives;
-using Shared.Kernel.Results;
 
 namespace Nexus.UserManagement.Service.Domain.Models
 {
@@ -129,10 +130,10 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public void AddUserAuthenticator(UserAuthenticatorType method, IdentityIdentifier identifier, CredentialBlob? credentialBlob, string? salt)
         {
             if (_userAuthenticators.Any(ua => ua.Method == method))
-                throw new UserAuthenticatorException(new Error(ErrorCode.Duplicate, $"Способ входа - {method} уже используеться. Повторно его добавить нельзя."));
+                throw new UserAuthenticatorException(new Error(AppErrors.Duplicate, $"Способ входа - {method} уже используеться. Повторно его добавить нельзя."));
        
             if(_userAuthenticators.Any(ua => ua.Identifier == identifier))
-                throw new UserAuthenticatorException(new Error(ErrorCode.Duplicate, $"Идентификатор - {identifier} уже используеться. Повторно его добавить нельзя."));
+                throw new UserAuthenticatorException(new Error(AppErrors.Duplicate, $"Идентификатор - {identifier} уже используеться. Повторно его добавить нельзя."));
 
             var userAuth = Models.UserAuthenticator.Create(this.Id, method, identifier, credentialBlob, salt);
             _userAuthenticators.Add(userAuth);
@@ -147,7 +148,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public void AddUserSecurityAssets(AssetType assetType, EncryptedAssetValue encryptedAssetValue, EncryptionMetadata encryptionMetadata)
         {
             if (assetType == AssetType.MainDek && _userSecurityAssets.Any(us => us.AssetType == AssetType.MainDek))
-                throw new UserSecurityAssetsExeption(new Error(ErrorCode.Duplicate, "Основной ключ шифрования уже существуе. Для его смены используйтся процедуру ротации."));
+                throw new UserSecurityAssetsExeption(new Error(AppErrors.Duplicate, "Основной ключ шифрования уже существуе. Для его смены используйтся процедуру ротации."));
 
             var userSecurity = Models.UserSecurityAsset.Create(this.Id, assetType, encryptedAssetValue, encryptionMetadata);
             _userSecurityAssets.Add(userSecurity);

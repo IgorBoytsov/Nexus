@@ -5,7 +5,7 @@ using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.SmartEnums;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
-using Shared.Kernel.Results;
+using Quantropic.Toolkit.Results;
 using Shared.Security.Hasher;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.RegisterAdmin

@@ -1,6 +1,6 @@
-﻿using Shared.Contracts.Authentication.Requests;
+﻿using Quantropic.Toolkit.Results;
+using Shared.Contracts.Authentication.Requests;
 using Shared.Contracts.Authentication.Responses;
-using Shared.Kernel.Results;
 
 namespace Nexus.Account.Web.Services.Http
 {

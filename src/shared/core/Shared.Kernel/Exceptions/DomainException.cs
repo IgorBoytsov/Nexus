@@ -1,4 +1,4 @@
-﻿using Shared.Kernel.Results;
+﻿using Quantropic.Toolkit.Results;
 
 namespace Shared.Kernel.Exceptions
 {
