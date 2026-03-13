@@ -5,7 +5,7 @@ using Nexus.Authentication.Service.Application.Features.Commands.Refresh;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof;
 using Quantropic.Toolkit.Results;
-using Shared.Contracts.Authentication.Requests;
+using Rebout.Nexus.Contracts.Authentication.V1;
 using Shared.Kernel.Errors;
 
 namespace Nexus.Authentication.Service.Api.Controllers

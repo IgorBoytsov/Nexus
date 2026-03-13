@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using Shared.Contracts.Authentication.Responses;
 using Quantropic.Toolkit.Results;
+using Rebout.Nexus.Contracts.Authentication.V1;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {

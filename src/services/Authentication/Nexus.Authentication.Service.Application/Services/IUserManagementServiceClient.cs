@@ -1,4 +1,4 @@
-﻿using Shared.Contracts.UserManagement.Responses;
+﻿using Rebout.Nexus.Contracts.UserManagement.V1;
 
 namespace Nexus.Authentication.Service.Application.Services
 {

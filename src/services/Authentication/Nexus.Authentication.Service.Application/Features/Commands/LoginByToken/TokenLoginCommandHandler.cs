@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
-using Shared.Contracts.Authentication.Responses;
 using Quantropic.Toolkit.Results;
+using Rebout.Nexus.Contracts.Authentication.V1;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.LoginByToken
 {
@@ -30,11 +30,15 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.LoginByToke
             var newAccessToken = _jwtTokenGenerator.GenerateAccessToken(userData!);
             var newRefreshToken = _jwtTokenGenerator.GenerateRefreshToken();
 
-            var newAccessData = AccessData.Create(userData!.Id, newRefreshToken, newAccessToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(30), false, false);
+            var newAccessData = AccessData.Create(Guid.Parse(userData!.Id), newRefreshToken, newAccessToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(30), false, false);
             await _context.AccessData.AddAsync(newAccessData, cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<AuthResponse>.Success(new AuthResponse(newAccessToken, newRefreshToken));
+            return Result<AuthResponse>.Success(new AuthResponse()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            });
         }
     }
 }
