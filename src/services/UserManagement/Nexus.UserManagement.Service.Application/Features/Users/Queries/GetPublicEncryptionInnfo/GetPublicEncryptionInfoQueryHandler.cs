@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Enums;
 using Quantropic.Toolkit.Results;
-using Shared.Contracts.UserManagement.Responses;
+using Rebout.Nexus.Contracts.UserManagement.V1;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo
 {
@@ -23,10 +23,14 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPub
                 if (user == null)
                     return Result<PublicEncryptionInfoResponse>.Failure(new Error(ErrorCode.NotFound, "Такого пользователя нету"));
 
-                var userSecirityAsset = user.UserSecurityAssets.FirstOrDefault(us => us.AssetType == AssetType.MainDek);
+                var userSecurityAsset = user.UserSecurityAssets.FirstOrDefault(us => us.AssetType == AssetType.MainDek);
                 var userAuthenticator = user.UserAuthenticators.FirstOrDefault(ua => ua.Method == UserAuthenticatorType.SRP);
 
-                var userAuth = new PublicEncryptionInfoResponse(userAuthenticator!.Salt!, userSecirityAsset!.EncryptedValue);
+                var userAuth = new PublicEncryptionInfoResponse
+                {
+                    ClientSalt = userAuthenticator!.Salt,
+                    EncryptedDek = userSecurityAsset!.EncryptedValue
+                };
 
                 return Result<PublicEncryptionInfoResponse>.Success(userAuth);
             }
