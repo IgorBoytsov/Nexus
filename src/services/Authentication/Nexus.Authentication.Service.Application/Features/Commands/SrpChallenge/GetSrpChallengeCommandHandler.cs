@@ -2,9 +2,9 @@
 using Nexus.Authentication.Service.Application.Common.Abstractions;
 using Nexus.Authentication.Service.Application.Services;
 using Quantropic.Security.Abstractions;
-using Shared.Contracts.Authentication.Responses;
 using Quantropic.Toolkit.Results;
 using Shared.Security.Verifiers;
+using Rebout.Nexus.Contracts.Authentication.V1;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {
@@ -40,10 +40,11 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
 
             await _redisCacheService.SetJsonAsync($"srp_{request.Login}", session, TimeSpan.FromMinutes(2));
 
-            return Result<SrpChallengeResponse>.Success(new SrpChallengeResponse(
-                userData.ClientSalt,
-                sessionState.PublicKeyB
-            ));
+            return Result<SrpChallengeResponse>.Success(new SrpChallengeResponse()
+            {
+                Salt = userData.ClientSalt,
+                B = sessionState.PublicKeyB
+            });
         }
     }
 }

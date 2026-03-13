@@ -3,8 +3,8 @@ using Nexus.Authentication.Service.Application.Common.Abstractions;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Quantropic.Security.Abstractions;
-using Shared.Contracts.Authentication.Responses;
 using Quantropic.Toolkit.Results;
+using Rebout.Nexus.Contracts.Authentication.V1;
 using Shared.Kernel.Errors;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
@@ -38,7 +38,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             var accessToken = _jwtTokenGenerator.GenerateAccessToken(userData!);
             var refreshToken = _jwtTokenGenerator.GenerateRefreshToken();
 
-            var accessData = AccessData.Create(userData!.Id, refreshToken, accessToken,
+            var accessData = AccessData.Create(Guid.Parse(userData!.Id), refreshToken, accessToken,
                 DateTime.UtcNow,
                 DateTime.UtcNow.AddDays(30),
                 isUsed: false,
@@ -48,7 +48,12 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             await _context.SaveChangesAsync(cancellationToken);
 
             await _redisCacheService.RemoveAsync($"srp_{request.Login}");
-            return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, M2_server));
+            return Result<AuthResponse>.Success(new AuthResponse
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                M2 = M2_server
+            });
         }
     }
 }

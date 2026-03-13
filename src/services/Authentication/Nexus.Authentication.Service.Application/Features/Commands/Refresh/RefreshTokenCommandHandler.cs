@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Quantropic.Toolkit.Results;
-using Shared.Contracts.Authentication.Responses;
+using Rebout.Nexus.Contracts.Authentication.V1;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -43,11 +43,15 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
             var newAccessToken = _jwtTokenGenerator.GenerateAccessToken(userData!);
             var newRefreshToken = _jwtTokenGenerator.GenerateRefreshToken();
 
-            var newAccessData = AccessData.Create(userData!.Id, newRefreshToken, newAccessToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(30), false, false);
+            var newAccessData = AccessData.Create(Guid.Parse(userData!.Id), newRefreshToken, newAccessToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(30), false, false);
             await _context.AccessData.AddAsync(newAccessData, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<AuthResponse>.Success(new AuthResponse(newAccessToken, newRefreshToken));
+            return Result<AuthResponse>.Success(new AuthResponse()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            });
         }
 
         private ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)

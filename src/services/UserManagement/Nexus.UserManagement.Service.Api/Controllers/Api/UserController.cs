@@ -6,11 +6,13 @@ using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo;
 using Quantropic.Toolkit.Results;
-using Shared.Contracts.UserManagement.Requests;
+using Rebout.Nexus.Contracts.UserManagement.V1;
 using System.Security.Claims;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
 {
+    public sealed record RecoveryAccessRequest(string Login, string Email, string NewPassword);
+
     [ApiController]
     [Route("api/users")]
     public class UserController : Controller
@@ -28,7 +30,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
-            var command = new RegisterCommand(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.EncryptionAlgorithm, request.Iterations, request.KdfType, request.Email, request.Phone, request.IdGender, request.IdCountry);
+            var command = new RegisterCommand(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.EncryptionAlgorithm, request.Iterations, request.KdfType, request.Email, request.Phone, Guid.Parse(request.IdGender), Guid.Parse(request.IdCountry));
 
             var result = await _mediator.Send(command);
 

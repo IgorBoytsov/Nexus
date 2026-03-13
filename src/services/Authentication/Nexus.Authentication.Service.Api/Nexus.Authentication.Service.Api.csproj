@@ -17,12 +17,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"/>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
+    <PackageReference Include="Rebout.Nexus.Contracts"/>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
     <ProjectReference Include="..\..\..\shared\security\Shared.Security\Shared.Security.csproj" />
-    <ProjectReference Include="..\..\..\shared\Shared.Contracts\Shared.Contracts.csproj" />
     <ProjectReference Include="..\Nexus.Authentication.Service.Application\Nexus.Authentication.Service.Application.csproj" />
     <ProjectReference Include="..\Nexus.Authentication.Service.Infrastructure\Nexus.Authentication.Service.Infrastructure.csproj" />
   </ItemGroup>

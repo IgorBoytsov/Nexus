@@ -4,7 +4,7 @@ using Nexus.UserManagement.Service.Application.Features.Roles.Commands.Create;
 using Nexus.UserManagement.Service.Application.Features.Roles.Commands.Delete;
 using Nexus.UserManagement.Service.Application.Features.Roles.Commands.Update;
 using Nexus.UserManagement.Service.Application.Features.Roles.Queries.GetAll;
-using Shared.Contracts.UserManagement.Requests;
+using Rebout.Nexus.Contracts.UserManagement.V1;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
 {

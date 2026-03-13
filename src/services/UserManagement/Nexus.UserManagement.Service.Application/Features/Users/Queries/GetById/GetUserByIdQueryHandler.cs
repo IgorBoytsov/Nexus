@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Enums;
 using Quantropic.Toolkit.Results;
-using Shared.Contracts.UserManagement.Responses;
+using Rebout.Nexus.Contracts.UserManagement.V1;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById
 {
@@ -27,10 +27,19 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByI
                 var roleIds = user.UserRoles.Select(ur => ur.RoleId);
                 var roleNames = await _writeContext.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToListAsync(cancellationToken);
 
-                var userSecirityAsset = user.UserSecurityAssets.FirstOrDefault(us => us.AssetType == AssetType.MainDek);
+                var userSecurityAsset = user.UserSecurityAssets.FirstOrDefault(us => us.AssetType == AssetType.MainDek);
                 var userAuthenticator = user.UserAuthenticators.FirstOrDefault(ua => ua.Method == UserAuthenticatorType.SRP);
 
-                var userAuth = new UserAuthDataResponse(user.Id, user.Login, userAuthenticator!.CredentialData!, userAuthenticator!.Salt!, userSecirityAsset!.EncryptedValue, [.. roleNames.Select(rn => rn.Value)] );
+                var userAuth = new UserAuthDataResponse
+                {
+                    Id = user.Id.Value.ToString(),
+                    Login = user.Login,
+                    Verifier = userAuthenticator!.CredentialData,
+                    ClientSalt = userAuthenticator.Salt,
+                    EncryptedDek = userSecurityAsset!.EncryptedValue,
+                };
+
+                userAuth.Roles.AddRange(roleNames.Select(rn => rn.Value));
 
                 return Result<UserAuthDataResponse>.Success(userAuth);
             }
