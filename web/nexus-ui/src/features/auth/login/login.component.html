@@ -1,0 +1,29 @@
+<div class="login-page">
+    <div class="form-container">
+        <p class="title">Авторизация</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+            <div class="form-field">
+                <label for="username">Логин</label>
+                <input id="username" type="text" name="login" formControlName="username" [class.error]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"/>
+                @if (loginForm.get('username')?.hasError('minlength') && loginForm.get('username')?.touched) {
+                    <small class="error-message">Логин должен быть не менее {{minUsernameLength}} символов</small>
+                }   
+            </div>
+
+            <div class="form-field">
+                <label for="password">Пароль</label>
+                <input id="password" type="password" name="password" formControlName="password" [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"/>
+                @if (loginForm.get('password')?.hasError('minlength') && loginForm.get('password')?.touched) {
+                    <small class="error-message">Минимум 8 символов</small>
+                }
+            </div>
+
+            @if (errorMessage) {
+                <small class="alert alert-error">{{errorMessage}}</small>
+            }
+                
+            <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-sumbit">{{ isLoading ? 'Вход..' : 'Войти'}}</button>
+        </form>
+    </div>
+</div>

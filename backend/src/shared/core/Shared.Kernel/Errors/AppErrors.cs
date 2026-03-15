@@ -8,5 +8,6 @@ namespace Shared.Kernel.Errors
         public static readonly ErrorCode Duplicate = ErrorCode.Custom(nameof(Duplicate), 10001);
         public static readonly ErrorCode Security = ErrorCode.Custom(nameof(Security), 10002);
         public static readonly ErrorCode InvalidPassword = ErrorCode.Custom(nameof(InvalidPassword), 10003);
+        public static readonly ErrorCode Api = ErrorCode.Custom(nameof(Api), 10004);
     }
 }
