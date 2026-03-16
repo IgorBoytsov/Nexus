@@ -1,5 +1,5 @@
 ﻿using Quantropic.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.V1;
+using Rebout.Nexus.Contracts.Authentication.v1;
 
 namespace Nexus.Account.Web.Services.Http
 {

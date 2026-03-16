@@ -4,7 +4,7 @@ using Nexus.UserManagement.Service.Application.Features.Statuses.Commands.Create
 using Nexus.UserManagement.Service.Application.Features.Statuses.Commands.Delete;
 using Nexus.UserManagement.Service.Application.Features.Statuses.Commands.Update;
 using Nexus.UserManagement.Service.Application.Features.Statuses.Queries.GetAll;
-using Rebout.Nexus.Contracts.UserManagement.V1;
+using Rebout.Nexus.Contracts.UserManagement.v1;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
 {

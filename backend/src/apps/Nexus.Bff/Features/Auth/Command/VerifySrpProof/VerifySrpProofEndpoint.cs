@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Rebout.Nexus.Contracts.Authentication.V1;
+using Rebout.Nexus.Contracts.Authentication.v1;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {

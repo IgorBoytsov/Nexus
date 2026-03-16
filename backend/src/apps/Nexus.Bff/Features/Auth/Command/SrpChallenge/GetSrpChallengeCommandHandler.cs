@@ -1,7 +1,7 @@
 using MediatR;
 using Nexus.Bff.Infrastructure.Clients;
 using Quantropic.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.V1;
+using Rebout.Nexus.Contracts.Authentication.v1;
 
 namespace Nexus.Bff.Features.Auth.Command.SrpChallenge
 {
@@ -11,10 +11,7 @@ namespace Nexus.Bff.Features.Auth.Command.SrpChallenge
         
         public async Task<Result<SrpChallengeResponse?>> Handle(GetSrpChallengeCommand request, CancellationToken cancellationToken)
         {
-            var result = await _authClient.GetSrpChallenge(new SrpChallengeRequest
-            {
-                Login = request.Login
-            });
+            var result = await _authClient.GetSrpChallenge(new SrpChallengeRequest(request.Login));
 
             return result;
         }

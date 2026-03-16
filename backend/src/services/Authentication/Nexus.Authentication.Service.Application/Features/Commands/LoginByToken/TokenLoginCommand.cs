@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Quantropic.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.V1;
+using Rebout.Nexus.Contracts.Authentication.v1;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.LoginByToken
 {

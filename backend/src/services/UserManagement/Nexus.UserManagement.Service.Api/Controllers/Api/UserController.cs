@@ -6,7 +6,7 @@ using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo;
 using Quantropic.Toolkit.Results;
-using Rebout.Nexus.Contracts.UserManagement.V1;
+using Rebout.Nexus.Contracts.UserManagement.v1;
 using System.Security.Claims;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
@@ -30,7 +30,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
-            var command = new RegisterCommand(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.EncryptionAlgorithm, request.Iterations, request.KdfType, request.Email, request.Phone, Guid.Parse(request.IdGender), Guid.Parse(request.IdCountry));
+            var command = new RegisterCommand(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.EncryptionAlgorithm, request.Iterations, request.KdfType, request.Email, request.Phone, string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender), string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
 
             var result = await _mediator.Send(command);
 

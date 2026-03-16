@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.Account.Web.Services.Http;
-using Rebout.Nexus.Contracts.Authentication.V1;
+using Rebout.Nexus.Contracts.Authentication.v1;
 using System.Security.Claims;
 
 namespace Nexus.Account.Web.Controllers.Api
@@ -68,10 +68,7 @@ namespace Nexus.Account.Web.Controllers.Api
             if (string.IsNullOrEmpty(refreshToken))
                 return Unauthorized();
 
-            var result = await _authClient.LoginByToken(new TokenLoginRequest
-            {
-                RefreshToken = refreshToken
-            });
+            var result = await _authClient.LoginByToken(new TokenLoginRequest(refreshToken));
 
             if (result.IsFailure)
             {

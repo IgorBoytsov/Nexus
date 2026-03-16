@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Quantropic.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.V1;
+using Rebout.Nexus.Contracts.Authentication.v1;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.LoginByToken
 {
@@ -34,11 +34,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.LoginByToke
             await _context.AccessData.AddAsync(newAccessData, cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<AuthResponse>.Success(new AuthResponse()
-            {
-                AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken
-            });
+            return Result<AuthResponse>.Success(new AuthResponse(newAccessToken, newRefreshToken));
         }
     }
 }
