@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Rebout.Nexus.Contracts</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
     <Authors>Igor Boytsov</Authors>
     <Company>Rebout-Tech</Company>
     <PackageDescription>Contracts for Nexus</PackageDescription>
@@ -33,7 +33,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.103" PrivateAssets="All" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.25.0" />
     <PackageReference Include="Grpc.Tools" Version="2.59.0" PrivateAssets="All" />
   </ItemGroup>
@@ -44,6 +44,6 @@
 
   <ItemGroup>
     <None Include="..\..\proto\**\*.proto" Pack="true" PackagePath="proto" />
-  </ItemGroup>
+  </ItemGroup> -->
 
 </Project>
