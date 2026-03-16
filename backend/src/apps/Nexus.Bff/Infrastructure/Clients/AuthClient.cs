@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Quantropic.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.V1;
+using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Kernel.Errors;
 
 namespace Nexus.Bff.Infrastructure.Clients
@@ -41,6 +41,15 @@ namespace Nexus.Bff.Infrastructure.Clients
             {
                 return Result<AuthResponse?>.Failure(new Error(AppErrors.Api, "Произошла ошибка при верификации"));
             }
+        }
+
+        public async Task<Result<string>> GetPublicKey()
+        {
+            var response = await _httpClient.GetAsync("api/auth-config/public-key");
+
+            var key = await response.Content.ReadAsStringAsync();
+
+            return Result<string>.Success(key); 
         }
     }
 }

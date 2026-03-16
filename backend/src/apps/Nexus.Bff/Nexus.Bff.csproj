@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Rebout.Nexus.Contracts" />
-     <PackageReference Include="Quantropic.Toolkit" />
+    <PackageReference Include="Quantropic.Toolkit" />
   </ItemGroup>
 
   <ItemGroup>

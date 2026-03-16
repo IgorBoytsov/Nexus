@@ -18,6 +18,10 @@ namespace Nexus.Bff.Extensions
             string authenticationServices = "AuthenticationServices";
             services.AddHttpClient<IAuthClient, AuthClient>(authenticationServices, client => client.BaseAddress = new Uri(authBaseUrl!));
 
+            var userManagementBaseUrl = configuration["Urls:UserManagementBase"];
+            string userManagementService = "UserManagementService";
+            services.AddHttpClient<IUserManagementService, UserManagementService>(userManagementService, client => client.BaseAddress = new Uri(userManagementBaseUrl!));
+
             return services;
         }
     }

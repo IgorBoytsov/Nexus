@@ -1,5 +1,5 @@
 using Quantropic.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.V1;
+using Rebout.Nexus.Contracts.Authentication.v1;
 
 namespace Nexus.Bff.Infrastructure.Clients
 {
@@ -7,5 +7,6 @@ namespace Nexus.Bff.Infrastructure.Clients
     {
         Task<Result<SrpChallengeResponse?>> GetSrpChallenge(SrpChallengeRequest request);
         Task<Result<AuthResponse?>> VerifierSrpProof(SrpVerifyRequest request);
+        Task<Result<string>> GetPublicKey();
     }
 }
