@@ -1,4 +1,4 @@
 namespace Rebout.Nexus.Contracts.Authentication.v1
 {
-    public record TokenLoginRequest(string RefreshLogin);
+    public record TokenLoginRequest(string RefreshToken);
 }

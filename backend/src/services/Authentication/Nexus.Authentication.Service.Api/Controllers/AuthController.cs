@@ -59,7 +59,7 @@ namespace Nexus.Authentication.Service.Api.Controllers
         [HttpPost("token-login")]
         public async Task<IActionResult> TokenLogin([FromBody] TokenLoginRequest request)
         {
-            var command = new TokenLoginCommand(request.RefreshLogin);
+            var command = new TokenLoginCommand(request.RefreshToken);
             var result = await _mediator.Send(command);
 
             return result.Match<IActionResult>(
