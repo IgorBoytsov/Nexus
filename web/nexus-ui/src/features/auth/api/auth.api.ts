@@ -11,7 +11,7 @@ import { AuthResponse } from '../../../contracts/responses/auth/auth.response'
 })
 export class AuthApi {
     private http: HttpClient = inject(HttpClient);
-    private baseUrl = 'http://localhost:5015';
+    private baseUrl = 'http://127.0.0.1:5015';
 
     getCrpChallenge(data: SrpChallengeRequest): Observable<SrpChallengeResponse> {
         return this.http.post<SrpChallengeResponse>(`${this.baseUrl}/srp/challenge`, data);
