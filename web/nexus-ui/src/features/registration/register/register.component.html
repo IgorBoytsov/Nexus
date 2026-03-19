@@ -1,0 +1,57 @@
+<div class="login-page">
+	<div class="form-container">
+        <p class="title">Регистрация</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="login-form">
+            <div class="form-field">
+                <label for="login">Логин</label>
+                <input id="login" type="text" name="login" formControlName="login" [class.error]="registerForm.get('login')?.invalid && registerForm.get('login')?.touched"/>
+                @if (registerForm.get('login')?.hasError('minlength') && registerForm.get('login')?.touched) {
+                    <small class="error-message">Логин должен быть не менее {{minUsernameLength}} символов</small>
+                }   
+            </div>
+
+            <div class="form-field">
+                <label for="password">Пароль</label>
+                <input id="password" type="password" name="password" formControlName="password" [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"/>
+                @if (registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched) {
+                    <small class="error-message">Минимум 8 символов</small>
+                }
+            </div>
+
+            <div class="form-field">
+                <label for="username">Никнейм</label>
+                <input id="username" type="text" name="username" formControlName="username" [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"/>
+                @if (registerForm.get('username')?.hasError('minlength') && registerForm.get('username')?.touched) {
+                    <small class="error-message">Минимум 2 символа</small>
+                }
+            </div>
+
+            <div class="form-field">
+                <label for="email">Электронная почта</label>
+                <input id="email" type="email" name="email" formControlName="email" [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"/>
+                @if ((registerForm.get('phone')?.hasError('minlength') || registerForm.get('phone')?.hasError('maxlength')) && registerForm.get('phone')?.touched) {
+                        <small class="error-message">Номер телефона должен быть ровно 11 символов (начиная с 8)</small>
+                }
+            </div>
+
+            <div class="form-field">
+                <label for="phone">Номер телефона*</label>
+                <input id="phone" type="tel" name="phone" formControlName="phone" [class.error]="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched"/>
+                <!-- @if (registerForm.get('phone')?.hasError('maxLength') || registerForm.get('phone')?.hasError('maxLength') && registerForm.get('phone')?.touched) {
+                    <small class="error-message">Номере телефона должен быть в формате 11 символов, нач с 8</small>
+                } -->
+            </div>
+
+            @if (errorMessage) {
+                <small class="alert alert-error">{{errorMessage}}</small>
+            }
+                
+            <button type="submit" [disabled]="registerForm.invalid || isLoading" class="btn-sumbit">{{ isLoading ? 'Регистрация..' : 'Зарегистрироваться'}}</button>
+        </form>
+        <p class="signup">
+            Уже есть аккаунт?
+            <a routerLink="/login" class="" style="margin-left: 5px;">Воити</a>
+        </p>
+	</div>
+</div>

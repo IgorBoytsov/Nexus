@@ -4,7 +4,7 @@ using Nexus.UserManagement.Service.Application.Features.Countries.Commands.Creat
 using Nexus.UserManagement.Service.Application.Features.Countries.Commands.Delete;
 using Nexus.UserManagement.Service.Application.Features.Countries.Commands.Update;
 using Nexus.UserManagement.Service.Application.Features.Countries.Queries.GetAll;
-using Rebout.Nexus.Contracts.UserManagement.V1;
+using Rebout.Nexus.Contracts.UserManagement.v1;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
 {

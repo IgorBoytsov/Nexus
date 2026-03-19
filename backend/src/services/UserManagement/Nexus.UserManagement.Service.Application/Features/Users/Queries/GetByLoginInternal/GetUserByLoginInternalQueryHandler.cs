@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Enums;
 using Quantropic.Toolkit.Results;
-using Rebout.Nexus.Contracts.UserManagement.V1;
+using Rebout.Nexus.Contracts.UserManagement.v1;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByLoginInternal
 {
@@ -29,16 +29,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByL
                 var userSecurityAsset = user.UserSecurityAssets.FirstOrDefault(us => us.AssetType == AssetType.MainDek);
                 var userAuthenticator = user.UserAuthenticators.FirstOrDefault(ua => ua.Method == UserAuthenticatorType.SRP);
 
-                var userAuth = new UserAuthDataResponse
-                {
-                    Id = user.Id.Value.ToString(),
-                    Login = user.Login,
-                    Verifier = userAuthenticator!.CredentialData,
-                    ClientSalt = userAuthenticator.Salt,
-                    EncryptedDek = userSecurityAsset!.EncryptedValue,
-                };
-
-                userAuth.Roles.AddRange(roleNames.Select(rn => rn.Value));
+                var userAuth = new UserAuthDataResponse(user.Id.Value.ToString(), user.Login, userAuthenticator!.CredentialData!, userAuthenticator.Salt!, userSecurityAsset!.EncryptedValue, roleNames.Select(rn => rn.Value).ToList());
 
                 return Result<UserAuthDataResponse>.Success(userAuth);
             } 

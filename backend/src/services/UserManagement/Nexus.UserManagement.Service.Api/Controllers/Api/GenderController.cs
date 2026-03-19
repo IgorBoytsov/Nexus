@@ -4,7 +4,7 @@ using Nexus.UserManagement.Service.Application.Features.Genders.Commands.Create;
 using Nexus.UserManagement.Service.Application.Features.Genders.Commands.Delete;
 using Nexus.UserManagement.Service.Application.Features.Genders.Commands.Update;
 using Nexus.UserManagement.Service.Application.Features.Genders.Queries.GetAll;
-using Rebout.Nexus.Contracts.UserManagement.V1;
+using Rebout.Nexus.Contracts.UserManagement.v1;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
 {

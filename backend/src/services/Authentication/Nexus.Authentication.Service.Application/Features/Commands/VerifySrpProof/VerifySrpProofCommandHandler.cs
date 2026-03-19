@@ -4,7 +4,7 @@ using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Quantropic.Security.Abstractions;
 using Quantropic.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.V1;
+using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Kernel.Errors;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
@@ -48,12 +48,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             await _context.SaveChangesAsync(cancellationToken);
 
             await _redisCacheService.RemoveAsync($"srp_{request.Login}");
-            return Result<AuthResponse>.Success(new AuthResponse
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken,
-                M2 = M2_server
-            });
+            return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, M2_server));
         }
     }
 }

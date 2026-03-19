@@ -1,4 +1,4 @@
-﻿using Rebout.Nexus.Contracts.UserManagement.V1;
+﻿using Rebout.Nexus.Contracts.UserManagement.v1;
 using System.Net.Http.Json;
 
 namespace Nexus.Authentication.Service.Application.Services
