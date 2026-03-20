@@ -28,7 +28,7 @@ export class LoginComponent {
 
   constructor() {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(this.minUsernameLength)]],
+      login: ['', [Validators.required, Validators.minLength(this.minUsernameLength)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
@@ -38,14 +38,14 @@ export class LoginComponent {
   async onSubmit(): Promise<void> {
     if (this.loginForm.invalid)
       return;
-    const { username, password } = this.loginForm.value;
+    const { login: login, password } = this.loginForm.value;
 
-    const srpChallengeRequest: SrpChallengeRequest = { login: username };
+    const srpChallengeRequest: SrpChallengeRequest = { login: login };
     const srpChallengeResponse = await firstValueFrom(this.authApi.getCrpChallenge(srpChallengeRequest));
     const { salt, b } = srpChallengeResponse; 
-    const {A, M1, S} = await this.srpService.generateSrpProof(password,salt, b);
+    const {A, M1, S} = await this.srpService.generateSrpProof(login, password, salt, b);
 
-    const srpVerifyRequest: SrpVerifyRequest = { Login: username, A, M1};
+    const srpVerifyRequest: SrpVerifyRequest = { Login: login, A, M1};
 
     const srpVerifierResponse = await firstValueFrom(this.authApi.srpVerifyProof(srpVerifyRequest));
     const { m2 } = srpVerifierResponse;

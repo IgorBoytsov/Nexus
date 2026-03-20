@@ -4,9 +4,9 @@
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
             <div class="form-field">
-                <label for="username">Логин</label>
-                <input id="username" type="text" name="login" formControlName="username" [class.error]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"/>
-                @if (loginForm.get('username')?.hasError('minlength') && loginForm.get('username')?.touched) {
+                <label for="login">Логин</label>
+                <input id="login" type="text" name="login" formControlName="login" [class.error]="loginForm.get('login')?.invalid && loginForm.get('login')?.touched"/>
+                @if (loginForm.get('login')?.hasError('minlength') && loginForm.get('login')?.touched) {
                     <small class="error-message">Логин должен быть не менее {{minUsernameLength}} символов</small>
                 }   
             </div>

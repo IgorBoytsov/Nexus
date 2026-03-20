@@ -56,11 +56,9 @@ export class RegisterComponent{
                 ? firstParse 
                 : firstParse.publicKey;
 
-            console.log('Чистый publicKeyBase64:', publicKeyBase64);
-
             const salt = crypto.generateRandomBytes(16);
             const saltBase64 = SecurityUtils.toBase64(salt);
-            const { kek, authHash} = await keyDerivationService.deriveKeysFromPassword(password, salt);
+            const { kek, authHash} = await keyDerivationService.deriveKeysFromPassword(login, password, salt);
 
             const binaryKey = SecurityUtils.fromBase64(publicKeyBase64);
             const rsaPublicKey = await window.crypto.subtle.importKey(
