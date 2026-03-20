@@ -27,14 +27,16 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             if (string.IsNullOrWhiteSpace(request.A) || string.IsNullOrWhiteSpace(request.M1))
                 return Result<AuthResponse>.Failure(new Error(AppErrors.Validation, "Параметры SRP не могут быть пустыми"));
 
-            var session = await _redisCacheService.GetJsonAsync<SrpSessionState>($"srp_{request.Login}");
+            string normalizedLogin = request.Login.Trim().ToLowerInvariant();  
+
+            var session = await _redisCacheService.GetJsonAsync<SrpSessionState>($"srp_{normalizedLogin}");
 
             if (session is null)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.NotFound, "Сессия просрочена"));
 
             var M2_server = _srpServer.VerifySrpProof(session, request.A, request.M1);
 
-            var userData = await _userManagementServiceClient.GetUserByLoginAsync(request.Login);
+            var userData = await _userManagementServiceClient.GetUserByLoginAsync(normalizedLogin);
             var accessToken = _jwtTokenGenerator.GenerateAccessToken(userData!);
             var refreshToken = _jwtTokenGenerator.GenerateRefreshToken();
 
@@ -47,7 +49,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             await _context.AccessData.AddAsync(accessData, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
-            await _redisCacheService.RemoveAsync($"srp_{request.Login}");
+            await _redisCacheService.RemoveAsync($"srp_{normalizedLogin}");
             return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, M2_server));
         }
     }

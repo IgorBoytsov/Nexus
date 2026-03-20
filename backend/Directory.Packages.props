@@ -30,7 +30,7 @@
     <PackageVersion Include="MediatR" Version="13.1.0" />
     <PackageVersion Include="AutoMapper" Version="16.1.1" />
     
-    <PackageVersion Include="Quantropic.Security.Srp.Server" Version="0.1.0-beta.2" />
+    <PackageVersion Include="Quantropic.Security.Srp.Server" Version="0.2.0-beta.1" />
     <PackageVersion Include="Quantropic.Toolkit" Version="1.0.0"/>
     <PackageVersion Include="Rebout.Nexus.Contracts" Version="1.3.2"/>
     <PackageVersion Include="Konscious.Security.Cryptography.Argon2" Version="1.3.1" />

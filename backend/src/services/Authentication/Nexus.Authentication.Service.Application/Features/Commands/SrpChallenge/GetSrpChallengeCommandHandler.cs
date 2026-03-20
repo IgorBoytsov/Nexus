@@ -21,7 +21,8 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
 
         public async Task<Result<SrpChallengeResponse>> Handle(GetSrpChallengeCommand request, CancellationToken cancellationToken)
         {
-            var userData = await _userManagementClient.GetUserByLoginAsync(request.Login);
+            string normalizedLogin = request.Login.Trim().ToLowerInvariant();
+            var userData = await _userManagementClient.GetUserByLoginAsync(normalizedLogin);
 
             if (userData == null)
                 return Result<SrpChallengeResponse>.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден"));
@@ -29,16 +30,16 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
             var decryptedVerifierBase64 = _verifierProtector.Unprotect(userData.Verifier);
             byte[] vBytes = Convert.FromBase64String(decryptedVerifierBase64);
 
-            var sessionState = _srpServer.GetSrpChallenge(request.Login, vBytes);
+            var sessionState = _srpServer.GetSrpChallenge(normalizedLogin, vBytes);
 
             var session = new SrpSessionState(
-                request.Login,
+                normalizedLogin,
                 sessionState.PrivateKeyB,
                 Convert.ToBase64String(vBytes),
                 sessionState.PublicKeyB
             );
 
-            await _redisCacheService.SetJsonAsync($"srp_{request.Login}", session, TimeSpan.FromMinutes(2));
+            await _redisCacheService.SetJsonAsync($"srp_{normalizedLogin}", session, TimeSpan.FromMinutes(2));
 
             return Result<SrpChallengeResponse>.Success(new SrpChallengeResponse(userData.ClientSalt, sessionState.PublicKeyB));
         }
