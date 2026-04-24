@@ -66,5 +66,7 @@ export class LoginComponent {
 
     this.isLoading = true;
     this.errorMessage = null;
+
+    this.router.navigate(['/user/profile'])
   }
 }

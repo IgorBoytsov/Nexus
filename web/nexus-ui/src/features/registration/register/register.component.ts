@@ -120,6 +120,8 @@ export class RegisterComponent{
         } finally {
             this.isLoading = true;
             this.errorMessage = null;
+
+            this.router.navigate(['/login'])
         }
     }
 }
