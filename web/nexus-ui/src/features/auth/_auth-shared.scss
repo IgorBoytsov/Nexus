@@ -1,4 +1,13 @@
-@use "../../../scss/_variables";
+@use "../../scss/_variables" as *;
+
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px); // Убирает прокрутку страницы (выравниваем отступы)
+  width: 100%;
+  background-color: transparent;
+}
 
 .form-container {
     width: 300px;
@@ -13,7 +22,7 @@
     justify-content: center;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
 }
-
+ 
 .title {
     text-align: center;
     align-self: center;
@@ -24,8 +33,8 @@
 }
 
 .error-message {
-    color: variables.$color-text-error;
-    font-size: variables.$font-size-text-error;
+    color: $color-text-error;
+    font-size: $font-size-text-error;
 }
 
 .login-form {

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { SrpService } from '@quantropic/security'
 import { SrpChallengeRequest } from '../../../contracts/requests/srp-challenge.request';
 import { SrpVerifyRequest } from '../../../contracts/requests/srp-verify.request';
-import { AuthApi } from '../api/auth.api';
+import { AuthApi } from './auth.api';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -66,5 +66,7 @@ export class LoginComponent {
 
     this.isLoading = true;
     this.errorMessage = null;
+
+    this.router.navigate(['/user/profile'])
   }
 }

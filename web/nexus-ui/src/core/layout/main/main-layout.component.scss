@@ -1,0 +1,89 @@
+@use "../../../scss/variables" as *;
+
+ *, *::before, *::after {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
+
+.app-content {
+  padding-top: 120px;
+  min-height: 100vh;
+}
+
+ /* ===== NAVBAR ===== */
+ .navbar {
+     position: fixed;
+     top: 0; left: 0; right: 0;
+     z-index: 1000;
+     background: rgba(10, 10, 15, 0.8);
+     backdrop-filter: blur(20px);
+     -webkit-backdrop-filter: blur(20px);
+     border-bottom: 1px solid $border;
+     padding: 0 2rem;
+ }
+
+ .navbar-inner {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     height: 100px;
+ }
+
+ /* ===== NAV ACTIONS / ACCOUNT BUTTON ===== */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: 1rem;
+}
+
+.btn-account {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: $bg-card;
+    border: 1px solid $border;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: $text-secondary;
+    transition: all 0.3s ease;
+}
+
+.btn-account:hover {
+    border-color: $accent;
+    color: $text-primary;
+    background: rgba(108, 99, 255, 0.1);
+    box-shadow: 0 4px 20px $accent-glow;
+    transform: translateY(-1px);
+}
+
+.btn-account svg {
+    flex-shrink: 0;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.btn-account:hover svg {
+    opacity: 1;
+}
+
+/* Скрываем текст на очень маленьких экранах */
+@media (max-width: 480px) {
+    .btn-account-text {
+        display: none;
+    }
+    .btn-account {
+        padding: 0.5rem;
+        border-radius: 50%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-actions {
+        display: none;
+    }
+}
