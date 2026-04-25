@@ -1,7 +1,7 @@
 import { Component, inject } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
-import { RegisterApi } from "../api/register.api";
+import { RegisterApi } from "./register.api";
 import { RegisterRequest } from '../../../contracts/requests/register-user.request'
 import { CryptoService, KeyDerivationService, SecurityUtils, SrpService } from "@quantropic/security";
 import { firstValueFrom } from "rxjs";
