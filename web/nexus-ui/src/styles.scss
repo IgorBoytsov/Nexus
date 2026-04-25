@@ -42,12 +42,3 @@ app-root {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
-.login-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 120px); // Убирает прокрутку страницы (выравниваем отступы)
-  width: 100%;
-  background-color: transparent;
-}
