@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Nexus.Bff.Services;
 using Rebout.Nexus.Contracts.Authentication.v1;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
@@ -13,6 +14,7 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
         {
             app.MapPost("srp/verify", async (
                 HttpContext httpContext,
+                [FromServices] JwtReadService jwtReader,
                 [FromBody] SrpVerifyRequest request, 
                 [FromServices] IMediator mediator, 
                 CancellationToken ct) =>
@@ -24,9 +26,12 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 
                 var tokens = result.Value;
 
+                var jwtData = jwtReader.ExtractData(tokens!.AccessToken);
+
                 var claims = new List<Claim>
                 {
-                    new(ClaimTypes.Name, request.Login)
+                    new(ClaimTypes.Name, jwtData.Login),
+                    new(ClaimTypes.NameIdentifier, jwtData.UserId)
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

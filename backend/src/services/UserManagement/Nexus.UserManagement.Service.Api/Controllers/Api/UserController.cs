@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryAccess;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
+using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfileInfo;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo;
 using Quantropic.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
@@ -146,6 +147,17 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
                     }
                     return BadRequest(result.StringMessage);
                 });
+        }
+
+        [HttpGet("profile-info/{userId}")]
+        public async Task<IActionResult> GetProfileInfo([FromRoute] string userId)
+        {
+            var result = await _mediator.Send(new GetProfileInfoQuery(Guid.Parse(userId)));
+
+            if (result.IsFailure)
+                return BadRequest(result.Errors);
+
+            return Ok(result.Value);
         }
     }
 }
