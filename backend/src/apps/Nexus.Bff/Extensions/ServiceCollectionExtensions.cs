@@ -1,5 +1,6 @@
 using System.Reflection;
 using Nexus.Bff.Infrastructure.Clients;
+using Nexus.Bff.Services;
 
 namespace Nexus.Bff.Extensions
 {
@@ -8,7 +9,8 @@ namespace Nexus.Bff.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
+            services.AddSingleton<JwtReadService>();
+            
             return services;
         }
 
