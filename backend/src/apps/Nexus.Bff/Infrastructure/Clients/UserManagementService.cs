@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Nexus.Bff.Features.Profile.Query.Info;
 using Quantropic.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
 
@@ -39,6 +40,21 @@ namespace Nexus.Bff.Infrastructure.Clients
             catch (Exception ex)
             {
                 return Result<PublicEncryptionInfoResponse?>.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+            }
+        }
+
+        public async Task<Result<ProfileInfoResponse>> GetProfileInfo(string userId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"api/users/profile-info/{userId}");
+                response.EnsureSuccessStatusCode();
+
+                return Result<ProfileInfoResponse>.Success(await response.Content.ReadFromJsonAsync<ProfileInfoResponse>());
+            }
+            catch (System.Exception ex)
+            {
+                return Result<ProfileInfoResponse>.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
             }
         }
     }
