@@ -1,5 +1,5 @@
 using MediatR;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 
 namespace Nexus.Bff.Features.Auth.Command.ResetPassword
 {

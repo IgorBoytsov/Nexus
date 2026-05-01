@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.RegisterAdmin
 {

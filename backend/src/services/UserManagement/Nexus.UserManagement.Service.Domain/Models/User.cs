@@ -1,11 +1,10 @@
-﻿using Microsoft.VisualBasic;
-using Nexus.UserManagement.Service.Domain.Enums;
+﻿using Nexus.UserManagement.Service.Domain.Enums;
 using Nexus.UserManagement.Service.Domain.Exceptions;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 using Shared.Kernel.Errors;
 using Shared.Kernel.Primitives;
 

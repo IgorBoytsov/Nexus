@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Nexus.Authentication.Service.Application.Services;
-using Quantropic.Security.Abstractions;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Security.Abstractions;
+using Crossdyne.Toolkit.Results;
 using Shared.Security.Verifiers;
 using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Contracts;

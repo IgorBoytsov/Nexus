@@ -1,4 +1,4 @@
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.Authentication.v1;
 
 namespace Nexus.Bff.Infrastructure.Clients

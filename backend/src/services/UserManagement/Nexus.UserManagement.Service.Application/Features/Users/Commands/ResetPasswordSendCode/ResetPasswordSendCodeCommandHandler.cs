@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 using Shared.Contracts;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordSendCode

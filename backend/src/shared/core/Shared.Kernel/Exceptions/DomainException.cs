@@ -1,4 +1,4 @@
-﻿using Quantropic.Toolkit.Results;
+﻿using Crossdyne.Toolkit.Results;
 
 namespace Shared.Kernel.Exceptions
 {
