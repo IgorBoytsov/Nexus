@@ -2,7 +2,7 @@ services:
   bff-workstation:
     build:
       context: ..
-      dockerfile: backend/src/apps/bff/Nexus.Bff/Dockerfile
+      dockerfile: backend/src/apps/Nexus.Bff/Dockerfile
     image: nexus/bff:latest 
 
   auth-api:
