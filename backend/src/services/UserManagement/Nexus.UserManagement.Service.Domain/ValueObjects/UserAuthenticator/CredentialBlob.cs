@@ -1,5 +1,5 @@
 ﻿using Nexus.UserManagement.Service.Domain.Exceptions;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 
 namespace Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator
 {

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.Authentication.v1;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.LoginByToken

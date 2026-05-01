@@ -1,6 +1,6 @@
 using MediatR;
 using Nexus.Bff.Infrastructure.Clients;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 using Shared.Contracts;
 
 namespace Nexus.Bff.Features.Auth.Command.ResetPassword

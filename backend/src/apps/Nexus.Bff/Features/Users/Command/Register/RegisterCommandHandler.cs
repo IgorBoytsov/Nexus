@@ -1,6 +1,6 @@
 using MediatR;
 using Nexus.Bff.Infrastructure.Clients;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
 
 namespace Nexus.Bff.Features.Users.Command.Register

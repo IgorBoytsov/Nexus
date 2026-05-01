@@ -2,7 +2,7 @@ import { Component, inject } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RecoveryStateService } from "../../services/reset-password-state.service";
-import { CryptoService, KeyDerivationService, SecurityUtils, SrpService } from "@quantropic/security";
+import { CryptoService, KeyDerivationService, SecurityUtils, SrpService } from "@crossdyne/security";
 import { CryptoApi } from "../../../../../core/clients/crypto.api";
 import { firstValueFrom } from "rxjs";
 import { RecoveryPasswordRequest } from "../../../../../contracts/requests/recovery-password.request";

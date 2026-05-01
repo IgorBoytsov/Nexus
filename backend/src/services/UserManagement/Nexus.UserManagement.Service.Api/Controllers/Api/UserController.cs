@@ -8,7 +8,7 @@ using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPass
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfileInfo;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
 using Shared.Contracts;
 using System.Security.Claims;

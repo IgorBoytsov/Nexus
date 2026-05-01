@@ -14,7 +14,7 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="Rebout.Nexus.Contracts" />
-    <PackageReference Include="Quantropic.Toolkit" />
+    <PackageReference Include="Crossdyne.Toolkit" />
   </ItemGroup>
 
   <ItemGroup>

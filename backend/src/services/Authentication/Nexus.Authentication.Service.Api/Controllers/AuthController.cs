@@ -4,7 +4,7 @@ using Nexus.Authentication.Service.Application.Features.Commands.LoginByToken;
 using Nexus.Authentication.Service.Application.Features.Commands.Refresh;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Kernel.Errors;
 

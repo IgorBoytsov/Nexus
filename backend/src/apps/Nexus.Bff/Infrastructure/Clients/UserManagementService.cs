@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Nexus.Bff.Features.Profile.Query.Info;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
 using Shared.Contracts;
 

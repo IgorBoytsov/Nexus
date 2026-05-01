@@ -1,4 +1,4 @@
-﻿using Quantropic.Toolkit.Results;
+﻿using Crossdyne.Toolkit.Results;
 using Shared.Kernel.Exceptions;
 
 namespace Nexus.UserManagement.Service.Domain.Exceptions

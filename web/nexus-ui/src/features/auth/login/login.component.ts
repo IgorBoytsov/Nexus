@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SrpService } from '@quantropic/security'
+import { SrpService } from '@crossdyne/security'
 import { SrpChallengeRequest } from '../../../contracts/requests/srp-challenge.request';
 import { SrpVerifyRequest } from '../../../contracts/requests/srp-verify.request';
 import { AuthApi } from './auth.api';

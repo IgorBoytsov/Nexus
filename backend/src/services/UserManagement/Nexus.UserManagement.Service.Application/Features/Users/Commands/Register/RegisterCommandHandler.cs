@@ -8,7 +8,7 @@ using Nexus.UserManagement.Service.Domain.SmartEnums;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
-using Quantropic.Toolkit.Results;
+using Crossdyne.Toolkit.Results;
 using Shared.Kernel.Exceptions;
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Register
 {
