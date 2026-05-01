@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nexus.UserManagement.Service.Api.Models.Requests.Admin;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RegisterAdmin;
 
-namespace Nexus.UserManagement.Service.Api.Controllers.Api
+namespace Nexus.UserManagement.Service.Api.Controllers
 {
     [ApiController]
     [Route("api/admin/users")]

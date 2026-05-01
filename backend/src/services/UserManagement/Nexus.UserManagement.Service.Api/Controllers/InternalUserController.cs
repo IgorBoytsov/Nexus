@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByLoginInternal;
 
-namespace Nexus.UserManagement.Service.Api.Controllers.Api
+namespace Nexus.UserManagement.Service.Api.Controllers
 {
     [ApiController]
     [Route("internal/api/users")]

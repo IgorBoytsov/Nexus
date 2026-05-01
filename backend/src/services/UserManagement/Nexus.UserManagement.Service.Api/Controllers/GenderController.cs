@@ -6,7 +6,7 @@ using Nexus.UserManagement.Service.Application.Features.Genders.Commands.Update;
 using Nexus.UserManagement.Service.Application.Features.Genders.Queries.GetAll;
 using Rebout.Nexus.Contracts.UserManagement.v1;
 
-namespace Nexus.UserManagement.Service.Api.Controllers.Api
+namespace Nexus.UserManagement.Service.Api.Controllers
 {
     [ApiController]
     [Route("api/genders")]
