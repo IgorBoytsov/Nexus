@@ -1,13 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryAccess;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPassword;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordConfirmCode;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordSendCode;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfileInfo;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo;
 using Quantropic.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
+using Shared.Contracts;
 using System.Security.Claims;
 
 namespace Nexus.UserManagement.Service.Api.Controllers.Api
@@ -68,31 +71,6 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
                             e.Message
                         })
                     });
-                });
-        }
-
-        [HttpPost("recovery-access")]
-        [AllowAnonymous]
-        public async Task<IActionResult> RecoveryAccess([FromBody] RecoveryAccessRequest request)
-        {
-            var command = new RecoveryAccessCommand(request.Login, request.Email, request.NewPassword);
-
-            var result = await _mediator.Send(command);
-
-            return result.Match<IActionResult>(
-                onSuccess: Ok,
-                onFailure: errors =>
-                {
-                    if (errors.Any(e => e.Code == ErrorCode.Server))
-                    {
-                        var serverError = errors.FirstOrDefault(e => e.Code == ErrorCode.Save);
-                        return StatusCode(StatusCodes.Status500InternalServerError, new
-                        {
-                            Tittle = "Внутренняя ошибка сервера",
-                            Details = serverError?.Message,
-                        });
-                    }
-                    return BadRequest(result.StringMessage);
                 });
         }
 
@@ -158,6 +136,42 @@ namespace Nexus.UserManagement.Service.Api.Controllers.Api
                 return BadRequest(result.Errors);
 
             return Ok(result.Value);
+        }
+
+        [HttpPost("recovery-password/send-code/{login}")]
+        public async Task<IActionResult> SendConfirmCodeEmail(string login)
+        {
+            var command = new ResetPasswordSendCodeCommand(login);
+            var result = await _mediator.Send(command);
+
+            if (result.IsFailure)
+                return BadRequest(result.Errors);
+
+            return Ok();
+        }
+
+        [HttpPost("recovery-password/confirm-code/{login}/{code}")]
+        public async Task<IActionResult> ConfirmCodeEmail(string login, int code)
+        {
+            var command = new ResetPasswordConfirmCodeCommand(login, code);
+            var result = await _mediator.Send(command);
+
+            if (result.IsFailure)
+                return BadRequest(result.Errors);
+
+            return Ok();
+        }
+        
+        [HttpPost("recovery-password")]
+        public async Task<IActionResult> RecoveryPassword([FromBody] RecoveryPasswordRequest request)
+        {
+            var command = new ResetPasswordCommand(request.Login, request.Verifier, request.ClientSalt, request.EncryptedDek, request.EncryptionAlgorithm, request.Iterations, request.KdfType);
+            var result = await _mediator.Send(command);
+            
+            if (result.IsFailure)
+                return BadRequest(result.Errors);
+                
+            return Ok();
         }
     }
 }

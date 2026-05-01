@@ -1,4 +1,5 @@
-﻿using Nexus.UserManagement.Service.Domain.Enums;
+﻿using Microsoft.VisualBasic;
+using Nexus.UserManagement.Service.Domain.Enums;
 using Nexus.UserManagement.Service.Domain.Exceptions;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
@@ -130,15 +131,22 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public void AddUserAuthenticator(UserAuthenticatorType method, IdentityIdentifier identifier, CredentialBlob? credentialBlob, string? salt)
         {
             if (_userAuthenticators.Any(ua => ua.Method == method))
-                throw new UserAuthenticatorException(new Error(AppErrors.Duplicate, $"Способ входа - {method} уже используеться. Повторно его добавить нельзя."));
+                throw new UserAuthenticatorException(new Error(AppErrors.Duplicate, $"Способ входа - {method} уже используется. Повторно его добавить нельзя."));
        
             if(_userAuthenticators.Any(ua => ua.Identifier == identifier))
-                throw new UserAuthenticatorException(new Error(AppErrors.Duplicate, $"Идентификатор - {identifier} уже используеться. Повторно его добавить нельзя."));
+                throw new UserAuthenticatorException(new Error(AppErrors.Duplicate, $"Идентификатор - {identifier} уже используется. Повторно его добавить нельзя."));
 
             var userAuth = Models.UserAuthenticator.Create(this.Id, method, identifier, credentialBlob, salt);
             _userAuthenticators.Add(userAuth);
 
             DateUpdate = DateTime.UtcNow;
+        }
+
+        public void UpdateSrpVerifier(IdentityIdentifier verifier, CredentialBlob credentialBlob, string salt)
+        {
+            var srp = _userAuthenticators.FirstOrDefault(x => x.Method == UserAuthenticatorType.SRP);
+
+            srp?.UpdateSrpVerifier(verifier, credentialBlob, salt);
         }
 
         #endregion
@@ -154,6 +162,13 @@ namespace Nexus.UserManagement.Service.Domain.Models
             _userSecurityAssets.Add(userSecurity);
 
             DateUpdate = DateTime.UtcNow;
+        }
+
+        public void UpdateMainDek(EncryptedAssetValue encryptedAssetValue, EncryptionMetadata encryptionMetadata)
+        {
+            var dek = _userSecurityAssets.FirstOrDefault(x => x.AssetType == AssetType.MainDek);
+
+            dek?.UpdateMainDek(encryptedAssetValue, encryptionMetadata);
         }
 
         #endregion

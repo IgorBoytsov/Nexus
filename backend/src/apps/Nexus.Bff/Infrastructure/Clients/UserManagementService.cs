@@ -2,6 +2,7 @@ using System.Text.Json;
 using Nexus.Bff.Features.Profile.Query.Info;
 using Quantropic.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
+using Shared.Contracts;
 
 namespace Nexus.Bff.Infrastructure.Clients
 {
@@ -55,6 +56,51 @@ namespace Nexus.Bff.Infrastructure.Clients
             catch (System.Exception ex)
             {
                 return Result<ProfileInfoResponse>.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+            }
+        }
+
+        public async Task<Result> SendConfirmCodeEmail(string login)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"api/users/recovery-password/send-code/{login}", null);
+                response.EnsureSuccessStatusCode();
+
+                return Result.Success();
+            }
+            catch (System.Exception ex)
+            {
+                return Result.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+            }
+        }
+
+        public async Task<Result> ConfirmCodeEmail(string login, string code)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"api/users/recovery-password/confirm-code/{login}/{code}", null);
+                response.EnsureSuccessStatusCode();
+
+                return Result.Success();
+            }
+            catch (System.Exception ex)
+            {
+                return Result.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+            }
+        }
+
+        public async Task<Result> RecoveryPassword(RecoveryPasswordRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"api/users/recovery-password", request);
+                response.EnsureSuccessStatusCode();
+
+                return Result.Success();
+            }
+            catch (System.Exception ex)
+            {
+                return Result.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
             }
         }
     }

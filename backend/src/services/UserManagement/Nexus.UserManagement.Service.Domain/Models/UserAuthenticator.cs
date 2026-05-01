@@ -29,5 +29,12 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         internal static UserAuthenticator Create(UserId userId,UserAuthenticatorType method, IdentityIdentifier identifier, CredentialBlob? creditialData, string? salt)
             => new(UserAuthenticatorId.New(), userId, method, identifier, creditialData, salt);
+
+        internal void UpdateSrpVerifier(IdentityIdentifier verifier, CredentialBlob credentialBlob, string salt)
+        {
+            Identifier = verifier;
+            CredentialData = credentialBlob;
+            Salt = salt;
+        }
     }
 }

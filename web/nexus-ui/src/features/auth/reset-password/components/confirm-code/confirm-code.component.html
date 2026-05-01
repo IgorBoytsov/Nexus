@@ -1,0 +1,21 @@
+<div class="auth-page">
+    <div class="form-container">
+        <p class="title">Подтверждение кода</p>
+
+        <form [formGroup]="stepCodeConfirmForm" (ngSubmit)="onSubmit()" class="login-form">
+            <div class="form-field">
+                <label for="login">Код</label>
+                <input id="code" type="text" name="code" formControlName="code" [class.error]="stepCodeConfirmForm.get('code')?.invalid && stepCodeConfirmForm.get('code')?.touched"/>
+                @if (stepCodeConfirmForm.get('code')?.hasError('required') && stepCodeConfirmForm.get('code')?.touched) {
+                    <small class="error-message">Укажите код</small>
+                }   
+            </div>
+
+            @if (errorMessage) {
+                <small class="alert alert-error">{{errorMessage}}</small>
+            }
+                
+            <button type="submit" [disabled]="stepCodeConfirmForm.invalid || isLoading" class="btn-sumbit">{{ isLoading ? 'Подтверждение..' : 'Отправить'}}</button>
+        </form>
+    </div>
+</div>

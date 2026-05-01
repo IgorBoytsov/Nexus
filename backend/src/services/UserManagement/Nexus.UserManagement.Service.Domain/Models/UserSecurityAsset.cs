@@ -28,5 +28,10 @@ namespace Nexus.UserManagement.Service.Domain.Models
         internal static UserSecurityAsset Create(UserId userId, AssetType assetType, EncryptedAssetValue encryptedAssetValue, EncryptionMetadata encryptionMetadata)
             => new(UserSecurityAssetId.New(), userId, assetType, encryptedAssetValue, encryptionMetadata);
 
+        internal void UpdateMainDek(EncryptedAssetValue encryptedAssetValue, EncryptionMetadata encryptionMetadata)
+        {
+            EncryptedValue = encryptedAssetValue;
+            EncryptionMetadata = encryptionMetadata;
+        }
     }
 }
