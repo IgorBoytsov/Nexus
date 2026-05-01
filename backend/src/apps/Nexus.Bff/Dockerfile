@@ -21,4 +21,4 @@ EXPOSE 80
 
 COPY --from=build /app/publish .
 
-ENTRYPOINT ["dotnet", "Nexus.Bff.Workstation.dll"]
+ENTRYPOINT ["dotnet", "Nexus.Bff.dll"]
