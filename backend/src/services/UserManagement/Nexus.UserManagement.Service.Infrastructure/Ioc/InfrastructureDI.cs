@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
+using Shared.Redis;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Ioc
 {
@@ -12,6 +13,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Ioc
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
+            services.AddCashService(configuration);
             services.AddDbContext<WriteContext>(option => option.UseNpgsql(connectionString));
             services.AddScoped<IWriteDbContext>(provider => provider.GetRequiredService<WriteContext>());
 

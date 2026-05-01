@@ -1,10 +1,10 @@
 ﻿using MediatR;
-using Nexus.Authentication.Service.Application.Common.Abstractions;
 using Nexus.Authentication.Service.Application.Services;
 using Quantropic.Security.Abstractions;
 using Quantropic.Toolkit.Results;
 using Shared.Security.Verifiers;
 using Rebout.Nexus.Contracts.Authentication.v1;
+using Shared.Contracts;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {
