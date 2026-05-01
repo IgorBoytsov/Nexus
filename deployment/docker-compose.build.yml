@@ -19,6 +19,6 @@ services:
 
   nexus-ui:
     build:
-      context: ..
-      dockerfile: web/nexus-ui/Dockerfile
+      context: ../web/nexus-ui   
+      dockerfile: Dockerfile
     image: nexus/ui:latest
