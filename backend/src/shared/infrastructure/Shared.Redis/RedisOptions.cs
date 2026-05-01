@@ -1,4 +1,4 @@
-﻿namespace Nexus.Authentication.Service.Infrastructure.Redis
+﻿namespace Shared.Redis
 {
     public class RedisOptions
     {

@@ -7,17 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper"/>
-    <PackageReference Include="FluentValidation"/>
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
-    <PackageReference Include="Konscious.Security.Cryptography.Argon2"/>
-    <PackageReference Include="MediatR"/>
-    <PackageReference Include="Microsoft.Data.SqlClient"/>
-    <PackageReference Include="Rebout.Nexus.Contracts"/>
-    <PackageReference Include="Quantropic.Toolkit"/>
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="Konscious.Security.Cryptography.Argon2" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Rebout.Nexus.Contracts" />
+    <PackageReference Include="Quantropic.Toolkit" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\contracts\Shared.Contracts\Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
     <ProjectReference Include="..\..\..\shared\security\Shared.Security\Shared.Security.csproj" />
     <ProjectReference Include="..\Nexus.UserManagement.Service.Application.Abstractions\Nexus.UserManagement.Service.Application.Abstractions.csproj" />

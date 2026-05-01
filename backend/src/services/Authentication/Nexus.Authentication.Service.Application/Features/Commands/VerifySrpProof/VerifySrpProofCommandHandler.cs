@@ -1,10 +1,10 @@
 ﻿using MediatR;
-using Nexus.Authentication.Service.Application.Common.Abstractions;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Quantropic.Security.Abstractions;
 using Quantropic.Toolkit.Results;
 using Rebout.Nexus.Contracts.Authentication.v1;
+using Shared.Contracts;
 using Shared.Kernel.Errors;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof

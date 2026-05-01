@@ -1,4 +1,4 @@
-﻿namespace Nexus.Authentication.Service.Application.Common.Abstractions
+﻿namespace Shared.Contracts
 {
     public interface IRedisCacheService
     {

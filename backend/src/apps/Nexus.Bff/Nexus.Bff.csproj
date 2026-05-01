@@ -12,10 +12,11 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="Rebout.Nexus.Contracts" />
     <PackageReference Include="Quantropic.Toolkit" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\shared\contracts\Shared.Contracts\Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
   </ItemGroup>
 

@@ -1,0 +1,21 @@
+<div class="auth-page">
+    <div class="form-container">
+        <p class="title">Установка пароля</p>
+
+        <form [formGroup]="resetForm" (ngSubmit)="onSubmit()" class="login-form">
+            <div class="form-field">
+                <label for="newPassword">Новый пароль</label>
+                <input id="newPassword" type="text" name="newPassword" formControlName="newPassword" [class.error]="resetForm.get('newPassword')?.invalid && resetForm.get('newPassword')?.touched"/>
+                @if (resetForm.get('newPassword')?.hasError('required') && resetForm.get('newPassword')?.touched) {
+                    <small class="error-message">Логин нужно обязательно указать</small>
+                }   
+            </div>
+
+            @if (errorMessage) {
+                <small class="alert alert-error">{{errorMessage}}</small>
+            }
+                
+            <button type="submit" [disabled]="resetForm.invalid || isLoading" class="btn-sumbit">{{ isLoading ? 'Поиск..' : 'Найти'}}</button>
+        </form>
+    </div>
+</div>

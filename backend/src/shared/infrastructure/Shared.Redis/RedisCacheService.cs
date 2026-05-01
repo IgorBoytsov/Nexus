@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
-using Nexus.Authentication.Service.Application.Common.Abstractions;
+using Shared.Contracts;
 using StackExchange.Redis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Nexus.Authentication.Service.Infrastructure.Redis
+namespace Shared.Redis
 {
     internal sealed class RedisCacheService : IRedisCacheService
     {

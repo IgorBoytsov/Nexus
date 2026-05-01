@@ -1,0 +1,25 @@
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Shared.Contracts;
+
+namespace Nexus.Bff.Features.Auth.Command.ResetPassword
+{
+    public static class ResetPasswordEndpoint
+    {
+        public static void MapRecoveryAccess(this IEndpointRouteBuilder app)
+        {
+            app.MapPost("reset-password", async (
+                [FromBody] RecoveryPasswordRequest request, 
+                [FromServices] IMediator mediator) =>
+            {
+                var command = new ResetPasswordCommand(request.Login, request.Verifier, request.ClientSalt, request.EncryptedDek, request.EncryptionAlgorithm, request.Iterations, request.KdfType);
+                var result = await mediator.Send(command);
+                            
+                if (result.IsFailure)
+                    return Results.BadRequest(result.Errors);
+
+                return Results.Ok();
+            });
+        }
+    }
+}
