@@ -2,19 +2,19 @@ services:
   bff-workstation:
     build:
       context: ..
-      dockerfile: backend/apps/bff/Nexus.Bff.Workstation/Dockerfile
+      dockerfile: backend/src/apps/bff/Nexus.Bff/Dockerfile
     image: nexus/bff:latest 
 
   auth-api:
     build:
       context: ..
-      dockerfile: backend/services/Authentication/Nexus.Authentication.Service.Api/Dockerfile
+      dockerfile: backend/src/services/Authentication/Nexus.Authentication.Service.Api/Dockerfile
     image: nexus/auth-api:latest
 
-  user-mgmt-api:
+  user-management-api:
     build:
       context: ..
-      dockerfile: backend/services/UserManagement/Nexus.UserManagement.Service.Api/Dockerfile
+      dockerfile: backend/src/services/UserManagement/Nexus.UserManagement.Service.Api/Dockerfile
     image: nexus/user-management-api:latest
 
   nexus-ui:
