@@ -55,7 +55,7 @@ namespace Nexus.UserManagement.Service.Api
 
             if (args.FirstOrDefault()?.ToLower() == "create-admin")
             {
-                Console.WriteLine("Запуск команды создания администратора...");
+                Console.WriteLine("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ...");
 
                 string? GetArgumentValue(string argName)
                 {
@@ -73,8 +73,8 @@ namespace Nexus.UserManagement.Service.Api
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Ошибка: не все обязательные аргументы переданы.");
-                    Console.WriteLine("Пример использования: dotnet run create-admin --username <имя> --email <email> --password <пароль>");
+                    Console.WriteLine("пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.");
+                    Console.WriteLine("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: dotnet run create-admin --username <пїЅпїЅпїЅ> --email <email> --password <пїЅпїЅпїЅпїЅпїЅпїЅ>");
                     Console.ResetColor();
                     return;
                 }
@@ -91,19 +91,19 @@ namespace Nexus.UserManagement.Service.Api
                     if (result.IsSuccess)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"Администратор '{username}' успешно создан");
+                        Console.WriteLine($"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ '{username}' пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ");
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Ошибка при создании администратора: {result.StringMessage}");
+                        Console.WriteLine($"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {result.StringMessage}");
                     }
                     Console.ResetColor();
                 }
                 catch (Exception ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Произошла критическая ошибка: {ex.Message}");
+                    Console.WriteLine($"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: {ex.Message}");
                     Console.ResetColor();
                 }
 

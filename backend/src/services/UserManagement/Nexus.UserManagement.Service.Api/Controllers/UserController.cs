@@ -13,7 +13,7 @@ using Rebout.Nexus.Contracts.UserManagement.v1;
 using Shared.Contracts;
 using System.Security.Claims;
 
-namespace Nexus.UserManagement.Service.Api.Controllers.Api
+namespace Nexus.UserManagement.Service.Api.Controllers
 {
     public sealed record RecoveryAccessRequest(string Login, string Email, string NewPassword);
 
