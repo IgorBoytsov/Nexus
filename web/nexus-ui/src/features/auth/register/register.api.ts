@@ -9,13 +9,12 @@ import { RegisterRequest } from "../../../contracts/requests/register-user.reque
 })
 export class RegisterApi {
     private http: HttpClient = inject(HttpClient);
-    private baseUrl = 'http://127.0.0.1:5015';
 
     register(data: RegisterRequest): Observable<void> {
-        return this.http.post<void>(`${this.baseUrl}/register`, data);
+        return this.http.post<void>(`/register`, data);
     }
 
     getPublicKey(): Observable<PublicKeyResponse> {
-        return this.http.get<PublicKeyResponse>(`${this.baseUrl}/public-key`);
+        return this.http.get<PublicKeyResponse>(`/public-key`);
     }
 }

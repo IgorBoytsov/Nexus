@@ -13,7 +13,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalFrontend", policy =>
     {
-        policy.WithOrigins("http://127.0.0.1:4200")
+        policy.WithOrigins("http://127.0.0.1:4200", "https://account.crossdyne.com")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -54,11 +54,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowLocalFrontend");
 app.UseAuthentication(); 
 app.UseAuthorization();  
-
-app.UseHttpsRedirection();
 app.MapEndpoints(Assembly.GetExecutingAssembly());
 app.Run();

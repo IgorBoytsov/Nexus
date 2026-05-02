@@ -11,13 +11,12 @@ import { AuthResponse } from '../../../contracts/responses/auth/auth.response'
 })
 export class AuthApi {
     private http: HttpClient = inject(HttpClient);
-    private baseUrl = 'http://127.0.0.1:5015';
 
     getCrpChallenge(data: SrpChallengeRequest): Observable<SrpChallengeResponse> {
-        return this.http.post<SrpChallengeResponse>(`${this.baseUrl}/srp/challenge`, data);
+        return this.http.post<SrpChallengeResponse>(`/srp/challenge`, data);
     }
     
     srpVerifyProof(data: SrpVerifyRequest): Observable<AuthResponse> {
-        return this.http.post<AuthResponse>(`${this.baseUrl}/srp/verify`, data, { withCredentials: true });
+        return this.http.post<AuthResponse>(`/srp/verify`, data, { withCredentials: true });
     }
 }
