@@ -8,9 +8,8 @@ import { ProfileInfo } from "./types";
 })
 export class ProfileInfoApi{
     private http: HttpClient = inject(HttpClient);
-    private baseUrl = 'http://127.0.0.1:5015';
 
     getProfileInfo(): Observable<ProfileInfo> {
-        return this.http.get<ProfileInfo>(`${this.baseUrl}/profile`, { withCredentials: true });
+        return this.http.get<ProfileInfo>(`/profile`, { withCredentials: true });
     }
 }

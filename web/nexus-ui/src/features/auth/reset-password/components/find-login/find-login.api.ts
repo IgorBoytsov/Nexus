@@ -6,8 +6,7 @@ import { inject, Injectable } from "@angular/core";
 })
 export class StepLoginApi{
     private http = inject(HttpClient);
-    private baseUrl = 'http://127.0.0.1:5015';
 
     generateCode = (login: string) => 
-        this.http.post<void>(`${this.baseUrl}/recovery-password/send-confirm-code/${login}`, null);
+        this.http.post<void>(`/recovery-password/send-confirm-code/${login}`, null);
 }
