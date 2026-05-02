@@ -1,0 +1,74 @@
+# ==========================================
+# GIT & VERSION CONTROL
+# ==========================================
+.git
+.gitignore
+.gitattributes
+.github/
+.gitlab-ci.yml
+
+# ==========================================
+# IDE & EDITORS
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# ==========================================
+# BUILD ARTIFACTS & DEPENDENCIES
+# ==========================================
+bin/
+obj/
+dist/
+node_modules/
+npm-debug.log
+yarn-error.log
+*.log
+
+# ==========================================
+# DOCKER & DEPLOYMENT FILES
+# ==========================================
+Dockerfile*
+docker-compose*.yml
+.docker/
+deployment/
+.env
+.env.local
+.env.*.local
+
+# ==========================================
+# DOCUMENTATION & MISC
+# ==========================================
+README.md
+CHANGELOG.md
+LICENSE
+*.md
+docs/
+test-results/
+coverage/
+*.trx
+*.html
+*.xml
+
+# ==========================================
+# OS FILES
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================================
+# TEMPORARY FILES
+# ==========================================
+tmp/
+temp/
+*.tmp
+*.bak
+*.old

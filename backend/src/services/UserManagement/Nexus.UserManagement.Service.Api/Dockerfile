@@ -1,30 +1,32 @@
-# См. статью по ссылке https://aka.ms/customizecontainer, чтобы узнать как настроить контейнер отладки и как Visual Studio использует этот Dockerfile для создания образов для ускорения отладки.
-
-# Этот этап используется при запуске из VS в быстром режиме (по умолчанию для конфигурации отладки)
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-
-# Этот этап используется для сборки проекта службы
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-ARG BUILD_CONFIGURATION=Release
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY ["src/services/UserManagement/Nexus.UserManagement.Service.Api/Nexus.UserManagement.Service.Api.csproj", "src/services/UserManagement/Nexus.UserManagement.Service.Api/"]
-RUN dotnet restore "./src/services/UserManagement/Nexus.UserManagement.Service.Api/Nexus.UserManagement.Service.Api.csproj"
+
+COPY ["backend/Directory.Packages.props", "./"]
+
+COPY ["backend/src/services/UserManagement/Nexus.UserManagement.Service.Api/Nexus.UserManagement.Service.Api.csproj", "backend/src/services/UserManagement/Nexus.UserManagement.Service.Api/"]
+
+COPY ["backend/src/services/UserManagement/Nexus.UserManagement.Service.Application/Nexus.UserManagement.Service.Application.csproj", "backend/src/services/UserManagement/Nexus.UserManagement.Service.Application/"]
+COPY ["backend/src/services/UserManagement/Nexus.UserManagement.Service.Infrastructure/Nexus.UserManagement.Service.Infrastructure.csproj", "backend/src/services/UserManagement/Nexus.UserManagement.Service.Infrastructure/"]
+
+COPY ["backend/src/services/UserManagement/Nexus.UserManagement.Service.Application.Abstractions/Nexus.UserManagement.Service.Application.Abstractions.csproj", "backend/src/services/UserManagement/Nexus.UserManagement.Service.Application.Abstractions/"]
+COPY ["backend/src/services/UserManagement/Nexus.UserManagement.Service.Domain/Nexus.UserManagement.Service.Domain.csproj", "backend/src/services/UserManagement/Nexus.UserManagement.Service.Domain/"]
+
+COPY ["backend/src/shared/contracts/Shared.Contracts/Shared.Contracts.csproj", "backend/src/shared/contracts/Shared.Contracts/"]
+COPY ["backend/src/shared/core/Shared.Kernel/Shared.Kernel.csproj", "backend/src/shared/core/Shared.Kernel/"]
+COPY ["backend/src/shared/security/Shared.Security/Shared.Security.csproj", "backend/src/shared/security/Shared.Security/"]
+COPY ["backend/src/shared/infrastructure/Shared.Redis/Shared.Redis.csproj", "backend/src/shared/infrastructure/Shared.Redis/"]
+
+RUN dotnet restore "backend/src/services/UserManagement/Nexus.UserManagement.Service.Api/Nexus.UserManagement.Service.Api.csproj"
+
 COPY . .
-WORKDIR "/src/src/services/UserManagement/Nexus.UserManagement.Service.Api"
-RUN dotnet build "./Nexus.UserManagement.Service.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Nexus.UserManagement.Service.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+WORKDIR "/src/backend/src/services/UserManagement/Nexus.UserManagement.Service.Api"
+RUN dotnet publish -c Release -o /app/publish --no-restore
 
-# Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
+EXPOSE 80
+
+COPY --from=build /app/publish .
+
 ENTRYPOINT ["dotnet", "Nexus.UserManagement.Service.Api.dll"]
