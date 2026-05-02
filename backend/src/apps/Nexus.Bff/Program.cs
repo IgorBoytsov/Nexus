@@ -54,11 +54,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowLocalFrontend");
 app.UseAuthentication(); 
 app.UseAuthorization();  
-
-app.UseHttpsRedirection();
 app.MapEndpoints(Assembly.GetExecutingAssembly());
 app.Run();
