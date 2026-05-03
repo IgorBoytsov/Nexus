@@ -7,7 +7,7 @@ namespace Nexus.Bff.Features.Profile.Query.Info
 {
     public static class GetProfileInfoQueryEndpoint
     {
-        public static void MapRegister(this IEndpointRouteBuilder app)
+        public static void MapProfileInfo(this IEndpointRouteBuilder app)
         {
             app.MapGet("/profile", async (
                 HttpContext httpContext, 
