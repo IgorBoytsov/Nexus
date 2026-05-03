@@ -1,13 +1,16 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Nexus.Bff.Extensions;
+using Shared.Validations.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var assembly = Assembly.GetExecutingAssembly(); 
 
 builder.Services.AddOpenApi();
 
 builder.Services.AddAuthorization();
-builder.Services.AddServices().AddHttpClients(builder.Configuration);
+builder.Services.AddServices().AddHttpClients(builder.Configuration).AddValidations(assembly);
 
 builder.Services.AddCors(options =>
 {

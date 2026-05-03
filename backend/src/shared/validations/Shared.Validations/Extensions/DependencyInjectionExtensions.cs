@@ -10,7 +10,9 @@ namespace Shared.Validations.Extensions
     {
         public static IServiceCollection AddValidations(this IServiceCollection services, Assembly assembly)
         {
-            services.AddValidatorsFromAssembly(assembly);
+            List<Assembly> assemblies = [assembly, Assembly.GetExecutingAssembly()];
+
+            services.AddValidatorsFromAssemblies(assemblies);
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             return services;
