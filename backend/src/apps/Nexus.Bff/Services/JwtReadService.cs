@@ -10,8 +10,7 @@ namespace Nexus.Bff.Services
 
         public JwtExtractedData ExtractData(string token)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken(token);
+            var jwt = _handler.ReadJwtToken(token);
 
             var userId = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
             var login = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Name)?.Value;
