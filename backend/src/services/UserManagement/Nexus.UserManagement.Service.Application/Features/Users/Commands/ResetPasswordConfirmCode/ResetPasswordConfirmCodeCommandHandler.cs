@@ -16,9 +16,10 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
             if (string.IsNullOrWhiteSpace(codeStr))
                 return Result.Failure(new Error(AppErrors.TimeEnded, "Время действия кода закончилось. Повторите попытку"));
 
-            var code = int.Parse(codeStr);
+            var storageCode = int.Parse(codeStr);
+            var requestCode = int.Parse(request.Code);
 
-            if (code != request.Code)
+            if (storageCode != requestCode)
                 return Result.Failure(new Error(AppErrors.IncorrectValue, "Вы ввели не верный код."));
 
             await _redis.RemoveAsync($"ConfirmCode for {request.Login}");

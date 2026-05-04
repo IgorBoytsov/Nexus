@@ -151,7 +151,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         }
 
         [HttpPost("recovery-password/confirm-code/{login}/{code}")]
-        public async Task<IActionResult> ConfirmCodeEmail(string login, int code)
+        public async Task<IActionResult> ConfirmCodeEmail(string login, string code)
         {
             var command = new ResetPasswordConfirmCodeCommand(login, code);
             var result = await _mediator.Send(command);

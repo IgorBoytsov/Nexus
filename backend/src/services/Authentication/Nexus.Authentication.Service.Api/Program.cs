@@ -1,13 +1,8 @@
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
-using Nexus.Authentication.Service.Application.Secure;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Infrastructure.Ioc;
-using Crossdyne.Security.Abstractions;
-using Crossdyne.Security.Srp.Server;
-using Shared.Security.Hasher;
-using Shared.Security.Verifiers;
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
+using Nexus.Authentication.Service.Application.Ioc;
 
 namespace Nexus.Authentication.Service.Api
 {
@@ -22,16 +17,10 @@ namespace Nexus.Authentication.Service.Api
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
+            builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
 
-            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-            builder.Services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
-            builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-            builder.Services.AddSingleton<IVerifierProtector, RsaDecryptor>();
-            builder.Services.AddTransient<ISrpServer, SrpServerService>();
-
             builder.Services.AddHttpClient<IUserManagementServiceClient, UserManagementServiceClient>(client => client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:UserManagement"]!));
-            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetSrpChallengeCommandHandler).Assembly));
 
             var app = builder.Build();
 
