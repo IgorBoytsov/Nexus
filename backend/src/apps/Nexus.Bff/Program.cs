@@ -1,13 +1,17 @@
 using System.Reflection;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Nexus.Bff.Extensions;
 using Shared.Validations.Extensions;
+using Shared.Web.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var assembly = Assembly.GetExecutingAssembly(); 
 
 builder.Services.AddOpenApi();
+
+builder.Services.Configure<JsonSerializerOptions>(opt => opt.AddCrossdyneDefaults());
 
 builder.Services.AddAuthorization();
 builder.Services.AddServices().AddHttpClients(builder.Configuration).AddValidations(assembly);

@@ -3,23 +3,26 @@ using Nexus.Bff.Features.Profile.Query.Info;
 using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
 using Shared.Contracts;
+using Microsoft.Extensions.Options;
 
 namespace Nexus.Bff.Infrastructure.Clients
 {
-    public class UserManagementService(HttpClient httpClient) : IUserManagementService
+    public class UserManagementService(HttpClient httpClient, IOptions<JsonSerializerOptions> jsonOptions) : IUserManagementService
     {
         private readonly HttpClient _httpClient = httpClient;
-        private readonly JsonSerializerOptions _jsonSerializerOptions = new()
-        {
-            PropertyNameCaseInsensitive = true,
-        };
+        private readonly JsonSerializerOptions _jsonOptions = jsonOptions.Value;
         
         public async Task<Result> Register(RegisterUserRequest request)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("api/users", request, _jsonSerializerOptions);
-                response.EnsureSuccessStatusCode();
+                var response = await _httpClient.PostAsJsonAsync("api/users", request, _jsonOptions);
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result.Failure(errors!);
+                }
 
                 return Result.Success();
             }
@@ -34,7 +37,12 @@ namespace Nexus.Bff.Infrastructure.Clients
             try
             {
                 var response = await _httpClient.GetAsync($"api/users/public-encryption-info/{login}");
-                response.EnsureSuccessStatusCode();
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result<PublicEncryptionInfoResponse?>.Failure(errors!);
+                }
 
                 return Result<PublicEncryptionInfoResponse?>.Success(await response.Content.ReadFromJsonAsync<PublicEncryptionInfoResponse>());
             }
@@ -49,7 +57,12 @@ namespace Nexus.Bff.Infrastructure.Clients
             try
             {
                 var response = await _httpClient.GetAsync($"api/users/profile-info/{userId}");
-                response.EnsureSuccessStatusCode();
+                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result<ProfileInfoResponse?>.Failure(errors!)!;
+                }
 
                 return Result<ProfileInfoResponse>.Success(await response.Content.ReadFromJsonAsync<ProfileInfoResponse>());
             }
@@ -64,7 +77,12 @@ namespace Nexus.Bff.Infrastructure.Clients
             try
             {
                 var response = await _httpClient.PostAsync($"api/users/recovery-password/send-code/{login}", null);
-                response.EnsureSuccessStatusCode();
+                                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result.Failure(errors!)!;
+                }
 
                 return Result.Success();
             }
@@ -79,7 +97,12 @@ namespace Nexus.Bff.Infrastructure.Clients
             try
             {
                 var response = await _httpClient.PostAsync($"api/users/recovery-password/confirm-code/{login}/{code}", null);
-                response.EnsureSuccessStatusCode();
+                                                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result.Failure(errors!)!;
+                }
 
                 return Result.Success();
             }
@@ -94,7 +117,12 @@ namespace Nexus.Bff.Infrastructure.Clients
             try
             {
                 var response = await _httpClient.PostAsJsonAsync($"api/users/recovery-password", request);
-                response.EnsureSuccessStatusCode();
+                                                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result.Failure(errors!)!;
+                }
 
                 return Result.Success();
             }

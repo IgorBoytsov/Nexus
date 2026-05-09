@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.Bff.Services;
+using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Profile.Query.Info
 {
@@ -20,7 +21,7 @@ namespace Nexus.Bff.Features.Profile.Query.Info
                 var result = await mediator.Send(new GetProfileInfoQuery(tokenData.UserId), ct);
 
                 if(result.IsFailure)
-                    return Results.BadRequest(result.Errors);
+                    return result.Errors.MapToMinimalApiResult();
 
                 return Results.Ok(result.Value); 
             }).RequireAuthorization();

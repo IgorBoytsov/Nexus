@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Rebout.Nexus.Contracts.UserManagement.v1;
+using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Users.Command.Register
 {
@@ -27,7 +28,7 @@ namespace Nexus.Bff.Features.Users.Command.Register
                 var result = await mediator.Send(command, ct);
 
                 if (result.IsFailure)
-                    return Results.BadRequest(result.Errors);
+                    return result.Errors.MapToMinimalApiResult();
 
                 return Results.Ok();
             });

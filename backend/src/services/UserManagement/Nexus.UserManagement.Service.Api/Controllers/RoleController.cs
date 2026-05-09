@@ -5,6 +5,7 @@ using Nexus.UserManagement.Service.Application.Features.Roles.Commands.Delete;
 using Nexus.UserManagement.Service.Application.Features.Roles.Commands.Update;
 using Nexus.UserManagement.Service.Application.Features.Roles.Queries.GetAll;
 using Rebout.Nexus.Contracts.UserManagement.v1;
+using Shared.Web.Extensions;
 
 namespace Nexus.UserManagement.Service.Api.Controllers
 {
@@ -19,7 +20,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         {
             var result = await _mediator.Send(new CreateRoleCommand(request.Name));
 
-            return result.Match<IActionResult>(onSuccess: () => Ok(result.Value), onFailure: errors => BadRequest(errors));
+            return result.Match<IActionResult>(onSuccess: () => Ok(result.Value), onFailure: this.MapActionResult);
         }
 
         [HttpPatch("{id}/update")]
@@ -27,7 +28,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         {
             var result = await _mediator.Send(new UpdateRoleCommand(id, request.Name));
 
-            return result.Match<IActionResult>(onSuccess: () => Ok(), onFailure: errors => BadRequest(errors));
+            return result.Match<IActionResult>(onSuccess: Ok, onFailure: this.MapActionResult);
         }
 
         [HttpDelete("{id}")]
@@ -35,7 +36,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         {
             var result = await _mediator.Send(new DeleteRoleCommand(id));
 
-            return result.Match<IActionResult>(onSuccess: () => Ok(), onFailure: errors => BadRequest(errors));
+            return result.Match<IActionResult>(onSuccess: Ok, onFailure: this.MapActionResult);
         }
 
         [HttpGet]

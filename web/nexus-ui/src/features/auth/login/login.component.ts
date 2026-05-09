@@ -1,11 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SrpService } from '@crossdyne/security'
-import { SrpChallengeRequest } from '../../../contracts/requests/srp-challenge.request';
-import { SrpVerifyRequest } from '../../../contracts/requests/srp-verify.request';
 import { AuthApi } from './auth.api';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Result } from '@crossdyne/toolkit';
 
 @Component({
   selector: 'app-login',
@@ -16,13 +16,15 @@ import { firstValueFrom } from 'rxjs';
 })
 
 export class LoginComponent {
-  private fb = inject(FormBuilder); 
-  private router = inject(Router); 
-  private authApi = inject(AuthApi);
+  private readonly fb = inject(FormBuilder); 
+  private readonly router = inject(Router); 
+  private readonly authApi = inject(AuthApi);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly srpService = new SrpService();
 
   loginForm: FormGroup;
-  isLoading = false;
-  errorMessage: string | null = null;
+  isLoading = signal(false);
+  errorMessage = signal<string | null>(null);
 
   readonly minUsernameLength = 2;
 
@@ -33,40 +35,63 @@ export class LoginComponent {
     });
   }
 
-  srpService = new SrpService();
-
   async onSubmit(): Promise<void> {
     if (this.loginForm.invalid)
       return;
-    const { login: login, password } = this.loginForm.value;
 
-    const srpChallengeRequest: SrpChallengeRequest = { login: login };
-    const srpChallengeResponse = await firstValueFrom(this.authApi.getCrpChallenge(srpChallengeRequest));
-    const { salt, b } = srpChallengeResponse; 
-    const {A, M1, S} = await this.srpService.generateSrpProof(login, password, salt, b);
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
 
-    const srpVerifyRequest: SrpVerifyRequest = { Login: login, A, M1};
+    try {
+      const { login: login, password } = this.loginForm.value;
 
-    const srpVerifierResponse = await firstValueFrom(this.authApi.srpVerifyProof(srpVerifyRequest));
-    const { m2 } = srpVerifierResponse;
+      const challengeResult = await this.executeSafe(this.authApi.getCrpChallenge({ login: login }));
 
-    if (!m2){
-      this.errorMessage = "Ошибка аутентификации: M2 отсутствует в ответе сервера.";
-      return;
+      if (challengeResult.isFailure){
+        this.handleError(challengeResult)
+        return;
+      }
+
+      const { salt, b } = challengeResult.value; 
+      const {A, M1, S} = await this.srpService.generateSrpProof(login, password, salt, b);
+
+      const verifierResult = await this.executeSafe(this.authApi.srpVerifyProof({ Login: login, A, M1}));
+      
+      if (verifierResult.isFailure){
+        this.handleError(verifierResult);
+        return;
+      }
+
+      const { m2 } = verifierResult.value;
+
+      if (!m2){
+        this.errorMessage.set("Ошибка аутентификации: M2 отсутствует в ответе сервера.");
+        return;
+      }
+
+      const isServerValid = await this.srpService.verifyServerM2(A, M1, S, m2);
+
+      if (!isServerValid) {
+        this.errorMessage.set("Ошибка аутентификации: Подлинность сервера не подтверждена!");
+        return;
+      }
+
+      console.log("Успешная аутентификация! Сервер подтвержден.");
+
+      this.router.navigate(['/user/profile'])
+    } catch (error) {
+      console.error('Неизвестная ошибка:', error);
+      this.errorMessage.set('Произошла непредвиденная ошибка.'); 
+    } finally {
+      this.isLoading.set(false);
     }
+  }
 
-    const isServerValid = await this.srpService.verifyServerM2(A, M1, S, m2);
+  private executeSafe<T>(observable$: Observable<Result<T>>): Promise<Result<T>>{
+    return firstValueFrom(observable$.pipe(takeUntilDestroyed(this.destroyRef)));
+  }
 
-    if (!isServerValid) {
-      this.errorMessage = "Ошибка аутентификации: Подлинность сервера не подтверждена!";
-      return;
-    }
-
-    console.log("Успешная аутентификация! Сервер подтвержден.");
-
-    this.isLoading = true;
-    this.errorMessage = null;
-
-    this.router.navigate(['/user/profile'])
+  private handleError(result: Result<any>): void{
+    this.errorMessage.set(result.errors.map(e => e.message).join('\n'));
   }
 }

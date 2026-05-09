@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Nexus.UserManagement.Service.Api.Models.Requests.Admin;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RegisterAdmin;
+using Shared.Web.Extensions;
 
 namespace Nexus.UserManagement.Service.Api.Controllers
 {
@@ -28,7 +29,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
 
             return result.Match<IActionResult>(
                 onSuccess: Ok,
-                onFailure: errors => Conflict(errors)
+                onFailure: this.MapActionResult
             );
         }
 

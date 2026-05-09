@@ -10,13 +10,6 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
         private readonly IAuthClient _authClient = authClient;
 
         public async Task<Result<AuthResponse?>> Handle(VerifySrpProofCommand request, CancellationToken cancellationToken)
-        {
-            var authResult = await _authClient.VerifierSrpProof(new SrpVerifyRequest(request.Login, request.A, request.M1));
-
-            if (authResult.IsFailure)
-                return Result<AuthResponse?>.Failure(authResult.Errors);
-
-            return authResult;
-        }
+            => await _authClient.VerifierSrpProof(new SrpVerifyRequest(request.Login, request.A, request.M1));
     }
 }

@@ -1,8 +1,9 @@
-using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Infrastructure.Ioc;
 using System.IdentityModel.Tokens.Jwt;
 using Nexus.Authentication.Service.Application.Ioc;
+using System.Text.Json;
+using Shared.Web.Extensions;
 
 namespace Nexus.Authentication.Service.Api
 {
@@ -14,7 +15,10 @@ namespace Nexus.Authentication.Service.Api
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            builder.Services.AddControllers();
+            builder.Services.Configure<JsonSerializerOptions>(opt => opt.AddCrossdyneDefaults());
+
+            builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.AddCrossdyneDefaults());
+            
             builder.Services.AddOpenApi();
 
             builder.Services.AddApplication();

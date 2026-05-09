@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { StepCodeApi } from "./confirm-code.api";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -20,8 +20,8 @@ export class StepCodeComponent{
     private api = inject(StepCodeApi);
 
     stepCodeConfirmForm: FormGroup;
-    isLoading = false;
-    errorMessage: string | null = null;
+    isLoading = signal(false);
+    errorMessage = signal<string | null>(null);
 
     constructor() {
         this.stepCodeConfirmForm = this.fb.group({
@@ -32,15 +32,25 @@ export class StepCodeComponent{
     async onSubmit() {
         if (this.stepCodeConfirmForm.valid) {
             try {
+                this.isLoading.set(true);
+                this.errorMessage.set(null);
+
                 const { code } = this.stepCodeConfirmForm.value;
 
-                await firstValueFrom(this.api.verifyConfirmCode(this.state.login!, code));
+                var confirmResult = await firstValueFrom(this.api.verifyConfirmCode(this.state.login!, code));
+
+                if (confirmResult.isFailure){
+                    this.errorMessage.set(confirmResult.stringMessage)
+                    return;
+                }
 
                 this.state.verifyCode(code);
                 this.router.navigate(['reset'], { relativeTo: this.route.parent} );
                 
             } catch (error) {
                  console.error('Ошибка: ', error);
+            } finally {
+                this.isLoading.set(false);
             }
         }
     }

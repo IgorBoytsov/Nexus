@@ -19,11 +19,11 @@
                 }
             </div>
 
-            @if (errorMessage) {
-                <small class="alert alert-error">{{errorMessage}}</small>
+            @if (errorMessage()) {
+                <small class="error-message">{{errorMessage()}}</small>
             }
                 
-            <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-sumbit">{{ isLoading ? 'Вход..' : 'Войти'}}</button>
+            <button type="submit" [disabled]="loginForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Вход..' : 'Войти'}}</button>
         </form>
     </div>
 </div>

@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Contracts;
+using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Auth.Command.ResetPassword
 {
@@ -16,7 +17,7 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPassword
                 var result = await mediator.Send(command);
                             
                 if (result.IsFailure)
-                    return Results.BadRequest(result.Errors);
+                    return result.Errors.MapToMinimalApiResult();
 
                 return Results.Ok();
             });

@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
@@ -21,8 +21,8 @@ export class RegisterComponent{
     private register = inject(RegisterApi)
 
     registerForm: FormGroup;
-    isLoading = false;
-    errorMessage: string | null = null;
+    isLoading = signal(false);
+    errorMessage = signal<string | null>(null);
 
     readonly minUsernameLength = 2;
 
@@ -35,7 +35,6 @@ export class RegisterComponent{
             phone: ['']
         });
     }
-    // , [Validators.minLength(11), Validators.maxLength(11)]
 
     async onSubmit(): Promise<void>{
         if (this.registerForm.invalid)
@@ -101,12 +100,17 @@ export class RegisterComponent{
                 idCountry: null
             };
             
-            await firstValueFrom(this.register.register(request));
+            const registerResult = await firstValueFrom(this.register.register(request));
+
+            if (registerResult.isFailure){
+                this.isLoading.set(false);
+                this.errorMessage.set(registerResult.stringMessageFull);
+            }
 
             console.log("Успешная регистрация!");
 
-            this.isLoading = true;
-            this.errorMessage = null;
+            this.isLoading.set(true);
+            this.errorMessage.set(null);
         } catch (error) {
             console.error("Ошибка регистрации:", error);
             
@@ -116,10 +120,10 @@ export class RegisterComponent{
                 console.error('Headers:', error.headers.keys());
             }
             
-            this.errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+            this.errorMessage.set(error instanceof Error ? error.message : 'Неизвестная ошибка');
         } finally {
-            this.isLoading = true;
-            this.errorMessage = null;
+            this.isLoading.set(true);
+            this.errorMessage.set(null);
 
             this.router.navigate(['/login'])
         }

@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RecoveryStateService } from "../../services/reset-password-state.service";
@@ -20,8 +20,8 @@ export class StepLoginComponent{
     private api = inject(StepLoginApi);
 
     stepLoginForm: FormGroup;
-    isLoading = false;
-    errorMessage: string | null = null;
+    isLoading = signal(false);
+    errorMessage = signal<string | null>(null);
 
     constructor(){
         this.stepLoginForm = this.fb.group({
@@ -32,15 +32,26 @@ export class StepLoginComponent{
     async onSubmit(): Promise<void> {
         if (this.stepLoginForm.valid){
             try{
+                this.isLoading.set(true);
+                this.errorMessage.set(null);
+
                 const { login } = this.stepLoginForm.value;
 
-                await firstValueFrom(this.api.generateCode(login));
+                const codeResult = await firstValueFrom(this.api.generateCode(login));
+
+                if (codeResult.isFailure){
+                    this.errorMessage.set(codeResult.stringMessage)
+                    return;
+                }
 
                 this.state.setLogin(login);
                 this.router.navigate(['code'], {relativeTo: this.route} );
 
             } catch (error) {
                 console.error('Ошибка: ', error);
+            }
+            finally{
+                this.isLoading.set(false);
             }
         }
     }

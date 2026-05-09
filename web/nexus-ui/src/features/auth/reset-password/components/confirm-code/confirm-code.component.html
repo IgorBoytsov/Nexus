@@ -11,11 +11,11 @@
                 }   
             </div>
 
-            @if (errorMessage) {
-                <small class="alert alert-error">{{errorMessage}}</small>
+            @if (errorMessage()) {
+                <small class="error-message">{{errorMessage()}}</small>
             }
                 
-            <button type="submit" [disabled]="stepCodeConfirmForm.invalid || isLoading" class="btn-sumbit">{{ isLoading ? 'Подтверждение..' : 'Отправить'}}</button>
+            <button type="submit" [disabled]="stepCodeConfirmForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Подтверждение..' : 'Отправить'}}</button>
         </form>
     </div>
 </div>

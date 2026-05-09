@@ -1,11 +1,16 @@
-﻿using Rebout.Nexus.Contracts.UserManagement.v1;
+﻿using Crossdyne.Toolkit.Results;
+using Microsoft.Extensions.Options;
+using Rebout.Nexus.Contracts.UserManagement.v1;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Nexus.Authentication.Service.Application.Services
 {
-    public class UserManagementServiceClient(HttpClient httpClient) : IUserManagementServiceClient
+    public class UserManagementServiceClient(HttpClient httpClient, IOptions<JsonSerializerOptions> jsonOptions) : IUserManagementServiceClient
     {
         private readonly HttpClient _httpClient = httpClient;
+        private readonly JsonSerializerOptions _jsonOptions = jsonOptions.Value;
+
 
         public async Task<UserAuthDataResponse?> GetUserByIdAsync(Guid userId)
         {
@@ -21,14 +26,15 @@ namespace Nexus.Authentication.Service.Application.Services
 
         public async Task<UserAuthDataResponse?> GetUserByLoginAsync(string login)
         {
-            try
+            var response = await _httpClient.GetAsync($"/internal/api/users/by-login/{login}");
+            
+            if (!response.IsSuccessStatusCode)
             {
-                return await _httpClient.GetFromJsonAsync<UserAuthDataResponse>($"/internal/api/users/by-login/{login}");
+                // var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                return null;
             }
-            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                return null; 
-            }
+
+            return await response.Content.ReadFromJsonAsync<UserAuthDataResponse>(_jsonOptions);
         }
     }
 }

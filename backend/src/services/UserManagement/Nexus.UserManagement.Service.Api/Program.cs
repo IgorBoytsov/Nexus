@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RegisterAdmin;
 using Nexus.UserManagement.Service.Application.Ioc;
 using Nexus.UserManagement.Service.Infrastructure.Ioc;
+using Shared.Web.Extensions;
 using System.Text;
 
 namespace Nexus.UserManagement.Service.Api
@@ -25,7 +26,7 @@ namespace Nexus.UserManagement.Service.Api
                 });
             });
 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.AddCrossdyneDefaults());
 
             builder.Services.AddInfrastructure(builder.Configuration).AddApplication();
 
