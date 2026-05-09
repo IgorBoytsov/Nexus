@@ -9,6 +9,7 @@ COPY ["backend/src/shared/contracts/Shared.Contracts/Shared.Contracts.csproj", "
 COPY ["backend/src/shared/core/Shared.Kernel/Shared.Kernel.csproj", "backend/src/shared/core/Shared.Kernel/"]
 
 COPY ["backend/src/shared/web/Shared.Web/Shared.Web.csproj", "backend/src/shared/web/Shared.Web/"]
+COPY ["backend/src/shared/validations/Shared.Validations/Shared.Validations.csproj", "backend/src/shared/validations/Shared.Validations/"]
 
 RUN dotnet restore "backend/src/apps/Nexus.Bff/Nexus.Bff.csproj"
 

@@ -15,6 +15,7 @@ COPY ["backend/src/shared/security/Shared.Security/Shared.Security.csproj", "bac
 COPY ["backend/src/shared/contracts/Shared.Contracts/Shared.Contracts.csproj", "backend/src/shared/contracts/Shared.Contracts/"]
 COPY ["backend/src/shared/infrastructure/Shared.Redis/Shared.Redis.csproj", "backend/src/shared/infrastructure/Shared.Redis/"]
 COPY ["backend/src/shared/web/Shared.Web/Shared.Web.csproj", "backend/src/shared/web/Shared.Web/"]
+COPY ["backend/src/shared/validations/Shared.Validations/Shared.Validations.csproj", "backend/src/shared/validations/Shared.Validations/"]
 
 RUN dotnet restore "backend/src/services/Authentication/Nexus.Authentication.Service.Api/Nexus.Authentication.Service.Api.csproj"
 
