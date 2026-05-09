@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Auth.Command.ResetPasswordSendCode
 {
@@ -14,7 +15,7 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPasswordSendCode
                 var result = await mediator.Send(new ResetPasswordSendCodeCommand(login));
 
                 if (result.IsFailure)
-                    return Results.BadRequest(result.Errors);
+                    return result.Errors.MapToMinimalApiResult();
 
                 return Results.Ok();
             });

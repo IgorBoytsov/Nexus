@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Auth.Command.ResetPasswordConfirmCode
 {
@@ -15,7 +16,7 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPasswordConfirmCode
                var result = await mediator.Send(new ResetPasswordConfirmCodeCommand(login, code));
                
                 if (result.IsFailure)
-                    return Results.BadRequest(result.Errors);
+                    return result.Errors.MapToMinimalApiResult();
 
                 return Results.Ok();
             });

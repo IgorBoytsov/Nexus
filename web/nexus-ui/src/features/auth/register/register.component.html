@@ -43,11 +43,11 @@
                 } -->
             </div>
 
-            @if (errorMessage) {
-                <small class="alert alert-error">{{errorMessage}}</small>
+            @if (errorMessage()) {
+                <small class="alert alert-error">{{errorMessage()}}</small>
             }
                 
-            <button type="submit" [disabled]="registerForm.invalid || isLoading" class="btn-sumbit">{{ isLoading ? 'Регистрация..' : 'Зарегистрироваться'}}</button>
+            <button type="submit" [disabled]="registerForm.invalid || isLoading" class="btn-sumbit">{{ isLoading() ? 'Регистрация..' : 'Зарегистрироваться'}}</button>
         </form>
         <p class="signup">
             Уже есть аккаунт?

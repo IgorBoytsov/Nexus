@@ -13,11 +13,15 @@
     <PackageReference Include="Rebout.Nexus.Contracts" />
     <PackageReference Include="Crossdyne.Toolkit" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\shared\contracts\Shared.Contracts\Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
+    <ProjectReference Include="..\..\shared\validations\Shared.Validations\Shared.Validations.csproj" />
+    <ProjectReference Include="..\..\shared\web\Shared.Web\Shared.Web.csproj" />
   </ItemGroup>
 
 </Project>

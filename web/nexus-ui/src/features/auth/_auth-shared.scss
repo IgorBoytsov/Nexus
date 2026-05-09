@@ -35,6 +35,7 @@
 .error-message {
     color: $color-text-error;
     font-size: $font-size-text-error;
+    white-space: pre-line;
 }
 
 .login-form {

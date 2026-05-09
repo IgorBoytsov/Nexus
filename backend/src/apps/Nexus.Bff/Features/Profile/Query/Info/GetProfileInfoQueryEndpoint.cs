@@ -2,12 +2,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.Bff.Services;
+using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Profile.Query.Info
 {
     public static class GetProfileInfoQueryEndpoint
     {
-        public static void MapRegister(this IEndpointRouteBuilder app)
+        public static void MapProfileInfo(this IEndpointRouteBuilder app)
         {
             app.MapGet("/profile", async (
                 HttpContext httpContext, 
@@ -20,7 +21,7 @@ namespace Nexus.Bff.Features.Profile.Query.Info
                 var result = await mediator.Send(new GetProfileInfoQuery(tokenData.UserId), ct);
 
                 if(result.IsFailure)
-                    return Results.BadRequest(result.Errors);
+                    return result.Errors.MapToMinimalApiResult();
 
                 return Results.Ok(result.Value); 
             }).RequireAuthorization();

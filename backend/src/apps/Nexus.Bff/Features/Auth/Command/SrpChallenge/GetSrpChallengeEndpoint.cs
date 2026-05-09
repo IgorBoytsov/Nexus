@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Rebout.Nexus.Contracts.Authentication.v1;
+using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Auth.Command.SrpChallenge
 {
@@ -13,7 +14,7 @@ namespace Nexus.Bff.Features.Auth.Command.SrpChallenge
                 var result = await mediator.Send(new GetSrpChallengeCommand(request.Login), ct);
 
                 if(result.IsFailure)
-                    return Results.BadRequest(result.Errors);
+                    return result.Errors.MapToMinimalApiResult();
 
                 return Results.Ok(result.Value);
             });

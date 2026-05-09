@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Crossdyne.Toolkit.Results;
+using Shared.Validations.Common.Abstractions;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Register
 {
@@ -13,5 +14,13 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
         int Iterations,
         string KdfType,
         string Email, string? Phone,
-        Guid? IdGender, Guid? IdCountry) : IRequest<Result>;
+        Guid? IdGender, Guid? IdCountry) : IRequest<Result>,  
+        IHasLogin,
+        IHasUserName, 
+        IHasVerifier, 
+        IHasClientSalt, 
+        IHasEncryptedDek, 
+        IHasEncryptionAlgorithm, 
+        IHasIterations, 
+        IHasKdfType;
 }

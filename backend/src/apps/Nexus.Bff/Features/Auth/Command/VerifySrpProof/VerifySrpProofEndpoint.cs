@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.Bff.Services;
 using Rebout.Nexus.Contracts.Authentication.v1;
+using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {
@@ -22,7 +23,7 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
                 var result = await mediator.Send(new VerifySrpProofCommand(request.Login, request.A, request.M1), ct);
 
                 if (result.IsFailure)
-                    return Results.BadRequest(result.Errors);
+                    return result.Errors.MapToMinimalApiResult();
 
                 var tokens = result.Value;
 

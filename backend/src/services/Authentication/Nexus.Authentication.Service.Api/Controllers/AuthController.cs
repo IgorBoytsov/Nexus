@@ -4,9 +4,8 @@ using Nexus.Authentication.Service.Application.Features.Commands.LoginByToken;
 using Nexus.Authentication.Service.Application.Features.Commands.Refresh;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof;
-using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.Authentication.v1;
-using Shared.Kernel.Errors;
+using Shared.Web.Extensions;
 
 namespace Nexus.Authentication.Service.Api.Controllers
 {
@@ -22,9 +21,9 @@ namespace Nexus.Authentication.Service.Api.Controllers
             var command = new GetSrpChallengeCommand(request.Login);
             var result = await _mediator.Send(command);
 
-            return result.Match<IActionResult>(
+            return result.Match(
                 onSuccess: () => Ok(result.Value),
-                onFailure: errors => BadRequest(new { Title = "Ошибка инициализации входа", Errors = errors }));
+                onFailure: errors => this.MapActionResult(errors));
         }
 
         [HttpPost("srp/verify")]
@@ -33,16 +32,9 @@ namespace Nexus.Authentication.Service.Api.Controllers
             var command = new VerifySrpProofCommand(request.Login, request.A, request.M1);
             var result = await _mediator.Send(command);
 
-            return result.Match<IActionResult>(
+            return result.Match(
                 onSuccess: () => Ok(result.Value),
-                onFailure: errors =>
-                {
-                    var error = errors.FirstOrDefault();
-                    if (error!.Code == AppErrors.InvalidPassword || error.Code == ErrorCode.NotFound)
-                        return Unauthorized(new { Title = "Ошибка аутентификации", Detail = error.Message });
-
-                    return BadRequest(new { Title = "Ошибка проверки", Errors = errors });
-                });
+                onFailure: errors => this.MapActionResult(errors));
         }
 
         [HttpPost("refresh")]
@@ -51,9 +43,9 @@ namespace Nexus.Authentication.Service.Api.Controllers
             var command = new RefreshTokenCommand(request.AccessToken, request.RefreshToken);
             var result = await _mediator.Send(command);
 
-            return result.Match<IActionResult>(
+            return result.Match(
                 onSuccess: () => Ok(result.Value),
-                onFailure: errors => BadRequest(errors));
+                onFailure: errors => this.MapActionResult(errors));
         }
 
         [HttpPost("token-login")]
@@ -62,9 +54,9 @@ namespace Nexus.Authentication.Service.Api.Controllers
             var command = new TokenLoginCommand(request.RefreshToken);
             var result = await _mediator.Send(command);
 
-            return result.Match<IActionResult>(
+            return result.Match(
                 onSuccess: () => Ok(result.Value),
-                onFailure: errors => BadRequest(errors));
+                onFailure: errors => this.MapActionResult(errors));
         }
     }
 }

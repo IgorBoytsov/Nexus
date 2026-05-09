@@ -25,14 +25,14 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
         public async Task<Result<AuthResponse>> Handle(VerifySrpProofCommand request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(request.A) || string.IsNullOrWhiteSpace(request.M1))
-                return Result<AuthResponse>.Failure(new Error(AppErrors.Validation, "Параметры SRP не могут быть пустыми"));
+                return Result<AuthResponse>.Failure(new Error(AppErrors.Validation, "Неверные параметры аутентификации."));
 
             string normalizedLogin = request.Login.Trim().ToLowerInvariant();  
 
             var session = await _redisCacheService.GetJsonAsync<SrpSessionState>($"srp_{normalizedLogin}");
 
             if (session is null)
-                return Result<AuthResponse>.Failure(new Error(ErrorCode.NotFound, "Сессия просрочена"));
+                return Result<AuthResponse>.Failure(new Error(AppErrors.SessionExpired, "Сессия аутентификации истекла или недействительна. Повторите вход."));
 
             var M2_server = _srpServer.VerifySrpProof(session, request.A, request.M1);
 

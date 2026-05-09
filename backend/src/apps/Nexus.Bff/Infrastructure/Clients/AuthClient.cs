@@ -1,26 +1,29 @@
 using System.Text.Json;
 using Crossdyne.Toolkit.Results;
+using Microsoft.Extensions.Options;
 using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Kernel.Errors;
 
 namespace Nexus.Bff.Infrastructure.Clients
 {
- public sealed class AuthClient(HttpClient client) : IAuthClient
+    public sealed class AuthClient(HttpClient client, IOptions<JsonSerializerOptions> jsonOptions) : IAuthClient
     {
         private readonly HttpClient _httpClient = client;
-        private readonly JsonSerializerOptions _jsonSerializerOptions = new()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
+        private readonly JsonSerializerOptions _jsonOptions = jsonOptions.Value;
+        
         public async Task<Result<SrpChallengeResponse?>> GetSrpChallenge(SrpChallengeRequest request)
         {
             try
             {            
-                var response = await _httpClient.PostAsJsonAsync("api/auth/srp/challenge", request, _jsonSerializerOptions);
-                response.EnsureSuccessStatusCode();
-
-                return Result<SrpChallengeResponse?>.Success(await response.Content.ReadFromJsonAsync<SrpChallengeResponse>());
+                var response = await _httpClient.PostAsJsonAsync("api/auth/srp/challenge", request, _jsonOptions);
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result<SrpChallengeResponse>.Failure(errors!)!;
+                }
+                    
+                return Result<SrpChallengeResponse?>.Success(await response.Content.ReadFromJsonAsync<SrpChallengeResponse>(_jsonOptions));
             }
             catch (Exception ex)
             {
@@ -32,8 +35,13 @@ namespace Nexus.Bff.Infrastructure.Clients
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("api/auth/srp/verify", request, _jsonSerializerOptions);
-                response.EnsureSuccessStatusCode();
+                var response = await _httpClient.PostAsJsonAsync("api/auth/srp/verify", request, options: _jsonOptions);
+                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result<AuthResponse>.Failure(errors!)!;
+                }
 
                 return Result<AuthResponse?>.Success(await response.Content.ReadFromJsonAsync<AuthResponse>());
             }

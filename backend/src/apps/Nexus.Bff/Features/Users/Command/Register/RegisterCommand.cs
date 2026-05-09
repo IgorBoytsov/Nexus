@@ -1,19 +1,22 @@
 using MediatR;
 using Crossdyne.Toolkit.Results;
+using Shared.Validations.Common.Abstractions;
 
 namespace Nexus.Bff.Features.Users.Command.Register
 {
     public sealed record RegisterCommand(
-        string Login, 
-        string UserName, 
-        string Verifier, 
-        string ClientSalt, 
-        string EncryptedDek, 
-        string EncryptionAlgorithm,
-        int Iterations,
-        string KdfType,
-        string Email, 
-        string? Phone,
+        string Login, string UserName, 
+        string Verifier, string ClientSalt,  string EncryptedDek, 
+        string EncryptionAlgorithm, int Iterations, string KdfType,
+        string Email,string? Phone,
         Guid? IdGender,
-        Guid? IdCountry) : IRequest<Result>;
+        Guid? IdCountry) : IRequest<Result>,    
+        IHasLogin,
+        IHasUserName, 
+        IHasVerifier, 
+        IHasClientSalt, 
+        IHasEncryptedDek, 
+        IHasEncryptionAlgorithm, 
+        IHasIterations, 
+        IHasKdfType;
 }

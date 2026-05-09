@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RecoveryStateService } from "../../services/reset-password-state.service";
@@ -24,8 +24,8 @@ export class StepResetComponent{
     private stepResetApi = inject(StepResetApi);
 
     resetForm: FormGroup;
-    isLoading = false;
-    errorMessage: string | null = null;
+    isLoading = signal(false);
+    errorMessage = signal<string | null>(null);
     
     constructor() {
         this.resetForm = this.fb.group({
@@ -34,61 +34,76 @@ export class StepResetComponent{
     }
 
     async onSubmit(): Promise<void> {
-        const crypto = new CryptoService();
-        const keyDerivation = new KeyDerivationService();
-        const srp = new SrpService();
+        try {
+            this.isLoading.set(true);
+            this.errorMessage.set(null);
 
-        const { newPassword } = this.resetForm.value;
+            const crypto = new CryptoService();
+            const keyDerivation = new KeyDerivationService();
+            const srp = new SrpService();
 
-        const publicKeyResponse = await firstValueFrom(this.cryptoApi.getPublicKey());
-        const firstParse = JSON.parse(publicKeyResponse.publicKey);
-        const publicKeyBase64 = typeof firstParse == 'string' ? firstParse :  firstParse.publicKey;
+            const { newPassword } = this.resetForm.value;
 
-        const salt = crypto.generateRandomBytes(16);
-        const saltBase64 = SecurityUtils.toBase64(salt);
-        const { kek, authHash } = await keyDerivation.deriveKeysFromPassword(this.state.login!, newPassword, salt);
-        
-        const binaryKey = SecurityUtils.fromBase64(publicKeyBase64);
-        const rsaPublicKey = await window.crypto.subtle.importKey(
-            "spki",
-            binaryKey.buffer as ArrayBuffer,
-            {
-                name: "RSA-OAEP",
-                hash: "SHA-256"
-            },
-            false,
-            ["encrypt"]
-        );
+            const publicKeyResponse = await firstValueFrom(this.cryptoApi.getPublicKey());
+            const firstParse = JSON.parse(publicKeyResponse.publicKey);
+            const publicKeyBase64 = typeof firstParse == 'string' ? firstParse :  firstParse.publicKey;
 
-        const verifierBase64 = await srp.generateSrpVerifier(authHash);
-        const verifierBytes = SecurityUtils.fromBase64(verifierBase64);
-        
-        const encryptedVerifierBuffer = await window.crypto.subtle.encrypt(
-            { name: "RSA-OAEP" },
-            rsaPublicKey,
-            verifierBytes.buffer as ArrayBuffer
-        );
+            const salt = crypto.generateRandomBytes(16);
+            const saltBase64 = SecurityUtils.toBase64(salt);
+            const { kek, authHash } = await keyDerivation.deriveKeysFromPassword(this.state.login!, newPassword, salt);
+            
+            const binaryKey = SecurityUtils.fromBase64(publicKeyBase64);
+            const rsaPublicKey = await window.crypto.subtle.importKey(
+                "spki",
+                binaryKey.buffer as ArrayBuffer,
+                {
+                    name: "RSA-OAEP",
+                    hash: "SHA-256"
+                },
+                false,
+                ["encrypt"]
+            );
 
-        const encryptedVerifierBase64 = SecurityUtils.toBase64(new Uint8Array(encryptedVerifierBuffer));
+            const verifierBase64 = await srp.generateSrpVerifier(authHash);
+            const verifierBytes = SecurityUtils.fromBase64(verifierBase64);
 
-        const dek = crypto.generateRandomBytes(32);
-        const encryptedDek = await crypto.encryptData(dek, kek);
+            const encryptedVerifierBuffer = await window.crypto.subtle.encrypt(
+                { name: "RSA-OAEP" },
+                rsaPublicKey,
+                verifierBytes.buffer as ArrayBuffer
+            );
 
-        const recoveryAccessPasswordRequest: RecoveryPasswordRequest = {
-            Login: this.state.login!,
-            Verifier: encryptedVerifierBase64,
-            ClientSalt: saltBase64,
-            EncryptedDek: encryptedDek,
-            EncryptionAlgorithm: 'AES-GCM',
-            Iterations: keyDerivation.ITERATIONS,
-            KdfType: 'PBKDF2-SHA256'
+            const encryptedVerifierBase64 = SecurityUtils.toBase64(new Uint8Array(encryptedVerifierBuffer));
+
+            const dek = crypto.generateRandomBytes(32);
+            const encryptedDek = await crypto.encryptData(dek, kek);
+
+            const recoveryAccessPasswordRequest: RecoveryPasswordRequest = {
+                Login: this.state.login!,
+                Verifier: encryptedVerifierBase64,
+                ClientSalt: saltBase64,
+                EncryptedDek: encryptedDek,
+                EncryptionAlgorithm: 'AES-GCM',
+                Iterations: keyDerivation.ITERATIONS,
+                KdfType: 'PBKDF2-SHA256'
+            }
+
+            var recoveryResult = await firstValueFrom(this.stepResetApi.recoveryAccessPassword(recoveryAccessPasswordRequest));
+
+            if (recoveryResult.isFailure){
+                this.errorMessage.set(recoveryResult.stringMessageFull);
+                return;
+            }
+
+            alert("Пароль успешно изменен");
+
+            this.state.resetState();
+            this.router.navigate(['/login']);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            this.isLoading.set(false);
         }
 
-        await firstValueFrom(this.stepResetApi.recoveryAccessPassword(recoveryAccessPasswordRequest));
-
-        alert("Пароль успешно изменен");
-
-        this.state.resetState();
-        this.router.navigate(['/login']);
     }
 }

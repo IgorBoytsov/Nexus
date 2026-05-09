@@ -12,6 +12,7 @@ using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
 using Shared.Contracts;
 using System.Security.Claims;
+using Shared.Web.Extensions;
 
 namespace Nexus.UserManagement.Service.Api.Controllers
 {
@@ -38,40 +39,9 @@ namespace Nexus.UserManagement.Service.Api.Controllers
 
             var result = await _mediator.Send(command);
 
-            return result.Match<IActionResult>(
+            return result.Match(
                 onSuccess: () => Ok(new { Message = "Регистрация прошла успешно!" }),
-                onFailure: errors =>
-                {
-                    if (errors.Any(e => e.Code == ErrorCode.Save))
-                    {
-                        var serverError = errors.FirstOrDefault(e => e.Code == ErrorCode.Save);
-                        return StatusCode(StatusCodes.Status500InternalServerError, new
-                        {
-                            Tittle = "Внутренняя ошибка сервера",
-                            Details = serverError?.Message,
-                        });
-                    }
-
-                    if (errors.Any(e => e.Code == ErrorCode.Conflict))
-                    {
-                        var conflictError = errors.FirstOrDefault(e => e.Code == ErrorCode.Conflict);
-                        return Conflict(new
-                        {
-                            Title = "Конфликт данных",
-                            Detail = conflictError?.Message
-                        });
-                    }
-
-                    return BadRequest(new
-                    {
-                        Title = "Произошла ошибка",
-                        Errors = errors.Select(e => new
-                        {
-                            e.Code,
-                            e.Message
-                        })
-                    });
-                });
+                onFailure: errors => this.MapActionResult(errors));
         }
 
         [HttpGet("me")]
@@ -145,19 +115,19 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             var result = await _mediator.Send(command);
 
             if (result.IsFailure)
-                return BadRequest(result.Errors);
+                return this.MapActionResult(result.Errors);
 
             return Ok();
         }
 
         [HttpPost("recovery-password/confirm-code/{login}/{code}")]
-        public async Task<IActionResult> ConfirmCodeEmail(string login, int code)
+        public async Task<IActionResult> ConfirmCodeEmail(string login, string code)
         {
             var command = new ResetPasswordConfirmCodeCommand(login, code);
             var result = await _mediator.Send(command);
 
             if (result.IsFailure)
-                return BadRequest(result.Errors);
+                return this.MapActionResult(result.Errors);
 
             return Ok();
         }
@@ -169,7 +139,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             var result = await _mediator.Send(command);
             
             if (result.IsFailure)
-                return BadRequest(result.Errors);
+                return this.MapActionResult(result.Errors);
                 
             return Ok();
         }

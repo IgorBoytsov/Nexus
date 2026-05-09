@@ -1,0 +1,16 @@
+using FluentValidation;
+using Shared.Validations.Common.Abstractions;
+
+namespace Shared.Validations.Common.Validators
+{
+    public sealed  class KdfTypeValidator : AbstractValidator<IHasKdfType>
+    {
+        public static KdfTypeValidator Create() => new();
+
+        public KdfTypeValidator()
+        {
+            RuleFor(x => x.KdfType)
+            .NotEmpty().WithMessage("KdfType должен быть указан");
+        }
+    }
+}
