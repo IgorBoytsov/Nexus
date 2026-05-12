@@ -2,7 +2,7 @@ import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RecoveryStateService } from "../../services/reset-password-state.service";
-import { CryptoService, KeyDerivationService, SecurityUtils, SrpService } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, KeyDerivationService, SecurityUtils, SrpService } from "@crossdyne/security";
 import { CryptoApi } from "../../../../../core/clients/crypto.api";
 import { firstValueFrom } from "rxjs";
 import { RecoveryPasswordRequest } from "../../../../../contracts/requests/recovery-password.request";
@@ -41,6 +41,7 @@ export class StepResetComponent{
             const crypto = new CryptoService();
             const keyDerivation = new KeyDerivationService();
             const srp = new SrpService();
+            const profile = CryptoProfileRegistry.latest;
 
             const { newPassword } = this.resetForm.value;
 
@@ -83,9 +84,7 @@ export class StepResetComponent{
                 Verifier: encryptedVerifierBase64,
                 ClientSalt: saltBase64,
                 EncryptedDek: encryptedDek,
-                EncryptionAlgorithm: 'AES-GCM',
-                Iterations: keyDerivation.ITERATIONS,
-                KdfType: 'PBKDF2-SHA256'
+                cryptoVersion: profile.version
             }
 
             var recoveryResult = await firstValueFrom(this.stepResetApi.recoveryAccessPassword(recoveryAccessPasswordRequest));

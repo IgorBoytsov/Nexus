@@ -11,9 +11,6 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
             Include(VerifierValidator.Create());
             Include(ClientSaltValidator.Create());
             Include(EncryptedDekValidator.Create());
-            Include(EncryptionAlgorithmValidator.Create());
-            Include(IterationsValidator.Create());
-            Include(KdfTypeValidator.Create());
         }
     }
 }

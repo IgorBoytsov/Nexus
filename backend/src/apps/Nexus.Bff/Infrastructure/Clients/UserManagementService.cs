@@ -12,7 +12,7 @@ namespace Nexus.Bff.Infrastructure.Clients
         private readonly HttpClient _httpClient = httpClient;
         private readonly JsonSerializerOptions _jsonOptions = jsonOptions.Value;
         
-        public async Task<Result> Register(RegisterUserRequest request)
+        public async Task<Result> Register(Shared.Contracts.RegisterUserRequest request)
         {
             try
             {

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
 import { RegisterRequest } from '../../../contracts/requests/register-user.request'
-import { CryptoService, KeyDerivationService, SecurityUtils, SrpService } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, KeyDerivationService, SecurityUtils, SrpService } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 
@@ -40,12 +40,15 @@ export class RegisterComponent{
         if (this.registerForm.invalid)
             return;
         
+        this.isLoading.set(true);
+
         try {
             console.log("Началась регистрация!");
 
             const crypto = new CryptoService();
             const keyDerivationService = new KeyDerivationService();
             const srp = new SrpService();
+            const profile = CryptoProfileRegistry.latest;
 
             const { login, username, password, email, phone } = this.registerForm.value;
 
@@ -91,9 +94,7 @@ export class RegisterComponent{
                 verifier: encryptedVerifierBase64,
                 clientSalt: saltBase64,
                 encryptedDek: encryptedDek,
-                encryptionAlgorithm: "AES-GCM",
-                iterations: keyDerivationService.ITERATIONS,
-                kdfType: "PBKDF2-SHA256",
+                cryptoVersion: profile.version,
                 email: email,
                 phone: phone,
                 idGender: null, 

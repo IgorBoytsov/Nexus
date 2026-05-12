@@ -32,12 +32,8 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasColumnName("EncryptedValue")
                 .IsRequired();
 
-            builder.Property(x => x.EncryptionMetadata)
-                .HasColumnName("Metadata")
-                .HasColumnType("jsonb")
-                .HasConversion(
-                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                    v => JsonSerializer.Deserialize<EncryptionMetadata>(v, (JsonSerializerOptions?)null))
+            builder.Property(x => x.CryptoVersion)
+                .HasColumnName("CryptoVersion")
                 .IsRequired();
         }
     }

@@ -2,18 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
+namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Mirgrations
 {
     [DbContext(typeof(WriteContext))]
-    partial class WriteContextModelSnapshot : ModelSnapshot
+    [Migration("20260512151226_Replace_EncryptionMetadata_On_CryptoVersion")]
+    partial class Replace_EncryptionMetadata_On_CryptoVersion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

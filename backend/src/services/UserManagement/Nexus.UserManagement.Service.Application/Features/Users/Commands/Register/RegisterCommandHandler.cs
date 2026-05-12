@@ -25,7 +25,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
                 user.AddRole(RoleId.From(EnumRole.User.Id));
                 user.AddUserAuthenticator(UserAuthenticatorType.SRP, IdentityIdentifier.Create(request.Login), CredentialBlob.Create(request.Verifier), request.ClientSalt);
                 user.AddUserAuthenticator(UserAuthenticatorType.Email, IdentityIdentifier.Create(request.Email), credentialBlob: null, salt: null);
-                user.AddUserSecurityAssets(AssetType.MainDek, EncryptedAssetValue.Create(request.EncryptedDek), EncryptionMetadata.Create(request.EncryptionAlgorithm, request.Iterations, request.KdfType));
+                user.AddUserSecurityAssets(AssetType.MainDek, EncryptedAssetValue.Create(request.EncryptedDek), request.CryptoVersion);
 
                 if (!string.IsNullOrWhiteSpace(request.Phone))
                     user.AddUserAuthenticator(UserAuthenticatorType.Phone, IdentityIdentifier.Create(request.Phone), credentialBlob: null, salt: null);

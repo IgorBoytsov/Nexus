@@ -152,22 +152,22 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         #region UserSecurityAssets
 
-        public void AddUserSecurityAssets(AssetType assetType, EncryptedAssetValue encryptedAssetValue, EncryptionMetadata encryptionMetadata)
+        public void AddUserSecurityAssets(AssetType assetType, EncryptedAssetValue encryptedAssetValue, int cryptoVersion)
         {
             if (assetType == AssetType.MainDek && _userSecurityAssets.Any(us => us.AssetType == AssetType.MainDek))
                 throw new UserSecurityAssetsException(new Error(AppErrors.Duplicate, "Основной ключ шифрования уже существует. Для его смены используйте процедуру ротации."));
 
-            var userSecurity = UserSecurityAsset.Create(this.Id, assetType, encryptedAssetValue, encryptionMetadata);
+            var userSecurity = UserSecurityAsset.Create(this.Id, assetType, encryptedAssetValue, cryptoVersion);
             _userSecurityAssets.Add(userSecurity);
 
             DateUpdate = DateTime.UtcNow;
         }
 
-        public void UpdateMainDek(EncryptedAssetValue encryptedAssetValue, EncryptionMetadata encryptionMetadata)
+        public void UpdateMainDek(EncryptedAssetValue encryptedAssetValue, int cryptoVersion)
         {
             var dek = _userSecurityAssets.FirstOrDefault(x => x.AssetType == AssetType.MainDek);
 
-            dek?.UpdateMainDek(encryptedAssetValue, encryptionMetadata);
+            dek?.UpdateMainDek(encryptedAssetValue, cryptoVersion);
         }
 
         #endregion

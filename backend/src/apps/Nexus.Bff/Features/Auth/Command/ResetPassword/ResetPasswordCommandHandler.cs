@@ -10,6 +10,6 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPassword
         private readonly IUserManagementService _userManagementService = userManagementService;
 
         public async Task<Result> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
-            => await _userManagementService.RecoveryPassword(new RecoveryPasswordRequest(request.Login, request.Verifier, request.ClientSalt, request.EncryptedDek, request.EncryptionAlgorithm, request.Iterations, request.KdfType));
+            => await _userManagementService.RecoveryPassword(new RecoveryPasswordRequest(request.Login, request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion));
     }
 }

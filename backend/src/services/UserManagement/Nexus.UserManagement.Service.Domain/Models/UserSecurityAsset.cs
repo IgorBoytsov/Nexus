@@ -10,28 +10,28 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public UserId UserId { get; private set; }
         public AssetType AssetType { get; private set; }
         public EncryptedAssetValue EncryptedValue { get; private set; }  
-        public EncryptionMetadata EncryptionMetadata { get; private set; } 
+        public int CryptoVersion { get; private set; } 
 
         private UserSecurityAsset()
         {
 
         }
 
-        private UserSecurityAsset(UserSecurityAssetId id, UserId userId, AssetType assetType, EncryptedAssetValue encryptedAssetValue, EncryptionMetadata encryptionMetadata) : base(id)
+        private UserSecurityAsset(UserSecurityAssetId id, UserId userId, AssetType assetType, EncryptedAssetValue encryptedAssetValue, int cryptoVersion) : base(id)
         {
             UserId = userId;
             AssetType = assetType;
             EncryptedValue = encryptedAssetValue;
-            EncryptionMetadata = encryptionMetadata;
+            CryptoVersion = cryptoVersion;
         }
 
-        internal static UserSecurityAsset Create(UserId userId, AssetType assetType, EncryptedAssetValue encryptedAssetValue, EncryptionMetadata encryptionMetadata)
-            => new(UserSecurityAssetId.New(), userId, assetType, encryptedAssetValue, encryptionMetadata);
+        internal static UserSecurityAsset Create(UserId userId, AssetType assetType, EncryptedAssetValue encryptedAssetValue, int cryptoVersion)
+            => new(UserSecurityAssetId.New(), userId, assetType, encryptedAssetValue, cryptoVersion);
 
-        internal void UpdateMainDek(EncryptedAssetValue encryptedAssetValue, EncryptionMetadata encryptionMetadata)
+        internal void UpdateMainDek(EncryptedAssetValue encryptedAssetValue, int cryptoVersion)
         {
             EncryptedValue = encryptedAssetValue;
-            EncryptionMetadata = encryptionMetadata;
+            CryptoVersion = cryptoVersion;
         }
     }
 }
