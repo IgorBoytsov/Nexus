@@ -14,9 +14,9 @@ namespace Nexus.UserManagement.Service.Domain.Models
     {
         /*--Основная информация о пользователе--*/
 
-        public Login Login { get; private set; } = null!;
-        public UserName UserName { get; private set; } = null!;
-        public Email Email { get; private set; } = null!;
+        public Login Login { get; private set; } 
+        public UserName UserName { get; private set; }
+        public Email Email { get; private set; }
         public Phone? Phone { get; private set; }
 
         /*--Даты--*/
@@ -32,8 +32,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public Guid? IdCountry { get; private set; }
 
         /*--Навигационные свойства--*/
-
-        //public UserCredentials Credentials { get; private set; } = null!;
 
         private readonly List<UserRoles> _userRoles = [];
         public IReadOnlyCollection<UserRoles> UserRoles => _userRoles.AsReadOnly();
@@ -59,18 +57,15 @@ namespace Nexus.UserManagement.Service.Domain.Models
         }
 
         public static User Create(
-            string login, string userName, /*string passwordHash, string clientSalt, string encryptedDek,*/
+            string login, string userName,
             string email, string? phone,
             Guid statusId, Guid? genderId, Guid? countryId)
         {
             var loginVo = Login.Create(login);
             var userNameVo = UserName.Create(userName);
-            //var passwordHashVo = PasswordHash.Create(passwordHash);
             var emailVo = Email.Create(email);
 
             var user = new User(UserId.New(), loginVo, userNameVo, emailVo, statusId);
-
-            //user.Credentials = new UserCredentials(user.Id, passwordHashVo, clientSalt, encryptedDek);
 
             if (phone is not null)
                 user.Phone = Phone.Create(phone);
@@ -91,12 +86,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
                 var oldUserName = UserName;
                 UserName = UserName.Create(userName);
             }
-        }
-
-        public void UpdateVerifier(string verifier)
-        {
-            //Credentials.UpdateVerifier(verifier);
-            DateUpdate = DateTime.UtcNow;
         }
 
         public void UpdateLastEntryDate() => DateEntry = DateTime.UtcNow;
@@ -127,25 +116,50 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         #region UserAuthenticators
 
-        public void AddUserAuthenticator(UserAuthenticatorType method, IdentityIdentifier identifier, CredentialBlob? credentialBlob, string? salt)
+        public void AddSrpAuthenticator(Login login, Verificator verificator, Salt salt)
         {
-            if (_userAuthenticators.Any(ua => ua.Method == method))
-                throw new UserAuthenticatorException(new Error(AppErrors.Duplicate, $"Способ входа - {method} уже используется. Повторно его добавить нельзя."));
-       
-            if(_userAuthenticators.Any(ua => ua.Identifier == identifier))
-                throw new UserAuthenticatorException(new Error(AppErrors.Duplicate, $"Идентификатор - {identifier} уже используется. Повторно его добавить нельзя."));
+            EnsureNoAuthenticatorOfType(UserAuthenticatorType.SRP);
+            var srp = SrpAuthenticator.Create(this.Id, login, verificator, salt);
+            _userAuthenticators.Add(srp);
 
-            var userAuth = Models.UserAuthenticator.Create(this.Id, method, identifier, credentialBlob, salt);
-            _userAuthenticators.Add(userAuth);
-
-            DateUpdate = DateTime.UtcNow;
+            MarkUpdate();
         }
 
-        public void UpdateSrpVerifier(IdentityIdentifier verifier, CredentialBlob credentialBlob, string salt)
+        public void UpdateSrpAuthenticator(Login login, Verificator verificator, Salt salt)
         {
-            var srp = _userAuthenticators.FirstOrDefault(x => x.Method == UserAuthenticatorType.SRP);
+            var srp = GetAuthenticator<SrpAuthenticator>(UserAuthenticatorType.SRP);
+            srp?.Update(login, verificator, salt);
 
-            srp?.UpdateSrpVerifier(verifier, credentialBlob, salt);
+            MarkUpdate(); 
+        }
+
+        public void AddEmailAuthenticator(Email email)
+        {
+            EnsureNoAuthenticatorOfType(UserAuthenticatorType.Email);
+            var emailAuth = EmailAuthenticator.Create(this.Id, email);
+            _userAuthenticators.Add(emailAuth);
+
+            MarkUpdate();
+        }
+
+        public void UpdateEmailAuthenticator(Email email)
+        {
+            var emailAuth = GetAuthenticator<EmailAuthenticator>(UserAuthenticatorType.Email);
+            emailAuth?.Update(email);
+
+            MarkUpdate();
+        }
+
+        public void ActivatedAuthenticator(UserAuthenticatorType type)
+        {
+            var auth = GetAuthenticator(type);
+            auth?.Activate();
+        }
+
+        public void DeactivateAuthenticator(UserAuthenticatorType type)
+        {
+            var auth = GetAuthenticator(type);
+            auth?.Deactivate();
         }
 
         #endregion
@@ -168,6 +182,30 @@ namespace Nexus.UserManagement.Service.Domain.Models
             var dek = _userSecurityAssets.FirstOrDefault(x => x.AssetType == AssetType.MainDek);
 
             dek?.UpdateMainDek(encryptedAssetValue, cryptoVersion);
+        }
+
+        #endregion
+
+
+        #region Public Helpers
+
+        private T? GetAuthenticator<T>(UserAuthenticatorType type) where T : UserAuthenticator
+            => _userAuthenticators.OfType<T>().FirstOrDefault(a => a.Method == type && a.IsActive);
+            
+        private UserAuthenticator? GetAuthenticator(UserAuthenticatorType type)
+            => _userAuthenticators.FirstOrDefault(a => a.Method == type && a.IsActive);
+
+
+        public void MarkUpdate() => DateUpdate = DateTime.UtcNow;
+
+        #endregion
+
+        #region Private Helpers
+
+        private void EnsureNoAuthenticatorOfType(UserAuthenticatorType type)
+        {
+            if (_userAuthenticators.Any(a => a.Method == type && a.IsActive))
+                throw new UserAuthenticatorException(new Error(AppErrors.Duplicate, $"Метод аутентификации '{type}' уже добавлен."));
         }
 
         #endregion

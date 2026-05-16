@@ -2,7 +2,7 @@
 
 namespace Nexus.UserManagement.Service.Domain.ValueObjects.User
 {
-    public sealed record Email
+    public readonly record struct Email
     {
         public string Value { get; } = null!;
 

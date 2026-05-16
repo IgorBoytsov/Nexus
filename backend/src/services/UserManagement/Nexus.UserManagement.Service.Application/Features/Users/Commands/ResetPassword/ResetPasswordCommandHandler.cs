@@ -4,6 +4,7 @@ using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
 using Crossdyne.Toolkit.Results;
+using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPassword
 {
@@ -23,7 +24,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
                 if (user is null)
                     return Result.Failure(new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера."));
 
-                user.UpdateSrpVerifier(IdentityIdentifier.Create(request.Login), CredentialBlob.Create(request.Verifier), request.ClientSalt);
+                user.UpdateSrpAuthenticator(Login.Create(request.Login), Verificator.Create(request.Verifier),Salt.Create(request.ClientSalt));
                 user.UpdateMainDek(EncryptedAssetValue.Create(request.EncryptedDek), request.CryptoVersion);
 
                 await _writeContext.SaveChangesAsync(cancellationToken);

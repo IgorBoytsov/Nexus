@@ -25,6 +25,8 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts
             modelBuilder.ApplyConfiguration(new UserWriteConfiguration());
             modelBuilder.ApplyConfiguration(new UserWriteRolesConfigurations());
             modelBuilder.ApplyConfiguration(new UserAuthenticatorsWriteConfigurations());
+            modelBuilder.ApplyConfiguration(new SrpAuthenticatorWriteConfiguration());
+            modelBuilder.ApplyConfiguration(new EmailAuthenticatorWriteConfiguration());
             modelBuilder.ApplyConfiguration(new UserSecurityAssetsWriteConfigurations());
         }
     }

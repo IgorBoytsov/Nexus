@@ -10,6 +10,7 @@ using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
 using Crossdyne.Toolkit.Results;
 using Shared.Kernel.Exceptions;
+using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Register
 {
     public sealed class RegisterCommandHandler(IWriteDbContext writeContext) : IRequestHandler<RegisterCommand, Result>
@@ -23,12 +24,9 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
                 var user = User.Create(request.Login, request.UserName, request.Email, request.Phone, EnumStatus.Active.Id, request.IdGender, request.IdCountry);
 
                 user.AddRole(RoleId.From(EnumRole.User.Id));
-                user.AddUserAuthenticator(UserAuthenticatorType.SRP, IdentityIdentifier.Create(request.Login), CredentialBlob.Create(request.Verifier), request.ClientSalt);
-                user.AddUserAuthenticator(UserAuthenticatorType.Email, IdentityIdentifier.Create(request.Email), credentialBlob: null, salt: null);
+                user.AddSrpAuthenticator(Login.Create(request.Login), Verificator.Create(request.Verifier), Salt.Create(request.ClientSalt));
+                user.AddEmailAuthenticator(Email.Create(request.Email));
                 user.AddUserSecurityAssets(AssetType.MainDek, EncryptedAssetValue.Create(request.EncryptedDek), request.CryptoVersion);
-
-                if (!string.IsNullOrWhiteSpace(request.Phone))
-                    user.AddUserAuthenticator(UserAuthenticatorType.Phone, IdentityIdentifier.Create(request.Phone), credentialBlob: null, salt: null);
 
                 await _writeContext.Users.AddAsync(user, cancellationToken);
                 await _writeContext.SaveChangesAsync(cancellationToken);
