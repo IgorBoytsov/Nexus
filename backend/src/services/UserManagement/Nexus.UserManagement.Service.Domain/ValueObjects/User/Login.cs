@@ -2,7 +2,7 @@
 
 namespace Nexus.UserManagement.Service.Domain.ValueObjects.User
 {
-    public sealed record Login
+    public readonly record struct Login
     {
         public const int MIN_LENGTH = 3;
         public const int MAX_LENGTH = 50;

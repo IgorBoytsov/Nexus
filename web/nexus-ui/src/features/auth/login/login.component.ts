@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SrpService } from '@crossdyne/security'
+import { SrpClientService, SrpContextFactory, SrpGroup } from '@crossdyne/security'
 import { AuthApi } from './auth.api';
 import { firstValueFrom, Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -20,7 +20,7 @@ export class LoginComponent {
   private readonly router = inject(Router); 
   private readonly authApi = inject(AuthApi);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly srpService = new SrpService();
+  private readonly srpService = new SrpClientService();
 
   loginForm: FormGroup;
   isLoading = signal(false);
@@ -42,6 +42,8 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
+    const ctx = await SrpContextFactory.create(SrpGroup.Rfc5054_3072);
+
     try {
       const { login: login, password } = this.loginForm.value;
 
@@ -53,7 +55,7 @@ export class LoginComponent {
       }
 
       const { salt, b } = challengeResult.value; 
-      const {A, M1, S} = await this.srpService.generateSrpProof(login, password, salt, b);
+      const {A, M1, S} = await this.srpService.generateSrpProof(login, password, salt, b, ctx);
 
       const verifierResult = await this.executeSafe(this.authApi.srpVerifyProof({ Login: login, A, M1}));
       
@@ -69,7 +71,7 @@ export class LoginComponent {
         return;
       }
 
-      const isServerValid = await this.srpService.verifyServerM2(A, M1, S, m2);
+      const isServerValid = await this.srpService.verifyServerM2(A, M1, S, m2, ctx);
 
       if (!isServerValid) {
         this.errorMessage.set("Ошибка аутентификации: Подлинность сервера не подтверждена!");

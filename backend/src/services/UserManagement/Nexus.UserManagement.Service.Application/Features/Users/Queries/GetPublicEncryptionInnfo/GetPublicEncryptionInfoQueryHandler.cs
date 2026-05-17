@@ -4,6 +4,7 @@ using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Enums;
 using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
+using Nexus.UserManagement.Service.Domain.Models;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo
 {
@@ -24,9 +25,9 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPub
                     return Result<PublicEncryptionInfoResponse>.Failure(new Error(ErrorCode.NotFound, "Такого пользователя нету"));
 
                 var userSecurityAsset = user.UserSecurityAssets.FirstOrDefault(us => us.AssetType == AssetType.MainDek);
-                var userAuthenticator = user.UserAuthenticators.FirstOrDefault(ua => ua.Method == UserAuthenticatorType.SRP);
+                var srp = user.UserAuthenticators.OfType<SrpAuthenticator>().FirstOrDefault(ua => ua.Method == UserAuthenticatorType.SRP);
 
-                var userAuth = new PublicEncryptionInfoResponse(userAuthenticator!.Salt!, userSecurityAsset!.EncryptedValue);
+                var userAuth = new PublicEncryptionInfoResponse(srp!.Salt!, userSecurityAsset!.EncryptedValue);
 
                 return Result<PublicEncryptionInfoResponse>.Success(userAuth);
             }

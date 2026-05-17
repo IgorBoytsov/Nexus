@@ -4,6 +4,7 @@ using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Enums;
 using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
+using Nexus.UserManagement.Service.Domain.Models;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByLoginInternal
 {
@@ -27,9 +28,9 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByL
                 var roleIds = user.UserRoles.Select(ur => ur.RoleId);
                 var roleNames = await _writeContext.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToListAsync(cancellationToken);
                 var userSecurityAsset = user.UserSecurityAssets.FirstOrDefault(us => us.AssetType == AssetType.MainDek);
-                var userAuthenticator = user.UserAuthenticators.FirstOrDefault(ua => ua.Method == UserAuthenticatorType.SRP);
+                var srp = user.UserAuthenticators.OfType<SrpAuthenticator>().FirstOrDefault(ua => ua.Method == UserAuthenticatorType.SRP);
 
-                var userAuth = new UserAuthDataResponse(user.Id.Value.ToString(), user.Login, userAuthenticator!.CredentialData!, userAuthenticator.Salt!, userSecurityAsset!.EncryptedValue, roleNames.Select(rn => rn.Value).ToList());
+                var userAuth = new UserAuthDataResponse(user.Id.Value.ToString(), user.Login, srp!.Verificator!, srp.Salt!, userSecurityAsset!.EncryptedValue, roleNames.Select(rn => rn.Value).ToList());
 
                 return Result<UserAuthDataResponse>.Success(userAuth);
             } 

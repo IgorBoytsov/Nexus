@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
 import { RegisterRequest } from '../../../contracts/requests/register-user.request'
-import { CryptoService, KeyDerivationService, SecurityUtils, SrpService } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 
@@ -40,12 +40,17 @@ export class RegisterComponent{
         if (this.registerForm.invalid)
             return;
         
+        this.isLoading.set(true);
+
         try {
             console.log("Началась регистрация!");
 
+            const ctx = await SrpContextFactory.create(SrpGroup.Rfc5054_3072);
+            
             const crypto = new CryptoService();
             const keyDerivationService = new KeyDerivationService();
-            const srp = new SrpService();
+            const srp = new SrpClientService();
+            const profile = CryptoProfileRegistry.latest;
 
             const { login, username, password, email, phone } = this.registerForm.value;
 
@@ -57,7 +62,7 @@ export class RegisterComponent{
 
             const salt = crypto.generateRandomBytes(16);
             const saltBase64 = SecurityUtils.toBase64(salt);
-            const { kek, authHash} = await keyDerivationService.deriveKeysFromPassword(login, password, salt);
+            const { kek } = await keyDerivationService.deriveKeysFromPassword(login, password, salt);
 
             const binaryKey = SecurityUtils.fromBase64(publicKeyBase64);
             const rsaPublicKey = await window.crypto.subtle.importKey(
@@ -71,7 +76,10 @@ export class RegisterComponent{
                 ["encrypt"]
             );
 
-            const verifierVase64 = await srp.generateSrpVerifier(authHash);
+            const srpAuthHashBytes = await keyDerivationService.deriveAuthHashForSrp(login, password, salt, ctx.hashAlgorithmName);
+            const srpAuthHashBase64  =SecurityUtils.toBase64(srpAuthHashBytes);
+
+            const verifierVase64 = await srp.generateSrpVerifier(srpAuthHashBase64, ctx);
             const verifierBytes = SecurityUtils.fromBase64(verifierVase64);
 
             const encryptedVerifierBuffer = await window.crypto.subtle.encrypt(
@@ -91,9 +99,7 @@ export class RegisterComponent{
                 verifier: encryptedVerifierBase64,
                 clientSalt: saltBase64,
                 encryptedDek: encryptedDek,
-                encryptionAlgorithm: "AES-GCM",
-                iterations: keyDerivationService.ITERATIONS,
-                kdfType: "PBKDF2-SHA256",
+                cryptoVersion: profile.version,
                 email: email,
                 phone: phone,
                 idGender: null, 

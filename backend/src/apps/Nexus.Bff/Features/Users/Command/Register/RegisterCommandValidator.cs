@@ -12,9 +12,6 @@ namespace Nexus.Bff.Features.Users.Command.Register
             Include(VerifierValidator.Create());
             Include(ClientSaltValidator.Create());
             Include(EncryptedDekValidator.Create());
-            Include(EncryptionAlgorithmValidator.Create());
-            Include(IterationsValidator.Create());
-            Include(KdfTypeValidator.Create());
         }   
     }
 }

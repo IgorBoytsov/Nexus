@@ -5,6 +5,8 @@ using Crossdyne.Toolkit.Results;
 using Shared.Security.Verifiers;
 using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Contracts;
+using Crossdyne.Security.Configuration;
+using System.Numerics;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {
@@ -21,6 +23,9 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
 
         public async Task<Result<SrpChallengeResponse>> Handle(GetSrpChallengeCommand request, CancellationToken cancellationToken)
         {
+            SrpProfile profile = SrpProfileRegistry.GetProfile(SrpGroup.Rfc5054_3072); 
+            var srpContext = SrpContext.FromOptions(profile.Options);
+
             string normalizedLogin = request.Login.Trim().ToLowerInvariant();
             var userData = await _userManagementClient.GetUserByLoginAsync(normalizedLogin);
 
@@ -30,7 +35,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
             var decryptedVerifierBase64 = _verifierProtector.Unprotect(userData.Verifier);
             byte[] vBytes = Convert.FromBase64String(decryptedVerifierBase64);
 
-            var sessionState = _srpServer.GetSrpChallenge(normalizedLogin, vBytes);
+            var sessionState = _srpServer.GetSrpChallenge(normalizedLogin, vBytes, srpContext);
 
             var session = new SrpSessionState(
                 normalizedLogin,

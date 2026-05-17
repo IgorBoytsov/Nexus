@@ -7,7 +7,7 @@ namespace Nexus.Bff.Infrastructure.Clients
 {
     public interface IUserManagementService
     {
-        Task<Result> Register(RegisterUserRequest request);
+        Task<Result> Register(Shared.Contracts.RegisterUserRequest request);
         Task<Result<PublicEncryptionInfoResponse?>> GetPublicEncryptionInfo(string login);
         Task<Result<ProfileInfoResponse>> GetProfileInfo(string userId);
         Task<Result> SendConfirmCodeEmail(string login);

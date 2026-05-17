@@ -2,8 +2,8 @@
 {
     public enum UserAuthenticatorType
     {
-        SRP,
-        Email,
-        Phone,
+        Unknown = 0,
+        SRP = 1,
+        Email = 2,
     }
 }

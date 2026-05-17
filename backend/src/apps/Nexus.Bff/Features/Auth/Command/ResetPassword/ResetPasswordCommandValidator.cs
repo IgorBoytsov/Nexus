@@ -11,9 +11,6 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPassword
             Include(VerifierValidator.Create());
             Include(ClientSaltValidator.Create());
             Include(EncryptedDekValidator.Create());
-            Include(EncryptionAlgorithmValidator.Create());
-            Include(IterationsValidator.Create());
-            Include(KdfTypeValidator.Create());
         }
     }
 }

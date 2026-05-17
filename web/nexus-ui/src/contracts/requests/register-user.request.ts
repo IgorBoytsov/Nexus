@@ -4,9 +4,7 @@ export interface RegisterRequest {
     verifier: string;
     clientSalt: string;
     encryptedDek: string;
-    encryptionAlgorithm: string;
-    iterations: number;
-    kdfType: string;
+    cryptoVersion: number,
     email: string;
     phone: string | null;
     idGender: string | null;

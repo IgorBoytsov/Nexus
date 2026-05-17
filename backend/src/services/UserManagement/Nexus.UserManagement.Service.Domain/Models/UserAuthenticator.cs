@@ -5,36 +5,27 @@ using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
 {
-    public sealed class UserAuthenticator : Entity<UserAuthenticatorId>
+    public abstract class UserAuthenticator : Entity<UserAuthenticatorId>
     {
         public UserId UserId { get; private set; }
         public UserAuthenticatorType Method { get; private set; }
-        public IdentityIdentifier Identifier { get; private set; } 
-        public CredentialBlob? CredentialData { get; private set; } 
-        public string? Salt { get; private set; }
+        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        public DateTime? LastUsedAt { get; protected set; } 
+        public bool IsActive { get; protected set; } = true;
 
-        private UserAuthenticator()
+        protected UserAuthenticator()
         {
             
         }
 
-        private UserAuthenticator(UserAuthenticatorId id, UserId userId, UserAuthenticatorType method, IdentityIdentifier identifier, CredentialBlob? creditialData, string? salt) : base(id)
+        protected UserAuthenticator(UserAuthenticatorId id, UserId userId, UserAuthenticatorType method) : base(id)
         {
             UserId = userId;
             Method = method;
-            Identifier = identifier;
-            CredentialData = creditialData;
-            Salt = salt;
         }
 
-        internal static UserAuthenticator Create(UserId userId,UserAuthenticatorType method, IdentityIdentifier identifier, CredentialBlob? creditialData, string? salt)
-            => new(UserAuthenticatorId.New(), userId, method, identifier, creditialData, salt);
-
-        internal void UpdateSrpVerifier(IdentityIdentifier verifier, CredentialBlob credentialBlob, string salt)
-        {
-            Identifier = verifier;
-            CredentialData = credentialBlob;
-            Salt = salt;
-        }
+        public void MarkUsed() => LastUsedAt = DateTime.UtcNow;
+        public void Activate() => IsActive = true;
+        public void Deactivate() => IsActive = false;
     }
 }

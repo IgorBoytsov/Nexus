@@ -2,7 +2,7 @@ import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RecoveryStateService } from "../../services/reset-password-state.service";
-import { CryptoService, KeyDerivationService, SecurityUtils, SrpService } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
 import { CryptoApi } from "../../../../../core/clients/crypto.api";
 import { firstValueFrom } from "rxjs";
 import { RecoveryPasswordRequest } from "../../../../../contracts/requests/recovery-password.request";
@@ -38,9 +38,12 @@ export class StepResetComponent{
             this.isLoading.set(true);
             this.errorMessage.set(null);
 
+            const ctx = await SrpContextFactory.create(SrpGroup.Rfc5054_3072);
+
             const crypto = new CryptoService();
             const keyDerivation = new KeyDerivationService();
-            const srp = new SrpService();
+            const srp = new SrpClientService();
+            const profile = CryptoProfileRegistry.latest;
 
             const { newPassword } = this.resetForm.value;
 
@@ -64,7 +67,7 @@ export class StepResetComponent{
                 ["encrypt"]
             );
 
-            const verifierBase64 = await srp.generateSrpVerifier(authHash);
+            const verifierBase64 = await srp.generateSrpVerifier(authHash, ctx);
             const verifierBytes = SecurityUtils.fromBase64(verifierBase64);
 
             const encryptedVerifierBuffer = await window.crypto.subtle.encrypt(
@@ -83,9 +86,7 @@ export class StepResetComponent{
                 Verifier: encryptedVerifierBase64,
                 ClientSalt: saltBase64,
                 EncryptedDek: encryptedDek,
-                EncryptionAlgorithm: 'AES-GCM',
-                Iterations: keyDerivation.ITERATIONS,
-                KdfType: 'PBKDF2-SHA256'
+                cryptoVersion: profile.version
             }
 
             var recoveryResult = await firstValueFrom(this.stepResetApi.recoveryAccessPassword(recoveryAccessPasswordRequest));

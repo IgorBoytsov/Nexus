@@ -9,7 +9,6 @@ using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfileInfo;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo;
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.UserManagement.v1;
 using Shared.Contracts;
 using System.Security.Claims;
 using Shared.Web.Extensions;
@@ -33,9 +32,9 @@ namespace Nexus.UserManagement.Service.Api.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
+        public async Task<IActionResult> Register([FromBody] Shared.Contracts.RegisterUserRequest request)
         {
-            var command = new RegisterCommand(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.EncryptionAlgorithm, request.Iterations, request.KdfType, request.Email, request.Phone, string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender), string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
+            var command = new RegisterCommand(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion, request.Email, request.Phone, string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender), string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
 
             var result = await _mediator.Send(command);
 
@@ -135,7 +134,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         [HttpPost("recovery-password")]
         public async Task<IActionResult> RecoveryPassword([FromBody] RecoveryPasswordRequest request)
         {
-            var command = new ResetPasswordCommand(request.Login, request.Verifier, request.ClientSalt, request.EncryptedDek, request.EncryptionAlgorithm, request.Iterations, request.KdfType);
+            var command = new ResetPasswordCommand(request.Login, request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion);
             var result = await _mediator.Send(command);
             
             if (result.IsFailure)

@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Rebout.Nexus.Contracts.UserManagement.v1;
+using Shared.Contracts;
 using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Users.Command.Register
@@ -17,9 +17,7 @@ namespace Nexus.Bff.Features.Users.Command.Register
                     request.Verifier, 
                     request.ClientSalt, 
                     request.EncryptedDek, 
-                    request.EncryptionAlgorithm, 
-                    request.Iterations, 
-                    request.KdfType, 
+                    request.CryptoVersion,
                     request.Email,
                     string.IsNullOrWhiteSpace(request.Phone) ? null : request.Phone,
                     string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender),

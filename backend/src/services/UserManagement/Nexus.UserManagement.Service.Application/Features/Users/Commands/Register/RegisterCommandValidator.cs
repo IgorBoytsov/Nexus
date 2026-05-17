@@ -12,9 +12,6 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
             Include(VerifierValidator.Create());
             Include(ClientSaltValidator.Create());
             Include(EncryptedDekValidator.Create());
-            Include(EncryptionAlgorithmValidator.Create());
-            Include(IterationsValidator.Create());
-            Include(KdfTypeValidator.Create());
         }
     }
 }

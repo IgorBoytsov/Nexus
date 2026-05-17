@@ -10,17 +10,12 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
         string Verifier, 
         string ClientSalt, 
         string EncryptedDek,
-        string EncryptionAlgorithm,
-        int Iterations,
-        string KdfType,
+        int CryptoVersion,
         string Email, string? Phone,
         Guid? IdGender, Guid? IdCountry) : IRequest<Result>,  
         IHasLogin,
         IHasUserName, 
         IHasVerifier, 
         IHasClientSalt, 
-        IHasEncryptedDek, 
-        IHasEncryptionAlgorithm, 
-        IHasIterations, 
-        IHasKdfType;
+        IHasEncryptedDek;
 }

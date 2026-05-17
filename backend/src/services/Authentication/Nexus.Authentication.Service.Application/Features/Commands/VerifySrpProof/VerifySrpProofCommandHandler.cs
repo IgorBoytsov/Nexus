@@ -6,6 +6,7 @@ using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Contracts;
 using Shared.Kernel.Errors;
+using Crossdyne.Security.Configuration;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {
@@ -24,6 +25,9 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
 
         public async Task<Result<AuthResponse>> Handle(VerifySrpProofCommand request, CancellationToken cancellationToken)
         {
+            SrpProfile profile = SrpProfileRegistry.GetProfile(SrpGroup.Rfc5054_3072); 
+            var srpContext = SrpContext.FromOptions(profile.Options);
+
             if (string.IsNullOrWhiteSpace(request.A) || string.IsNullOrWhiteSpace(request.M1))
                 return Result<AuthResponse>.Failure(new Error(AppErrors.Validation, "Неверные параметры аутентификации."));
 
@@ -34,7 +38,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             if (session is null)
                 return Result<AuthResponse>.Failure(new Error(AppErrors.SessionExpired, "Сессия аутентификации истекла или недействительна. Повторите вход."));
 
-            var M2_server = _srpServer.VerifySrpProof(session, request.A, request.M1);
+            var M2_server = _srpServer.VerifySrpProof(session, request.A, request.M1, srpContext);
 
             var userData = await _userManagementServiceClient.GetUserByLoginAsync(normalizedLogin);
             var accessToken = _jwtTokenGenerator.GenerateAccessToken(userData!);

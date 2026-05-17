@@ -1,6 +1,6 @@
 ﻿namespace Nexus.UserManagement.Service.Domain.ValueObjects.User
 {
-    public sealed record UserName
+    public readonly record struct UserName
     {
         public const int MIN_LENGTH = 2;
         public const int MAX_LENGTH = 100;

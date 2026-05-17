@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Nexus.UserManagement.Service.Domain.Enums;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
@@ -27,28 +28,22 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                     dbValue => UserId.From(dbValue))
                 .IsRequired();
 
-            builder.Property(ua => ua.Method)
-                .HasConversion<int>()
+            builder.HasDiscriminator<UserAuthenticatorType>(nameof(UserAuthenticator.Method))
+                .HasValue<SrpAuthenticator>(UserAuthenticatorType.SRP)
+                .HasValue<EmailAuthenticator>(UserAuthenticatorType.Email);
+
+            builder.Property(ua => ua.CreatedAt)
+                .HasColumnName(nameof(UserAuthenticator.CreatedAt))
                 .IsRequired();
 
-            builder.Property(ua => ua.Identifier)
-                .HasConversion(
-                    identifier => identifier.Value,
-                    dbValue => IdentityIdentifier.Create(dbValue))
-                .HasColumnName("Identifier")
-                .HasMaxLength(256)
+            builder.Property(ua => ua.LastUsedAt)
+                .HasColumnName(nameof(UserAuthenticator.LastUsedAt))
+                .IsRequired(false);
+
+            builder.Property(ua => ua.IsActive)
+                .HasColumnName(nameof(UserAuthenticator.IsActive))
+                .HasDefaultValue(true)
                 .IsRequired();
-
-            builder.Property(ua => ua.CredentialData)
-                .HasConversion(
-                     credData => credData.HasValue ? credData.Value.Value : null,
-                     dbValue => string.IsNullOrEmpty(dbValue) ? null : CredentialBlob.Create(dbValue))
-                .HasColumnName("CredentialData")
-                .IsRequired(false);
-
-            builder.Property(ua => ua.Salt)
-                .HasMaxLength(256)
-                .IsRequired(false);
         }
     }
 }

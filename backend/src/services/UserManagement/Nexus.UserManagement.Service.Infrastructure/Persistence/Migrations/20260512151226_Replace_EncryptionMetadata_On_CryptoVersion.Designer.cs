@@ -2,18 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
+namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Mirgrations
 {
     [DbContext(typeof(WriteContext))]
-    partial class WriteContextModelSnapshot : ModelSnapshot
+    [Migration("20260512151226_Replace_EncryptionMetadata_On_CryptoVersion")]
+    partial class Replace_EncryptionMetadata_On_CryptoVersion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,22 +177,22 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("Id");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("CreatedAt");
+                    b.Property<string>("CredentialData")
+                        .HasColumnType("text")
+                        .HasColumnName("CredentialData");
 
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true)
-                        .HasColumnName("IsActive");
-
-                    b.Property<DateTime?>("LastUsedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("LastUsedAt");
+                    b.Property<string>("Identifier")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("Identifier");
 
                     b.Property<int>("Method")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Salt")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -199,10 +202,6 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserAuthenticators", (string)null);
-
-                    b.HasDiscriminator<int>("Method");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.UserRoles", b =>
@@ -248,37 +247,6 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserSecurityAssets", (string)null);
-                });
-
-            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.EmailAuthenticator", b =>
-                {
-                    b.HasBaseType("Nexus.UserManagement.Service.Domain.Models.UserAuthenticator");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text")
-                        .HasColumnName("Email")
-                        .UseCollation("case_insensitive");
-
-                    b.HasDiscriminator().HasValue(2);
-                });
-
-            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.SrpAuthenticator", b =>
-                {
-                    b.HasBaseType("Nexus.UserManagement.Service.Domain.Models.UserAuthenticator");
-
-                    b.Property<string>("Login")
-                        .HasColumnType("text")
-                        .HasColumnName("SrpLogin");
-
-                    b.Property<string>("Salt")
-                        .HasColumnType("text")
-                        .HasColumnName("SrpSalt");
-
-                    b.Property<string>("Verificator")
-                        .HasColumnType("text")
-                        .HasColumnName("SrpVerificator");
-
-                    b.HasDiscriminator().HasValue(1);
                 });
 
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.User", b =>
