@@ -41,9 +41,9 @@
                 
             <button type="submit" [disabled]="registerForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Регистрация..' : 'Зарегистрироваться'}}</button>
         </form>
-        <p class="signup">
+        <p class="auth-link">
             Уже есть аккаунт?
-            <a routerLink="/login" class="" style="margin-left: 5px;">Воити</a>
+            <a routerLink="/login" class="">Войти</a>
         </p>
 	</div>
 </div>

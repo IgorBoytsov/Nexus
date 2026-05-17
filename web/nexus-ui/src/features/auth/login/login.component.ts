@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SrpClientService, SrpContextFactory, SrpGroup } from '@crossdyne/security'
 import { AuthApi } from './auth.api';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { Result } from '@crossdyne/toolkit';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
 })
 
 export class LoginComponent {
