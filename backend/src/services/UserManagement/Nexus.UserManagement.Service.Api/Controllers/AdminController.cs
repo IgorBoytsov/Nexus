@@ -21,7 +21,6 @@ namespace Nexus.UserManagement.Service.Api.Controllers
                 request.UserName,
                 request.Password,
                 request.Email,
-                request.Phone,
                 request.IdGender,
                 request.IdCountry);
 

@@ -3,6 +3,6 @@
     public sealed record RegisterUserByAdminRequest(
         string Login, string UserName,
         string Password,
-        string Email, string? Phone,
+        string Email,
         Guid? IdGender, Guid? IdCountry);
 }

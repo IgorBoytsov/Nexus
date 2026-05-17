@@ -32,7 +32,6 @@ export class RegisterComponent{
             username: ['', [Validators.required, Validators.minLength(this.minUsernameLength)]],
             password: ['', [Validators.required, Validators.minLength(8)]],
             email: ['', [Validators.required, Validators.email]],
-            phone: ['']
         });
     }
 
@@ -52,7 +51,7 @@ export class RegisterComponent{
             const srp = new SrpClientService();
             const profile = CryptoProfileRegistry.latest;
 
-            const { login, username, password, email, phone } = this.registerForm.value;
+            const { login, username, password, email } = this.registerForm.value;
 
             const publicKeyResponse = await firstValueFrom(this.register.getPublicKey());
             const firstParse = JSON.parse(publicKeyResponse.publicKey);
@@ -101,7 +100,6 @@ export class RegisterComponent{
                 encryptedDek: encryptedDek,
                 cryptoVersion: profile.version,
                 email: email,
-                phone: phone,
                 idGender: null, 
                 idCountry: null
             };

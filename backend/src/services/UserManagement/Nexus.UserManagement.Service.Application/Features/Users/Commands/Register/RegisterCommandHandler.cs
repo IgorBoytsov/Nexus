@@ -21,7 +21,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
         {
             try
             {
-                var user = User.Create(request.Login, request.UserName, request.Email, request.Phone, EnumStatus.Active.Id, request.IdGender, request.IdCountry);
+                var user = User.Create(request.Login, request.UserName, request.Email, EnumStatus.Active.Id, request.IdGender, request.IdCountry);
 
                 user.AddRole(RoleId.From(EnumRole.User.Id));
                 user.AddSrpAuthenticator(Login.Create(request.Login), Verificator.Create(request.Verifier), Salt.Create(request.ClientSalt));

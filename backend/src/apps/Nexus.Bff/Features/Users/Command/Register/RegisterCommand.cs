@@ -8,7 +8,7 @@ namespace Nexus.Bff.Features.Users.Command.Register
         string Login, string UserName, 
         string Verifier, string ClientSalt,  string EncryptedDek, 
         int CryptoVersion,
-        string Email,string? Phone,
+        string Email,
         Guid? IdGender,
         Guid? IdCountry) : IRequest<Result>,    
         IHasLogin,

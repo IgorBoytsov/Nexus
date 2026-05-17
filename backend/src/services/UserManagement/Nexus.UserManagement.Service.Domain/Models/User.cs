@@ -17,7 +17,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public Login Login { get; private set; } 
         public UserName UserName { get; private set; }
         public Email Email { get; private set; }
-        public Phone? Phone { get; private set; }
 
         /*--Даты--*/
 
@@ -58,7 +57,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         public static User Create(
             string login, string userName,
-            string email, string? phone,
+            string email,
             Guid statusId, Guid? genderId, Guid? countryId)
         {
             var loginVo = Login.Create(login);
@@ -66,9 +65,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
             var emailVo = Email.Create(email);
 
             var user = new User(UserId.New(), loginVo, userNameVo, emailVo, statusId);
-
-            if (phone is not null)
-                user.Phone = Phone.Create(phone);
 
             if (genderId.HasValue)
                 user.IdGender = genderId;
@@ -185,7 +181,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
         }
 
         #endregion
-
 
         #region Public Helpers
 

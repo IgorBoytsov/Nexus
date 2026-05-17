@@ -59,20 +59,6 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
 
             builder.HasIndex(u => u.Email, "IX_Users_Email").IsUnique();
 
-            /*__Phone__*/
-
-            builder.Property(u => u.Phone)
-                .HasConversion(
-                    phone => phone != null ? phone.Value : null,
-                    dbValue => !string.IsNullOrEmpty(dbValue) ? new Phone(dbValue) : null)
-                .HasMaxLength(20)
-                .HasColumnName("Phone")
-                .IsRequired(false);
-
-            builder.HasIndex(u => u.Phone, "IX_Users_Phone")
-                .IsUnique()
-                .HasFilter("\"Phone\" IS NOT NULL");
-
             /*__Dates__*/
 
             builder.Property(u => u.DateRegistration)

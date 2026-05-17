@@ -35,14 +35,6 @@
                 }
             </div>
 
-            <div class="form-field">
-                <label for="phone">Номер телефона*</label>
-                <input id="phone" type="tel" name="phone" formControlName="phone" [class.error]="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched"/>
-                <!-- @if (registerForm.get('phone')?.hasError('maxLength') || registerForm.get('phone')?.hasError('maxLength') && registerForm.get('phone')?.touched) {
-                    <small class="error-message">Номере телефона должен быть в формате 11 символов, нач с 8</small>
-                } -->
-            </div>
-
             @if (errorMessage()) {
                 <small class="alert alert-error">{{errorMessage()}}</small>
             }

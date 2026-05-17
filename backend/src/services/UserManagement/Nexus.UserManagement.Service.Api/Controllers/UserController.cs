@@ -32,9 +32,9 @@ namespace Nexus.UserManagement.Service.Api.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] Shared.Contracts.RegisterUserRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
-            var command = new RegisterCommand(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion, request.Email, request.Phone, string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender), string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
+            var command = new RegisterCommand(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion, request.Email, string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender), string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
 
             var result = await _mediator.Send(command);
 

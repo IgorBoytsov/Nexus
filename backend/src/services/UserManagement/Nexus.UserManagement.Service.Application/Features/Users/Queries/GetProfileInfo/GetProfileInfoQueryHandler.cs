@@ -13,7 +13,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPro
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId);
 
-            return Result<ProfileInfoResponse>.Success(new ProfileInfoResponse(user!.Login, user!.Email, user.Phone?.Value));
+            return Result<ProfileInfoResponse>.Success(new ProfileInfoResponse(user!.Login, user!.Email));
         }
     }
 }
