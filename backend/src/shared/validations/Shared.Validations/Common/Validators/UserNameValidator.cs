@@ -11,7 +11,7 @@ namespace Shared.Validations.Common.Validators
         {
             RuleFor(x => x.UserName)
             .NotEmpty().WithMessage("Имя пользователя нужно обязательно указать.")
-            .Length(5, 50).WithMessage("Длинна ника должна быть от 5 до 50 символов.");
+            .Length(3, 50).WithMessage("Длинна ника должна быть от 2 до 50 символов.");
         }
     }
 }

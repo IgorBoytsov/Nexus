@@ -18,7 +18,6 @@ export class ProfileInfoComponent implements OnInit {
 
     login: string | null = null;
     email: string | null = null;
-    phoneNumber: string | null = null;
     isLoaded = false;
 
     ngOnInit(): void{
@@ -30,7 +29,6 @@ export class ProfileInfoComponent implements OnInit {
             next: (info) => {
                 this.login = info.login;
                 this.email = info.email;
-                this.phoneNumber = info.phonNumber;
                 
                 this.isLoaded = true;
                 this.cdr.detectChanges();

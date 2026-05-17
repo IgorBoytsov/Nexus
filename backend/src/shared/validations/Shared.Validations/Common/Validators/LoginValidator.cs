@@ -11,7 +11,7 @@ namespace Shared.Validations.Common.Validators
         {
             RuleFor(x => x.Login)
             .NotEmpty().WithMessage("Логин не должен быть пустым.")
-            .Length(5, 50).WithMessage("Длинна логина должна быть от 5 до 50 символов.")
+            .Length(3, 50).WithMessage("Длинна логина должна быть от 3 до 50 символов.")
             .Matches("^[a-zA-Z0-9]+$").WithMessage("Логин может содержать только буквы и цифры.");
         }
     }

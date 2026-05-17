@@ -86,7 +86,7 @@ namespace Nexus.UserManagement.Service.Api
                 {
                     var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                    var command = new RegisterAdminCommand(username, username, password, email, Phone: null, IdGender: null, IdCountry: null);
+                    var command = new RegisterAdminCommand(username, username, password, email, IdGender: null, IdCountry: null);
                     var result = await mediator.Send(command);
 
                     if (result.IsSuccess)

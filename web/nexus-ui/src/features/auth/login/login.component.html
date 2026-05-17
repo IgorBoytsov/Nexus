@@ -7,7 +7,7 @@
                 <label for="login">Логин</label>
                 <input id="login" type="text" name="login" formControlName="login" [class.error]="loginForm.get('login')?.invalid && loginForm.get('login')?.touched"/>
                 @if (loginForm.get('login')?.hasError('minlength') && loginForm.get('login')?.touched) {
-                    <small class="error-message">Логин должен быть не менее {{minUsernameLength}} символов</small>
+                    <small class="error-message">Логин должен быть не менее {{minLoginLength}} символов</small>
                 }   
             </div>
 
@@ -25,5 +25,9 @@
                 
             <button type="submit" [disabled]="loginForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Вход..' : 'Войти'}}</button>
         </form>
+        <p class="auth-link">
+            Еще нету аккаунта?
+            <a routerLink="/register" class="">Создать</a>
+        </p>
     </div>
 </div>

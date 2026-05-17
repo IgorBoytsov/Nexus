@@ -6,7 +6,6 @@ export interface RegisterRequest {
     encryptedDek: string;
     cryptoVersion: number,
     email: string;
-    phone: string | null;
     idGender: string | null;
     idCountry: string | null;
 }

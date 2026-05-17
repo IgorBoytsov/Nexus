@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SrpClientService, SrpContextFactory, SrpGroup } from '@crossdyne/security'
 import { AuthApi } from './auth.api';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { Result } from '@crossdyne/toolkit';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
 })
 
 export class LoginComponent {
@@ -26,11 +26,11 @@ export class LoginComponent {
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
-  readonly minUsernameLength = 2;
+  readonly minLoginLength = 3;
 
   constructor() {
     this.loginForm = this.fb.group({
-      login: ['', [Validators.required, Validators.minLength(this.minUsernameLength)]],
+      login: ['', [Validators.required, Validators.minLength(this.minLoginLength)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }

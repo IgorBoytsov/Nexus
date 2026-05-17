@@ -11,7 +11,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
         string ClientSalt, 
         string EncryptedDek,
         int CryptoVersion,
-        string Email, string? Phone,
+        string Email,
         Guid? IdGender, Guid? IdCountry) : IRequest<Result>,  
         IHasLogin,
         IHasUserName, 

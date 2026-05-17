@@ -19,7 +19,6 @@ namespace Nexus.Bff.Features.Users.Command.Register
                     request.EncryptedDek, 
                     request.CryptoVersion,
                     request.Email,
-                    string.IsNullOrWhiteSpace(request.Phone) ? null : request.Phone,
                     string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender),
                     string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
 

@@ -107,3 +107,52 @@ input[type="reset"] {
         transform: translateY(1px);
         filter: brightness(0.9);
     }
+
+.btn-sumbit:disabled {
+  background-color: rgba(75, 85, 99, 1); 
+  color: rgba(156, 163, 175, 1);        
+  cursor: not-allowed;               
+  opacity: 0.7;
+  transform: none !important;          
+  
+  &:hover {
+    background-color: rgba(75, 85, 99, 1);
+    filter: none;
+  }
+}
+
+.auth-link {
+  margin-left: 5px;
+  color: #fdfdfd;
+  font-size: 18px;
+
+  a {
+    color: $color-a-primary;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $color-a-hover;
+      text-decoration: underline;
+    }
+  }
+}
+
+// @mixin link-styles {
+//   .auth-link {
+//     margin-left: 5px;
+//     color: #fdfdfd;
+//     font-size: 18px;
+
+//     a {
+//       color: #c51212;
+//       text-decoration: none;
+//       transition: color 0.2s;
+
+//       &:hover {
+//         color: #0056b3;
+//         text-decoration: underline;
+//       }
+//     }
+//   }
+// }
