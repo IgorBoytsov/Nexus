@@ -24,10 +24,13 @@ export class RegisterComponent{
     isLoading = signal(false);
     errorMessage = signal<string | null>(null);
 
+    readonly minLoginLength = 3;
+    readonly minUsernameLength = 3;
+
     constructor() {
         this.registerForm = this.fb.group({
-            login: ['', [Validators.required, Validators.minLength(2)]],
-            username: ['', [Validators.required, Validators.minLength(5)]],
+            login: ['', [Validators.required, Validators.minLength(this.minLoginLength)]],
+            username: ['', [Validators.required, Validators.minLength(this.minUsernameLength)]],
             password: ['', [Validators.required, Validators.minLength(8)]],
             email: ['', [Validators.required, Validators.email]],
         });
@@ -107,12 +110,15 @@ export class RegisterComponent{
             if (registerResult.isFailure){
                 this.isLoading.set(false);
                 this.errorMessage.set(registerResult.stringMessageFull);
+
+                return;
             }
 
             console.log("Успешная регистрация!");
 
-            this.isLoading.set(true);
             this.errorMessage.set(null);
+
+            this.router.navigate(['/login'])
         } catch (error) {
             console.error("Ошибка регистрации:", error);
             
@@ -124,10 +130,7 @@ export class RegisterComponent{
             
             this.errorMessage.set(error instanceof Error ? error.message : 'Неизвестная ошибка');
         } finally {
-            this.isLoading.set(true);
-            this.errorMessage.set(null);
-
-            this.router.navigate(['/login'])
+            this.isLoading.set(false);
         }
     }
 }

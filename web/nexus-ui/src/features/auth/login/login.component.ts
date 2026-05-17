@@ -26,9 +26,11 @@ export class LoginComponent {
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
+  readonly minLoginLength = 3;
+
   constructor() {
     this.loginForm = this.fb.group({
-      login: ['', [Validators.required, Validators.minLength(5)]],
+      login: ['', [Validators.required, Validators.minLength(this.minLoginLength)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }

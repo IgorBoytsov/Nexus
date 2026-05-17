@@ -108,6 +108,19 @@ input[type="reset"] {
         filter: brightness(0.9);
     }
 
+.btn-sumbit:disabled {
+  background-color: rgba(75, 85, 99, 1); 
+  color: rgba(156, 163, 175, 1);        
+  cursor: not-allowed;               
+  opacity: 0.7;
+  transform: none !important;          
+  
+  &:hover {
+    background-color: rgba(75, 85, 99, 1);
+    filter: none;
+  }
+}
+
 .auth-link {
   margin-left: 5px;
   color: #fdfdfd;

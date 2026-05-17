@@ -7,7 +7,7 @@
                 <label for="login">Логин</label>
                 <input id="login" type="text" name="login" formControlName="login" [class.error]="registerForm.get('login')?.invalid && registerForm.get('login')?.touched"/>
                 @if (registerForm.get('login')?.hasError('minlength') && registerForm.get('login')?.touched) {
-                    <small class="error-message">Логин должен быть не менее {{minUsernameLength}} символов</small>
+                    <small class="error-message">Логин должен быть не менее {{minLoginLength}} символов</small>
                 }   
             </div>
 
@@ -23,15 +23,15 @@
                 <label for="username">Никнейм</label>
                 <input id="username" type="text" name="username" formControlName="username" [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"/>
                 @if (registerForm.get('username')?.hasError('minlength') && registerForm.get('username')?.touched) {
-                    <small class="error-message">Минимум 2 символа</small>
+                    <small class="error-message">Минимум {{minUsernameLength}} символа</small>
                 }
             </div>
 
             <div class="form-field">
                 <label for="email">Электронная почта</label>
                 <input id="email" type="email" name="email" formControlName="email" [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"/>
-                @if ((registerForm.get('phone')?.hasError('minlength') || registerForm.get('phone')?.hasError('maxlength')) && registerForm.get('phone')?.touched) {
-                        <small class="error-message">Номер телефона должен быть ровно 11 символов (начиная с 8)</small>
+                @if (registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched) {
+                    <small class="error-message">Введите корректный email</small>
                 }
             </div>
 
