@@ -24,12 +24,10 @@ export class RegisterComponent{
     isLoading = signal(false);
     errorMessage = signal<string | null>(null);
 
-    readonly minUsernameLength = 2;
-
     constructor() {
         this.registerForm = this.fb.group({
             login: ['', [Validators.required, Validators.minLength(2)]],
-            username: ['', [Validators.required, Validators.minLength(this.minUsernameLength)]],
+            username: ['', [Validators.required, Validators.minLength(5)]],
             password: ['', [Validators.required, Validators.minLength(8)]],
             email: ['', [Validators.required, Validators.email]],
         });
