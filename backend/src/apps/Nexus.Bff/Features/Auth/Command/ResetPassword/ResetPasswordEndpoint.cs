@@ -13,7 +13,17 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPassword
                 [FromBody] RecoveryPasswordRequest request, 
                 [FromServices] IMediator mediator) =>
             {
-                var command = new ResetPasswordCommand(request.Login, request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion);
+                var command = new ResetPasswordCommand(
+                    request.Login,
+                    request.Verifier, 
+                    request.ClientSalt, 
+                    request.EncryptedDek, 
+                    request.CryptoVersion,
+                    request.SrpVersion,
+                    request.EncryptedVerifierWrapKey,
+                    request.KeyWrapVersion,
+                    request.AsymmetricKeyId);
+                    
                 var result = await mediator.Send(command);
                             
                 if (result.IsFailure)

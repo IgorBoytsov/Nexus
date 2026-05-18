@@ -14,26 +14,37 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
         IUserManagementServiceClient userManagementClient,
         IRedisCacheService redisCacheService,
         ISrpServer srpServer,
+        ICryptoServices cryptoServices,
         IVerifierProtector verifierProtector) : IRequestHandler<GetSrpChallengeCommand, Result<SrpChallengeResponse>>
     {
         private readonly IUserManagementServiceClient _userManagementClient = userManagementClient;
         private readonly IRedisCacheService _redisCacheService = redisCacheService;
         private readonly ISrpServer _srpServer = srpServer;
+        private readonly ICryptoServices _cryptoServices = cryptoServices;
         private readonly IVerifierProtector _verifierProtector = verifierProtector;
 
         public async Task<Result<SrpChallengeResponse>> Handle(GetSrpChallengeCommand request, CancellationToken cancellationToken)
         {
-            SrpProfile profile = SrpProfileRegistry.GetProfile(SrpGroup.Rfc5054_3072); 
-            var srpContext = SrpContext.FromOptions(profile.Options);
-
             string normalizedLogin = request.Login.Trim().ToLowerInvariant();
             var userData = await _userManagementClient.GetUserByLoginAsync(normalizedLogin);
 
             if (userData == null)
                 return Result<SrpChallengeResponse>.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден"));
 
-            var decryptedVerifierBase64 = _verifierProtector.Unprotect(userData.Verifier);
-            byte[] vBytes = Convert.FromBase64String(decryptedVerifierBase64);
+            SrpProfile srpProfile = SrpProfileRegistry.GetProfile((SrpGroup)userData.SrpVersion); 
+            var srpContext = SrpContext.FromOptions(srpProfile.Options);
+
+            var cryptoProfile = CryptoProfileRegistry.GetProfile((CryptoVersion)userData.KeyWrapVersion);
+            var aesGcmOptions = cryptoProfile.AesGcmOptions;
+
+            var encryptedVerifier = userData.Verifier;
+            var encryptedVerifierWrapKey = userData.EncryptedVerifierWrapKey;
+            var verifierWrapKey = _verifierProtector.Unprotect(encryptedVerifierWrapKey);
+            var verifierWrapKeyBytes = Convert.FromBase64String(verifierWrapKey);
+            
+            var decryptedVerifierBase64 = _cryptoServices.DecryptData<string>(encryptedVerifier, verifierWrapKeyBytes, aesGcmOptions);
+
+            byte[] vBytes = Convert.FromBase64String(decryptedVerifierBase64!);
 
             var sessionState = _srpServer.GetSrpChallenge(normalizedLogin, vBytes, srpContext);
 

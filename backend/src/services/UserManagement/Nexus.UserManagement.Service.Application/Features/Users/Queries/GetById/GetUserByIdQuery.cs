@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.UserManagement.v1;
+using Shared.Contracts;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById
 {

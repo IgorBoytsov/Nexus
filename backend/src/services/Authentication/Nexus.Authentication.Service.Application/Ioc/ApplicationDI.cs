@@ -1,4 +1,5 @@
 ﻿using Crossdyne.Security.Abstractions;
+using Crossdyne.Security.Cryptography;
 using Crossdyne.Security.Srp.Server;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Authentication.Service.Application.Secure;
@@ -20,6 +21,7 @@ namespace Nexus.Authentication.Service.Application.Ioc
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddSingleton<IVerifierProtector, RsaDecryptor>();
             services.AddTransient<ISrpServer, SrpServerService>();
+            services.AddSingleton<ICryptoServices, CryptoService>();
 
             return services;
         }

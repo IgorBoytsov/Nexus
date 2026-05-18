@@ -1,4 +1,13 @@
 namespace Shared.Contracts
 {
-    public sealed record RecoveryPasswordRequest(string Login, string Verifier, string ClientSalt, string EncryptedDek, int CryptoVersion);
+    public sealed record RecoveryPasswordRequest(
+        string Login, 
+        string Verifier, 
+        string ClientSalt, 
+        string EncryptedDek, 
+        int CryptoVersion, 
+        int SrpVersion, 
+        string EncryptedVerifierWrapKey, 
+        int KeyWrapVersion, 
+        string AsymmetricKeyId);
 }

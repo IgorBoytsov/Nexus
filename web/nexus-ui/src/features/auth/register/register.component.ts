@@ -20,6 +20,10 @@ export class RegisterComponent{
     private router = inject(Router)
     private register = inject(RegisterApi)
 
+    private readonly crypto = new CryptoService();
+    private readonly keyDerivationService = new KeyDerivationService();
+    private readonly srp = new SrpClientService();
+
     registerForm: FormGroup;
     isLoading = signal(false);
     errorMessage = signal<string | null>(null);
@@ -44,25 +48,27 @@ export class RegisterComponent{
 
         try {
             console.log("Началась регистрация!");
-
-            const ctx = await SrpContextFactory.create(SrpGroup.Rfc5054_3072);
             
-            const crypto = new CryptoService();
-            const keyDerivationService = new KeyDerivationService();
-            const srp = new SrpClientService();
+            //#region Конфигурация
+
+            const srpGroup = SrpGroup.Rfc5054_3072;
+            const ctx = await SrpContextFactory.create(srpGroup);
+            
             const profile = CryptoProfileRegistry.latest;
 
             const { login, username, password, email } = this.registerForm.value;
 
+            const salt = this.crypto.generateRandomBytes(16);
+
+            //#endregion
+
+            //#region Получение RSA ключа
+            
             const publicKeyResponse = await firstValueFrom(this.register.getPublicKey());
             const firstParse = JSON.parse(publicKeyResponse.publicKey);
             const publicKeyBase64 = typeof firstParse === 'string' 
                 ? firstParse 
                 : firstParse.publicKey;
-
-            const salt = crypto.generateRandomBytes(16);
-            const saltBase64 = SecurityUtils.toBase64(salt);
-            const { kek } = await keyDerivationService.deriveKeysFromPassword(login, password, salt);
 
             const binaryKey = SecurityUtils.fromBase64(publicKeyBase64);
             const rsaPublicKey = await window.crypto.subtle.importKey(
@@ -76,30 +82,49 @@ export class RegisterComponent{
                 ["encrypt"]
             );
 
-            const srpAuthHashBytes = await keyDerivationService.deriveAuthHashForSrp(login, password, salt, ctx.hashAlgorithmName);
-            const srpAuthHashBase64  =SecurityUtils.toBase64(srpAuthHashBytes);
+            //#endregion
 
-            const verifierVase64 = await srp.generateSrpVerifier(srpAuthHashBase64, ctx);
-            const verifierBytes = SecurityUtils.fromBase64(verifierVase64);
+            //#region Верификатор SRP
 
-            const encryptedVerifierBuffer = await window.crypto.subtle.encrypt(
+            const srpAuthHashBytes = await this.keyDerivationService.deriveAuthHashForSrp(login, password, salt, ctx.hashAlgorithmName);
+            const srpAuthHashBase64 = SecurityUtils.toBase64(srpAuthHashBytes);
+
+            const verifierBase64 = await this.srp.generateSrpVerifier(srpAuthHashBase64, ctx);
+
+            const dekForVerifier = this.crypto.generateRandomBytes(32);
+            const encryptedVerifier = await this.crypto.encryptData(verifierBase64, dekForVerifier, profile.aesGcmOptions);
+
+            const encryptedKekForVerifier = await window.crypto.subtle.encrypt(
                 { name: "RSA-OAEP" },
                 rsaPublicKey,
-                verifierBytes.buffer as ArrayBuffer
+                dekForVerifier.buffer as ArrayBuffer
             );
 
-            const encryptedVerifierBase64 = SecurityUtils.toBase64(new Uint8Array(encryptedVerifierBuffer));
+            const encryptedKekForVerifierBase64 = SecurityUtils.toBase64(new Uint8Array(encryptedKekForVerifier));
 
-            const dek = crypto.generateRandomBytes(32);
-            const encryptedDek = await crypto.encryptData(dek, kek);
-            
+            //#endregion
+
+            //#region Генерация DEK
+           
+            const saltBase64 = SecurityUtils.toBase64(salt);
+            const { kek } = await this.keyDerivationService.deriveKeysFromPassword(login, password, salt);
+
+            const dek = this.crypto.generateRandomBytes(32);
+            const encryptedDek = await this.crypto.encryptData(dek, kek, profile.aesGcmOptions);
+
+            //#endregion
+
             const request: RegisterRequest = {
                 login: login,
                 userName: username,
-                verifier: encryptedVerifierBase64,
+                verifier: encryptedVerifier,
                 clientSalt: saltBase64,
                 encryptedDek: encryptedDek,
                 cryptoVersion: profile.version,
+                srpVersion: srpGroup,
+                encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
+                asymmetricKeyId: "env_v1",
+                keyWrapVersion: profile.version, 
                 email: email,
                 idGender: null, 
                 idCountry: null

@@ -16,9 +16,11 @@ namespace Nexus.Bff.Features.Users.Command.Register
                     request.UserName, 
                     request.Verifier, 
                     request.ClientSalt, 
-                    request.EncryptedDek, 
+                    request.EncryptedVerifierWrapKey, 
                     request.CryptoVersion,
+                    request.SrpVersion,
                     request.Email,
+                    request.EncryptedVerifierWrapKey, request.KeyWrapVersion, request.AsymmetricKeyId,
                     string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender),
                     string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
 

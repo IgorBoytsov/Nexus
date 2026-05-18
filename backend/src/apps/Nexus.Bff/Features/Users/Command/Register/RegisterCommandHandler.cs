@@ -10,6 +10,6 @@ namespace Nexus.Bff.Features.Users.Command.Register
         private readonly IUserManagementService _userManagementService = userManagementService;
 
         public Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
-            => _userManagementService.Register(new RegisterUserRequest(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion, request.Email, request.IdGender?.ToString(), request.IdCountry?.ToString()));
+            => _userManagementService.Register(new RegisterUserRequest(request.Login, request.UserName, request.Verifier, request.SrpVersion, request.ClientSalt, request.EncryptedVerifierWrapKey, request.CryptoVersion, request.EncryptedVerifierWrapKey, request.KekWrapVersion, request.KekKeyId, request.Email, request.IdGender?.ToString(), request.IdCountry?.ToString()));
     }
 }

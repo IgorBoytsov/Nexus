@@ -34,7 +34,14 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
-            var command = new RegisterCommand(request.Login, request.UserName, request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion, request.Email, string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender), string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
+            var command = new RegisterCommand(
+                request.Login, request.UserName, 
+                request.Verifier, request.ClientSalt, request.EncryptedVerifierWrapKey, 
+                request.CryptoVersion, request.SrpVersion, 
+                request.EncryptedVerifierWrapKey, request.KeyWrapVersion, request.AsymmetricKeyId, 
+                request.Email, 
+                string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender), 
+                string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
 
             var result = await _mediator.Send(command);
 
@@ -134,7 +141,17 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         [HttpPost("recovery-password")]
         public async Task<IActionResult> RecoveryPassword([FromBody] RecoveryPasswordRequest request)
         {
-            var command = new ResetPasswordCommand(request.Login, request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion);
+            var command = new ResetPasswordCommand(
+                request.Login, 
+                request.Verifier, 
+                request.ClientSalt, 
+                request.EncryptedDek, 
+                request.CryptoVersion,
+                request.SrpVersion,
+                request.EncryptedVerifierWrapKey,
+                request.KeyWrapVersion,
+                request.AsymmetricKeyId);
+
             var result = await _mediator.Send(command);
             
             if (result.IsFailure)

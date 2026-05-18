@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Enums;
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.UserManagement.v1;
 using Nexus.UserManagement.Service.Domain.Models;
+using Shared.Contracts;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByLoginInternal
 {
@@ -30,7 +30,17 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByL
                 var userSecurityAsset = user.UserSecurityAssets.FirstOrDefault(us => us.AssetType == AssetType.MainDek);
                 var srp = user.UserAuthenticators.OfType<SrpAuthenticator>().FirstOrDefault(ua => ua.Method == UserAuthenticatorType.SRP);
 
-                var userAuth = new UserAuthDataResponse(user.Id.Value.ToString(), user.Login, srp!.Verificator!, srp.Salt!, userSecurityAsset!.EncryptedValue, roleNames.Select(rn => rn.Value).ToList());
+                var userAuth = new UserAuthDataResponse(
+                    user.Id.Value.ToString(),
+                    user.Login,
+                    srp!.EncryptedVerifier!, 
+                    srp.Salt!,
+                    srp.SrpVersion!.Value.Value,
+                    srp.EncryptedVerifierWrapKey!,
+                    srp.KeyWrapVersion!.Value.Value,
+                    srp.AsymmetricKeyId!,
+                    userSecurityAsset!.EncryptedValue,
+                    roleNames.Select(rn => rn.Value).ToList());
 
                 return Result<UserAuthDataResponse>.Success(userAuth);
             } 

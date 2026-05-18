@@ -1,6 +1,5 @@
-﻿using Crossdyne.Toolkit.Results;
-using Microsoft.Extensions.Options;
-using Rebout.Nexus.Contracts.UserManagement.v1;
+﻿using Microsoft.Extensions.Options;
+using Shared.Contracts;
 using System.Net.Http.Json;
 using System.Text.Json;
 
