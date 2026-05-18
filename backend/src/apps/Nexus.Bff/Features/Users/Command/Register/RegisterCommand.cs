@@ -6,9 +6,11 @@ namespace Nexus.Bff.Features.Users.Command.Register
 {
     public sealed record RegisterCommand(
         string Login, string UserName, 
-        string Verifier, string ClientSalt,  string EncryptedDek, 
+        string Verifier, string ClientSalt,  string EncryptedVerifierWrapKey, 
         int CryptoVersion,
+        int SrpVersion,
         string Email,
+        string EncryptedKek, int KekWrapVersion, string KekKeyId,
         Guid? IdGender,
         Guid? IdCountry) : IRequest<Result>,    
         IHasLogin,

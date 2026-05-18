@@ -7,34 +7,47 @@ namespace Nexus.UserManagement.Service.Domain.Models
     public sealed class SrpAuthenticator : UserAuthenticator
     {
         public Login? Login { get; private set; }
-        public Verificator? Verificator { get; private set; }
+        public Verificator? EncryptedVerifier { get; private set; }
         public Salt? Salt { get; private set; }
+        public SrpVersion? SrpVersion { get; private set; }
+        public CredentialBlob? EncryptedVerifierWrapKey { get; private set; }
+        public CryptoVersion? KeyWrapVersion { get; private set; }
+        public AsymmetricKeyId? AsymmetricKeyId { get; private set; }
 
         private SrpAuthenticator()
         {
             
         }
 
-        private SrpAuthenticator(UserId userId, Login login, Verificator verificator, Salt salt) 
-        : base(UserAuthenticatorId.New(), userId, UserAuthenticatorType.SRP)
+        private SrpAuthenticator(
+            UserId userId,
+            Login login, Verificator encryptedVerifier, Salt salt, SrpVersion srpVersion,
+            CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId) : base(UserAuthenticatorId.New(), userId, UserAuthenticatorType.SRP)
         {
             Login = login;
-            Verificator = verificator;
+            EncryptedVerifier = encryptedVerifier;
             Salt = salt;
+            SrpVersion = srpVersion;
+            EncryptedVerifierWrapKey = encryptedVerifierWrapKey;
+            KeyWrapVersion = keyWrapVersion;
+            AsymmetricKeyId = asymmetricKeyId;
         }
 
-        public static SrpAuthenticator Create(UserId userId, Login login, Verificator verificator, Salt salt)
+        public static SrpAuthenticator Create(
+            UserId userId, 
+            Login login, Verificator verificator, Salt salt, SrpVersion srpVersion,
+            CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId)
         {
-            return new SrpAuthenticator(userId, login, verificator, salt);
+            return new SrpAuthenticator(userId, login, verificator, salt, srpVersion, encryptedVerifierWrapKey, keyWrapVersion, asymmetricKeyId);
         }
 
         internal void Update(Login login, Verificator verifier, Salt salt)
         {
             Login = login;
-            Verificator = verifier;
+            EncryptedVerifier = verifier;
             Salt = salt;
         }
 
-        public Verificator GetVerificator() => Verificator ?? throw new InvalidOperationException("SRP Verificator not initialized");
+        public Verificator GetVerificator() => EncryptedVerifier ?? throw new InvalidOperationException("SRP Verificator not initialized");
     }
 }

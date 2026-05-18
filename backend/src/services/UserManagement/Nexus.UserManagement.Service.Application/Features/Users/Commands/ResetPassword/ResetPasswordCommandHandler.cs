@@ -25,7 +25,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
                     return Result.Failure(new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера."));
 
                 user.UpdateSrpAuthenticator(Login.Create(request.Login), Verificator.Create(request.Verifier),Salt.Create(request.ClientSalt));
-                user.UpdateMainDek(EncryptedAssetValue.Create(request.EncryptedDek), request.CryptoVersion);
+                user.UpdateMainDek(EncryptedAssetValue.Create(request.EncryptedVerifierWrapKey), request.CryptoVersion);
 
                 await _writeContext.SaveChangesAsync(cancellationToken);
 

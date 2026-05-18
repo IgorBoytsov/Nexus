@@ -5,6 +5,10 @@ export interface RegisterRequest {
     clientSalt: string;
     encryptedDek: string;
     cryptoVersion: number,
+    srpVersion: number,
+    encryptedVerifierWrapKey: string, 
+    keyWrapVersion: number, 
+    asymmetricKeyId: string,
     email: string;
     idGender: string | null;
     idCountry: string | null;

@@ -112,10 +112,10 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         #region UserAuthenticators
 
-        public void AddSrpAuthenticator(Login login, Verificator verificator, Salt salt)
+        public void AddSrpAuthenticator(Login login, Verificator encryptedVerifier, Salt salt, SrpVersion srpVersion, CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId)
         {
             EnsureNoAuthenticatorOfType(UserAuthenticatorType.SRP);
-            var srp = SrpAuthenticator.Create(this.Id, login, verificator, salt);
+            var srp = SrpAuthenticator.Create(this.Id, login, encryptedVerifier, salt, srpVersion, encryptedVerifierWrapKey, keyWrapVersion, asymmetricKeyId);
             _userAuthenticators.Add(srp);
 
             MarkUpdate();

@@ -1,4 +1,9 @@
 namespace Shared.Contracts
 {
-    public record RegisterUserRequest(string Login, string UserName, string Verifier, string ClientSalt, string EncryptedDek, int CryptoVersion, string Email, string? IdGender, string? IdCountry);
+    public record RegisterUserRequest(
+        string Login, string UserName, 
+        string Verifier, int SrpVersion, string ClientSalt, 
+        string EncryptedVerifierWrapKey, int CryptoVersion,
+        string EncryptedKek, int KeyWrapVersion, string AsymmetricKeyId, 
+        string Email, string? IdGender, string? IdCountry);
 }

@@ -9,7 +9,7 @@ namespace Shared.Validations.Common.Validators
 
         public EncryptedDekValidator()
         {
-            RuleFor(x => x.EncryptedDek)
+            RuleFor(x => x.EncryptedVerifierWrapKey)
             .NotEmpty().WithMessage("Ключ DEK не может быть пустым.");
         }    
     }
