@@ -5,9 +5,12 @@
         <form [formGroup]="resetForm" (ngSubmit)="onSubmit()" class="login-form">
             <div class="form-field">
                 <label for="newPassword">Новый пароль</label>
-                <input id="newPassword" type="text" name="newPassword" formControlName="newPassword" [class.error]="resetForm.get('newPassword')?.invalid && resetForm.get('newPassword')?.touched"/>
+                <input id="newPassword" type="password" name="newPassword" formControlName="newPassword" [class.error]="resetForm.get('newPassword')?.invalid && resetForm.get('newPassword')?.touched"/>
                 @if (resetForm.get('newPassword')?.hasError('required') && resetForm.get('newPassword')?.touched) {
-                    <small class="error-message">Логин нужно обязательно указать</small>
+                    <small class="error-message">Пароль обязателен</small>
+                }
+                @if (resetForm.get('newPassword')?.hasError('minlength') && resetForm.get('newPassword')?.touched) {
+                    <small class="error-message">Пароль состоит минимум из 8 символов</small>
                 }   
             </div>
 
@@ -15,7 +18,7 @@
                 <small class="error-message">{{errorMessage()}}</small>
             }
                 
-            <button type="submit" [disabled]="resetForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Поиск..' : 'Найти'}}</button>
+            <button type="submit" [disabled]="resetForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Установка..' : 'Установить'}}</button>
         </form>
     </div>
 </div>

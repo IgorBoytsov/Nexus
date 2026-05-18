@@ -141,7 +141,17 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         [HttpPost("recovery-password")]
         public async Task<IActionResult> RecoveryPassword([FromBody] RecoveryPasswordRequest request)
         {
-            var command = new ResetPasswordCommand(request.Login, request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion);
+            var command = new ResetPasswordCommand(
+                request.Login, 
+                request.Verifier, 
+                request.ClientSalt, 
+                request.EncryptedDek, 
+                request.CryptoVersion,
+                request.SrpVersion,
+                request.EncryptedVerifierWrapKey,
+                request.KeyWrapVersion,
+                request.AsymmetricKeyId);
+
             var result = await _mediator.Send(command);
             
             if (result.IsFailure)

@@ -41,11 +41,14 @@ namespace Nexus.UserManagement.Service.Domain.Models
             return new SrpAuthenticator(userId, login, verificator, salt, srpVersion, encryptedVerifierWrapKey, keyWrapVersion, asymmetricKeyId);
         }
 
-        internal void Update(Login login, Verificator verifier, Salt salt)
+        internal void Update(Verificator verifier, Salt salt, SrpVersion srpVersion, CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId)
         {
-            Login = login;
             EncryptedVerifier = verifier;
             Salt = salt;
+            SrpVersion = srpVersion;
+            EncryptedVerifierWrapKey = encryptedVerifierWrapKey;
+            KeyWrapVersion = keyWrapVersion;
+            AsymmetricKeyId = asymmetricKeyId;
         }
 
         public Verificator GetVerificator() => EncryptedVerifier ?? throw new InvalidOperationException("SRP Verificator not initialized");
