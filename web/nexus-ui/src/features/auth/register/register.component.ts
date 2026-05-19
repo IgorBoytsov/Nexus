@@ -6,16 +6,17 @@ import { RegisterRequest } from '../../../contracts/requests/register-user.reque
 import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
+import { RecoveryKeysListComponent } from "../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, RecoveryKeysListComponent],
 })
 
-export class RegisterComponent{
+export class RegisterComponent {
     private fb = inject(FormBuilder);
     private router = inject(Router)
     private register = inject(RegisterApi)
@@ -28,6 +29,9 @@ export class RegisterComponent{
     isLoading = signal(false);
     errorMessage = signal<string | null>(null);
     
+    readonly showRecoveryKeys = signal(false);
+    readonly generatedRecoveryKeys = signal<string[] | null>(null);
+
     readonly recoveryKeysDisplay: string[] = [];
     readonly recoveryAssets: Array<{encryptedDek: string, rowKey: Uint8Array, version: CryptoVersion}> = [];
 
@@ -44,7 +48,7 @@ export class RegisterComponent{
         });
     }
 
-    async onSubmit(): Promise<void>{
+    async onSubmit(): Promise<void> {
         if (this.registerForm.invalid)
             return;
         
@@ -129,6 +133,8 @@ export class RegisterComponent{
 
             //#endregion
 
+            //#region Отправка данных на сервер
+
             const request: RegisterRequest = {
                 login: login,
                 userName: username,
@@ -148,6 +154,8 @@ export class RegisterComponent{
             
             const registerResult = await firstValueFrom(this.register.register(request));
 
+            //#endregion
+
             if (registerResult.isFailure){
                 this.isLoading.set(false);
                 this.errorMessage.set(registerResult.stringMessageFull);
@@ -155,11 +163,10 @@ export class RegisterComponent{
                 return;
             }
 
-            console.log("Успешная регистрация!");
+            this.generatedRecoveryKeys.set(this.recoveryKeysDisplay);
+            this.showRecoveryKeys.set(true);
 
             this.errorMessage.set(null);
-
-            this.router.navigate(['/login'])
         } catch (error) {
             console.error("Ошибка регистрации:", error);
             
@@ -172,7 +179,16 @@ export class RegisterComponent{
             this.errorMessage.set(error instanceof Error ? error.message : 'Неизвестная ошибка');
         } finally {
             this.isLoading.set(false);
-            this.recoveryAssets.forEach(asset => asset.rowKey.fill(0));
+            if (!this.showRecoveryKeys()){
+                this.recoveryAssets.forEach(asset => asset.rowKey?.fill(0));
+            }
         }
+    }
+
+    onRecoveryKeysConfirmed(): void {
+        this.generatedRecoveryKeys.set(null);
+        this.recoveryAssets.forEach(asset => asset.rowKey?.fill(0));
+
+        this.router.navigate(['/login'])
     }
 }
