@@ -29,6 +29,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
                     CredentialBlob.Create(request.EncryptedVerifierWrapKey), CryptoVersion.Create(request.KeyWrapVersion), AsymmetricKeyId.Create(request.AsymmetricKeyId));
                 user.AddEmailAuthenticator(Email.Create(request.Email));
                 user.AddUserSecurityAssets(AssetType.MainDek, EncryptedAssetValue.Create(request.EncryptedVerifierWrapKey), request.CryptoVersion);
+                request.RecoveryKeys.ToList().ForEach(rk => user.AddUserSecurityAssets(AssetType.RecoveryKey, EncryptedAssetValue.Create(rk.EncryptedValue), rk.CryptoVersion));
 
                 await _writeContext.Users.AddAsync(user, cancellationToken);
                 await _writeContext.SaveChangesAsync(cancellationToken);

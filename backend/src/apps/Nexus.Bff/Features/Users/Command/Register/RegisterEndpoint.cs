@@ -22,7 +22,8 @@ namespace Nexus.Bff.Features.Users.Command.Register
                     request.Email,
                     request.EncryptedVerifierWrapKey, request.KeyWrapVersion, request.AsymmetricKeyId,
                     string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender),
-                    string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
+                    string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry),
+                    [.. request.RecoveryKeys.Select(rk => new RecoveryKeyCommandData(rk.EncryptedValue, rk.CryptoVersion))]);
 
                 var result = await mediator.Send(command, ct);
 

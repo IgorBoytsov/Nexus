@@ -5,5 +5,8 @@ namespace Shared.Contracts
         string Verifier, int SrpVersion, string ClientSalt, 
         string EncryptedVerifierWrapKey, int CryptoVersion,
         string EncryptedKek, int KeyWrapVersion, string AsymmetricKeyId, 
-        string Email, string? IdGender, string? IdCountry);
+        string Email, string? IdGender, string? IdCountry,
+        IReadOnlyCollection<RecoveryKeyData> RecoveryKeys);
+
+    public record RecoveryKeyData(string EncryptedValue, int CryptoVersion);
 }

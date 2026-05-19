@@ -12,10 +12,13 @@ namespace Nexus.Bff.Features.Users.Command.Register
         string Email,
         string EncryptedKek, int KekWrapVersion, string KekKeyId,
         Guid? IdGender,
-        Guid? IdCountry) : IRequest<Result>,    
+        Guid? IdCountry,
+        IReadOnlyCollection<RecoveryKeyCommandData> RecoveryKeys) : IRequest<Result>,    
         IHasLogin,
         IHasUserName, 
         IHasVerifier, 
         IHasClientSalt, 
         IHasEncryptedDek;
+
+    public record RecoveryKeyCommandData(string EncryptedValue, int CryptoVersion);
 }

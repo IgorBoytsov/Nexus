@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
 import { RegisterRequest } from '../../../contracts/requests/register-user.request'
-import { CryptoProfileRegistry, CryptoService, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 
@@ -27,9 +27,13 @@ export class RegisterComponent{
     registerForm: FormGroup;
     isLoading = signal(false);
     errorMessage = signal<string | null>(null);
+    
+    readonly recoveryKeysDisplay: string[] = [];
+    readonly recoveryAssets: Array<{encryptedDek: string, rowKey: Uint8Array, version: CryptoVersion}> = [];
 
     readonly minLoginLength = 3;
     readonly minUsernameLength = 3;
+    readonly countRecoveryKays = 10;
 
     constructor() {
         this.registerForm = this.fb.group({
@@ -114,6 +118,17 @@ export class RegisterComponent{
 
             //#endregion
 
+            //#region генерация ключей восстановления 
+
+            for (let index = 0; index < this.countRecoveryKays; index++) {
+                const rowKey = this.crypto.generateRandomBytes(32)
+                const encryptedDek = await this.crypto.encryptData(dek, rowKey, profile.aesGcmOptions);
+                this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
+                this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: profile.version})
+            }
+
+            //#endregion
+
             const request: RegisterRequest = {
                 login: login,
                 userName: username,
@@ -127,7 +142,8 @@ export class RegisterComponent{
                 keyWrapVersion: profile.version, 
                 email: email,
                 idGender: null, 
-                idCountry: null
+                idCountry: null,
+                recoveryKeys: this.recoveryAssets.map(a => ({encryptedValue: a.encryptedDek, cryptoVersion: a.version}))
             };
             
             const registerResult = await firstValueFrom(this.register.register(request));
@@ -156,6 +172,7 @@ export class RegisterComponent{
             this.errorMessage.set(error instanceof Error ? error.message : 'Неизвестная ошибка');
         } finally {
             this.isLoading.set(false);
+            this.recoveryAssets.forEach(asset => asset.rowKey.fill(0));
         }
     }
 }

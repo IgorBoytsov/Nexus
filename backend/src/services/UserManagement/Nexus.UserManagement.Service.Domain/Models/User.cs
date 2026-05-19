@@ -180,6 +180,12 @@ namespace Nexus.UserManagement.Service.Domain.Models
             dek?.UpdateMainDek(encryptedAssetValue, cryptoVersion);
         }
 
+        // public void AddRecoveryKeys(string encryptedValue, int cryptoVersion)
+        // {
+        //     var asset = UserSecurityAsset.Create(this.Id, AssetType.RecoveryKey, EncryptedAssetValue.Create(encryptedValue), cryptoVersion);
+        //     _userSecurityAssets.Add(asset);
+        // }
+
         #endregion
 
         #region Public Helpers

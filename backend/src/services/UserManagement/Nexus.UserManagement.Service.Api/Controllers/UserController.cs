@@ -41,7 +41,8 @@ namespace Nexus.UserManagement.Service.Api.Controllers
                 request.EncryptedVerifierWrapKey, request.KeyWrapVersion, request.AsymmetricKeyId, 
                 request.Email, 
                 string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender), 
-                string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry));
+                string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry),
+                [.. request.RecoveryKeys.Select(rk => new RecoveryKeyCommandData(rk.EncryptedValue, rk.CryptoVersion))]);
 
             var result = await _mediator.Send(command);
 

@@ -14,10 +14,13 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
         int SrpVersion,
         string EncryptedKek, int KeyWrapVersion, string AsymmetricKeyId,
         string Email,
-        Guid? IdGender, Guid? IdCountry) : IRequest<Result>,  
+        Guid? IdGender, Guid? IdCountry,
+        IReadOnlyCollection<RecoveryKeyCommandData> RecoveryKeys) : IRequest<Result>,  
         IHasLogin,
         IHasUserName, 
         IHasVerifier, 
         IHasClientSalt, 
         IHasEncryptedDek;
+
+    public record RecoveryKeyCommandData(string EncryptedValue, int CryptoVersion);
 }
