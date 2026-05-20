@@ -9,6 +9,10 @@ import { StepLoginComponent } from '../features/auth/reset-password/components/f
 import { recoveryStepGuard } from '../features/auth/reset-password/guards/reset-password-step.guard';
 import { StepCodeComponent } from '../features/auth/reset-password/components/confirm-code/confirm-code.component';
 import { StepResetComponent } from '../features/auth/reset-password/components/reset/reset.component';
+import { RecoveryPasswordKeysComponent } from '../features/auth/recovery-password-keys/recovery-password-keys.component';
+import { StepFindLoginComponent } from '../features/auth/recovery-password-keys/components/find-login/find-login.component';
+import { StepEnterCodeComponent } from '../features/auth/recovery-password-keys/components/enter-code/enter-code.component';
+import { StepSetPasswordComponent } from '../features/auth/recovery-password-keys/components/set-password/set-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -18,6 +22,16 @@ export const routes: Routes = [
     children:[
       { path: 'login', loadComponent: () => LoginComponent },
       { path: 'register', loadComponent: () => RegisterComponent },
+            {
+        path: 'recovery/keys',
+        component: RecoveryPasswordKeysComponent,
+        children: [
+          { path: '', component: StepFindLoginComponent, canActivate: [() => import(`../features/auth/recovery-password-keys/guards/recovery-password-keys.guard`).then(x => x.recoveryStepGuard)] },
+          { path: 'code', component: StepEnterCodeComponent, canActivate: [() => import(`../features/auth/recovery-password-keys/guards/recovery-password-keys.guard`).then(x => x.recoveryStepGuard)] },
+          { path: 'set', component: StepSetPasswordComponent, canActivate: [() => import(`../features/auth/recovery-password-keys/guards/recovery-password-keys.guard`).then(x => x.recoveryStepGuard)] },
+          { path: '**', redirectTo: '' }
+        ]
+      },
       { 
         path: 'recovery', 
         loadComponent: () => RecoveryComponent, 

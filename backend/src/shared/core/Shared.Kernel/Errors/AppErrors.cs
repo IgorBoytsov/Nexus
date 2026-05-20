@@ -12,5 +12,6 @@ namespace Shared.Kernel.Errors
         public static readonly ErrorCode TimeEnded = ErrorCode.Custom(nameof(TimeEnded), 10005);
         public static readonly ErrorCode IncorrectValue = ErrorCode.Custom(nameof(IncorrectValue), 10005);
         public static readonly ErrorCode SessionExpired = ErrorCode.Custom(nameof(SessionExpired), 10006);
+        public static readonly ErrorCode AccountNotSetUpForRecovery = ErrorCode.Custom(nameof(AccountNotSetUpForRecovery), 10007);
     }
 }

@@ -13,5 +13,8 @@ namespace Nexus.Bff.Infrastructure.Clients
         Task<Result> SendConfirmCodeEmail(string login);
         Task<Result> ConfirmCodeEmail(string login, string code);
         Task<Result> RecoveryPassword(RecoveryPasswordRequest request);
+        Task<Result> ExistUserByLogin(ExistUserBuLoginRequest request);
+        Task<Result<RecoveryViaKeysPayloadResponse>> RecoveryViaKeys(RecoveryViaKeysGetPayloadRequest request);
+        Task<Result> RecoveryViaKeysSet(RecoveryViaKeysSetRequest request);
     }
 }

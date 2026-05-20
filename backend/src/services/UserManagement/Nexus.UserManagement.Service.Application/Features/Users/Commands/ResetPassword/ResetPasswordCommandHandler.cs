@@ -26,7 +26,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
                 user.UpdateSrpAuthenticator(
                     Verificator.Create(request.Verifier), Salt.Create(request.ClientSalt), SrpVersion.Create(request.SrpVersion), 
                     CredentialBlob.Create(request.EncryptedVerifierWrapKey), CryptoVersion.Create(request.KeyWrapVersion), AsymmetricKeyId.Create(request.AsymmetricKeyId));
-                user.UpdateMainDek(EncryptedAssetValue.Create(request.EncryptedVerifierWrapKey), request.CryptoVersion);
+                user.UpdateMainDek(EncryptedAssetValue.Create(request.EncryptedDek), request.CryptoVersion);
 
                 await _writeContext.SaveChangesAsync(cancellationToken);
 

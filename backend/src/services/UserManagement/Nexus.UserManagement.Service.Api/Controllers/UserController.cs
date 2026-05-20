@@ -12,6 +12,9 @@ using Crossdyne.Toolkit.Results;
 using Shared.Contracts;
 using System.Security.Claims;
 using Shared.Web.Extensions;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.ExistByLogin;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeysInit;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeysSet;
 
 namespace Nexus.UserManagement.Service.Api.Controllers
 {
@@ -38,11 +41,11 @@ namespace Nexus.UserManagement.Service.Api.Controllers
                 request.Login, request.UserName, 
                 request.Verifier, request.ClientSalt, request.EncryptedVerifierWrapKey, 
                 request.CryptoVersion, request.SrpVersion, 
-                request.EncryptedVerifierWrapKey, request.KeyWrapVersion, request.AsymmetricKeyId, 
+                request.EncryptedDek, request.KeyWrapVersion, request.AsymmetricKeyId, 
                 request.Email, 
                 string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender), 
                 string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry),
-                [.. request.RecoveryKeys.Select(rk => new RecoveryKeyCommandData(rk.EncryptedValue, rk.CryptoVersion))]);
+                [.. request.RecoveryKeys.Select(rk => new Application.Features.Users.Commands.Register.RecoveryKeyCommandData(rk.EncryptedValue, rk.CryptoVersion))]);
 
             var result = await _mediator.Send(command);
 
@@ -158,6 +161,57 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             if (result.IsFailure)
                 return this.MapActionResult(result.Errors);
                 
+            return Ok();
+        }
+   
+        [HttpPost("exist")]
+        public async Task<IActionResult> ExistUserByLogin([FromBody] ExistUserBuLoginRequest request)
+        {
+            var command = new ExistUserByLoginCommand(request.Login);
+
+            var result = await _mediator.Send(command);
+
+            if (result.IsFailure)
+                return this.MapActionResult(result.Errors);
+
+            return Ok();
+        }
+
+        [HttpPost("init-recovery-keys")]
+        public async Task<IActionResult> RecoveryViaKeysInit([FromBody] RecoveryViaKeysGetPayloadRequest request)
+        {
+            var command = new RecoveryViaKeysInitCommand(request.Login);
+
+            var result = await _mediator.Send(command);
+
+            if (result.IsFailure)
+                return this.MapActionResult(result.Errors);
+
+            var response = new RecoveryViaKeysPayloadResponse(result.Value.RecoveryKeys);
+
+            return Ok(response);
+        }
+
+        [HttpPost("set-recovery-keys")]
+        public async Task<IActionResult> RecoveryViaKeysSet([FromBody] RecoveryViaKeysSetRequest request)
+        {
+            var command = new RecoveryViaKeysSetCommand(
+                request.Login, 
+                request.Verifier, 
+                request.ClientSalt, 
+                request.EncryptedVerifierWrapKey, 
+                request.CryptoVersion, 
+                request.SrpVersion, 
+                request.EncryptedDek, 
+                request.KeyWrapVersion, 
+                request.AsymmetricKeyId, 
+                [.. request.RecoveryKeys.Select(x => new Application.Features.Users.Commands.RecoveryViaKeysSet.RecoveryKeyCommandData(x.EncryptedValue, x.CryptoVersion))]);
+        
+            var result = await _mediator.Send(command);
+
+            if (result.IsFailure)
+                return this.MapActionResult(result.Errors);
+
             return Ok();
         }
     }
