@@ -144,6 +144,7 @@ export class StepSetPasswordComponent {
                     return;
                 }
 
+                this.state.reset();
                 this.generatedRecoveryKeys.set(this.recoveryKeysDisplay);
                 this.showRecoveryKeys.set(true);
                 this.errorMessage.set(null);
