@@ -12,7 +12,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
         string EncryptedVerifierWrapKey,
         int CryptoVersion,
         int SrpVersion,
-        string EncryptedKek, int KeyWrapVersion, string AsymmetricKeyId,
+        string EncryptedDek, int KeyWrapVersion, string AsymmetricKeyId,
         string Email,
         Guid? IdGender, Guid? IdCountry,
         IReadOnlyCollection<RecoveryKeyCommandData> RecoveryKeys) : IRequest<Result>,  
