@@ -7,7 +7,7 @@ import { RecoveryStateService } from "./services/recovery-password-keys-state.se
     templateUrl: './recovery-password-keys.component.html',
     styleUrls: ['./recovery-password-keys.component.scss'],
     standalone: true,
-    providers: [RecoveryStateService],
+    // providers: [RecoveryStateService],
     imports: [RouterOutlet]
 })
 export class RecoveryPasswordKeysComponent {
