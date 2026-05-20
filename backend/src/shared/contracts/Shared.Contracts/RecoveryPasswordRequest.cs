@@ -9,5 +9,8 @@ namespace Shared.Contracts
         int SrpVersion, 
         string EncryptedVerifierWrapKey, 
         int KeyWrapVersion, 
-        string AsymmetricKeyId);
+        string AsymmetricKeyId,
+        IReadOnlyCollection<RecoveryKeysRequestData> RecoveryKeys);
+
+    public sealed record RecoveryKeysRequestData(string EncryptedValue, int CryptoVersion); 
 }

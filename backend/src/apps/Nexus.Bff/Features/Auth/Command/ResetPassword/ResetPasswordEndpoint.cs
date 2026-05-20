@@ -22,7 +22,8 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPassword
                     request.SrpVersion,
                     request.EncryptedVerifierWrapKey,
                     request.KeyWrapVersion,
-                    request.AsymmetricKeyId);
+                    request.AsymmetricKeyId,
+                    [.. request.RecoveryKeys.Select(x => new RecoveryKeyCommandData(x.EncryptedValue, x.CryptoVersion))]);
                     
                 var result = await mediator.Send(command);
                             

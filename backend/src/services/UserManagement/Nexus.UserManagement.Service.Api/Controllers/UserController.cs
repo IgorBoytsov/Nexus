@@ -154,7 +154,8 @@ namespace Nexus.UserManagement.Service.Api.Controllers
                 request.SrpVersion,
                 request.EncryptedVerifierWrapKey,
                 request.KeyWrapVersion,
-                request.AsymmetricKeyId);
+                request.AsymmetricKeyId,
+                [.. request.RecoveryKeys.Select(x => new Application.Features.Users.Commands.ResetPassword.RecoveryKeyCommandData(x.EncryptedValue, x.CryptoVersion))]);
 
             var result = await _mediator.Send(command);
             
