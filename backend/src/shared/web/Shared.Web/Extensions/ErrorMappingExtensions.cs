@@ -26,6 +26,8 @@ namespace Shared.Web.Extensions
                 nameof(AppErrors.SessionExpired) or 
                 nameof(ErrorCode.Unauthorized) => StatusCodes.Status401Unauthorized,
                
+                nameof(AppErrors.AccountNotSetUpForRecovery) => StatusCodes.Status422UnprocessableEntity,
+
                 _ or 
                 nameof(AppErrors.Validation) or
                 nameof(AppErrors.TimeEnded) or 

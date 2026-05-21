@@ -131,5 +131,65 @@ namespace Nexus.Bff.Infrastructure.Clients
                 return Result.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
             }
         }
+
+        public async Task<Result> ExistUserByLogin(ExistUserBuLoginRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"api/users/exist", request);
+                                                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result.Failure(errors!)!;
+                }
+
+                return Result.Success();
+            }
+            catch (System.Exception ex)
+            {
+                return Result.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+            }
+        }
+
+        public async Task<Result<RecoveryViaKeysPayloadResponse>> RecoveryViaKeys(RecoveryViaKeysGetPayloadRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"api/users/init-recovery-keys", request);
+                                                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result<RecoveryViaKeysPayloadResponse>.Failure(errors!)!;
+                }
+
+                return Result<RecoveryViaKeysPayloadResponse>.Success(await response.Content.ReadFromJsonAsync<RecoveryViaKeysPayloadResponse>(_jsonOptions));
+            }
+            catch (System.Exception ex)
+            {
+                return Result<RecoveryViaKeysPayloadResponse>.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+            }
+        }
+
+        public async Task<Result> RecoveryViaKeysSet(RecoveryViaKeysSetRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"api/users/set-recovery-keys", request);
+                                                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result.Failure(errors!)!;
+                }
+
+                return Result.Success();
+            }
+            catch (System.Exception ex)
+            {
+                return Result.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+            }
+        }
     }
 }

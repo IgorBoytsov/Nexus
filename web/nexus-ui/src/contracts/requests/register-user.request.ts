@@ -12,4 +12,5 @@ export interface RegisterRequest {
     email: string;
     idGender: string | null;
     idCountry: string | null;
+    recoveryKeys: Array<{encryptedValue: string, cryptoVersion: number}>
 }

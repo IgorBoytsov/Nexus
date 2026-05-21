@@ -4,6 +4,7 @@ using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
 using Crossdyne.Toolkit.Results;
+using Nexus.UserManagement.Service.Domain.Enums;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPassword
 {
@@ -26,7 +27,10 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
                 user.UpdateSrpAuthenticator(
                     Verificator.Create(request.Verifier), Salt.Create(request.ClientSalt), SrpVersion.Create(request.SrpVersion), 
                     CredentialBlob.Create(request.EncryptedVerifierWrapKey), CryptoVersion.Create(request.KeyWrapVersion), AsymmetricKeyId.Create(request.AsymmetricKeyId));
-                user.UpdateMainDek(EncryptedAssetValue.Create(request.EncryptedVerifierWrapKey), request.CryptoVersion);
+                user.UpdateMainDek(EncryptedAssetValue.Create(request.EncryptedDek), request.CryptoVersion);
+
+                user.ClearRecoveryKeys();
+                request.RecoveryKeys.ForEach(rk => user.AddUserSecurityAssets(AssetType.RecoveryKey, EncryptedAssetValue.Create(rk.EncryptedValue), rk.CryptoVersion));
 
                 await _writeContext.SaveChangesAsync(cancellationToken);
 

@@ -13,9 +13,12 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
         int SrpVersion, 
         string EncryptedVerifierWrapKey, 
         int KeyWrapVersion, 
-        string AsymmetricKeyId) : IRequest<Result>,
-    IHasLogin,
-    IHasVerifier, 
-    IHasClientSalt, 
-    IHasEncryptedDek;
+        string AsymmetricKeyId,
+        List<RecoveryKeyCommandData> RecoveryKeys) : IRequest<Result>,
+        IHasLogin,
+        IHasVerifier, 
+        IHasClientSalt, 
+        IHasEncryptedDek;
+
+    public record RecoveryKeyCommandData(string EncryptedValue, int CryptoVersion);
 }

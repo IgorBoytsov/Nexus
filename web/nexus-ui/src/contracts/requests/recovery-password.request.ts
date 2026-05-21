@@ -8,4 +8,5 @@ export interface RecoveryPasswordRequest{
     encryptedVerifierWrapKey: string, 
     keyWrapVersion: number, 
     asymmetricKeyId: string,
+    recoveryKeys: Array<{encryptedValue: string, cryptoVersion: number}>
 }

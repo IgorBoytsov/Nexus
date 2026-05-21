@@ -180,6 +180,12 @@ namespace Nexus.UserManagement.Service.Domain.Models
             dek?.UpdateMainDek(encryptedAssetValue, cryptoVersion);
         }
 
+        public void ClearRecoveryKeys()
+        {
+            _userSecurityAssets.RemoveAll(x => x.AssetType == AssetType.RecoveryKey);
+            MarkUpdate();
+        }
+
         #endregion
 
         #region Public Helpers
