@@ -49,6 +49,9 @@ export class StepResetComponent{
         try {
             this.isLoading.set(true);
 
+            this.recoveryKeysDisplay.length = 0;
+            this.recoveryAssets.length = 0;
+
             //#region Конфигурация
 
             const srpGroup = SrpGroup.Rfc5054_3072;
@@ -150,8 +153,6 @@ export class StepResetComponent{
             this.errorMessage.set(null);
         } catch (error) {
             console.error(error);
-            this.recoveryKeysDisplay.length = 0;
-            this.recoveryAssets.length = 0;
         } finally {
             this.isLoading.set(false);
         }

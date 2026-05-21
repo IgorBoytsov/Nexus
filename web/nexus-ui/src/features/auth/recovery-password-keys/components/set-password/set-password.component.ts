@@ -52,6 +52,9 @@ export class StepSetPasswordComponent {
             try {
                 this.isLoading.set(true);
 
+                this.recoveryKeysDisplay.length = 0;
+                this.recoveryAssets.length = 0;
+
                 //#region Конфигурация
 
                 const { newPassword } = this.stepSetPasswordForm.value;
@@ -150,8 +153,6 @@ export class StepSetPasswordComponent {
                 this.errorMessage.set(null);
             } catch (error) {
                 console.error('Ошибка: ', error);
-                this.recoveryKeysDisplay.length = 0;
-                this.recoveryAssets.length = 0;
             } finally {
                  this.isLoading.set(false);
             }

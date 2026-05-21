@@ -51,6 +51,9 @@ export class RegisterComponent {
     async onSubmit(): Promise<void> {
         if (this.registerForm.invalid)
             return;
+
+        this.recoveryKeysDisplay.length = 0;
+        this.recoveryAssets.length = 0;
         
         this.isLoading.set(true);
 
@@ -177,9 +180,6 @@ export class RegisterComponent {
             }
             
             this.errorMessage.set(error instanceof Error ? error.message : 'Неизвестная ошибка');
-            
-            this.recoveryKeysDisplay.length = 0;
-            this.recoveryAssets.length = 0;
         } finally {
             this.isLoading.set(false);
             if (!this.showRecoveryKeys()){
