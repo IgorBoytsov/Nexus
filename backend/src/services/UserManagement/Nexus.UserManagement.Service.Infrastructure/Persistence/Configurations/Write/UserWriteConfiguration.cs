@@ -10,7 +10,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.ToTable("Users");
+            builder.ToTable("users");
 
             /*__IDUser__*/
 
@@ -20,7 +20,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasConversion(
                     id => id.Value,
                     dbValue => UserId.From(dbValue))
-                .HasColumnName("Id")
+                .HasColumnName("id")
                 .ValueGeneratedNever();
 
             /*__Login__*/
@@ -29,7 +29,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasConversion(
                     login => login.Value,
                     dbValue => Login.Create(dbValue))
-                .HasColumnName("Login")
+                .HasColumnName("login")
                 .HasMaxLength(Login.MAX_LENGTH)
                 .UseCollation(PostgresConstants.COLLATION_NAME)
                 .IsRequired();
@@ -44,7 +44,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                     dbValue => new UserName(dbValue))
                 .HasMaxLength(UserName.MAX_LENGTH)
                 .UseCollation(PostgresConstants.COLLATION_NAME)
-                .HasColumnName("UserName")
+                .HasColumnName("user_name")
                 .IsRequired();
 
             /*__Email__*/
@@ -53,7 +53,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasConversion(
                     email => email.Value,
                     dbValue => Email.Create(dbValue))
-                .HasColumnName("Email")
+                .HasColumnName("email")
                 .UseCollation(PostgresConstants.COLLATION_NAME)
                 .IsRequired();
 
@@ -62,34 +62,29 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
             /*__Dates__*/
 
             builder.Property(u => u.DateRegistration)
-                .HasColumnName("DateRegistration").IsRequired();
+                .HasColumnName("date_registration").IsRequired();
 
             builder.Property(u => u.DateUpdate)
-                .HasColumnName("DateUpdate").IsRequired();
+                .HasColumnName("date_update").IsRequired();
 
             builder.Property(u => u.DateEntry)
-                .HasColumnName("DateEntry").IsRequired(false);
+                .HasColumnName("date_entry").IsRequired(false);
 
             /*__Ids__*/
 
             builder.Property(u => u.IdStatus)
-                .HasColumnName("IdStatus")
+                .HasColumnName("id_status")
                 .IsRequired();
 
             builder.Property(u => u.IdGender)
-                .HasColumnName("IdGender")
+                .HasColumnName("id_gender")
                 .IsRequired(false);
 
             builder.Property(u => u.IdCountry)
-                .HasColumnName("IdCountry")
+                .HasColumnName("id_country")
                 .IsRequired(false);
 
             /*__Связи__*/
-
-            //builder.HasOne(u => u.Credentials)
-            //    .WithOne()
-            //    .HasForeignKey<UserCredentials>(uc => uc.Id)
-            //    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne<Gender>()
                 .WithMany()
@@ -114,19 +109,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasForeignKey(ur => ur.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(u => u.UserAuthenticators)
-                .WithOne()
-                .HasForeignKey(ur => ur.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasMany(u => u.UserSecurityAssets)
-                .WithOne()
-                .HasForeignKey(us => us.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.Navigation(u => u.UserRoles).HasField("_userRoles").UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Navigation(u => u.UserAuthenticators).HasField("_userAuthenticators").UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Navigation(u => u.UserSecurityAssets).HasField("_userSecurityAssets").UsePropertyAccessMode(PropertyAccessMode.Field);
 
             builder.Ignore("_domainEvents");
         }

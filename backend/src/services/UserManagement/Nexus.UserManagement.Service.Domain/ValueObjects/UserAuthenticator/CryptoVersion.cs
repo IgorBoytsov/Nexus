@@ -19,5 +19,6 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator
         public override string ToString() => Value.ToString();
 
         public static implicit operator string(CryptoVersion value) => value.ToString();
+        public static implicit operator int(CryptoVersion value) => value.Value;
     }
 }

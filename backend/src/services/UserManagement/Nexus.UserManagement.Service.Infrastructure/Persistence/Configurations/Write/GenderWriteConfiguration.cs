@@ -10,16 +10,16 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Gender> builder)
         {
-            builder.ToTable("Genders");
+            builder.ToTable("genders");
 
             builder.HasKey(x => x.Id);
 
             builder.Property(c => c.Id)
-              .HasColumnName("Id")
+              .HasColumnName("id")
               .ValueGeneratedNever();
 
             builder.Property(u => u.Name)
-              .HasColumnName("Name")
+              .HasColumnName("name")
               .HasConversion(
                   genderName => genderName.Value,
                   dbValue => GenderName.Create(dbValue))

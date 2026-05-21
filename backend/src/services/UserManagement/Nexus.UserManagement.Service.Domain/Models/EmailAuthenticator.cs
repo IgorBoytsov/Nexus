@@ -22,7 +22,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
             return new EmailAuthenticator(userId, email);
         }
 
-        internal void Update(Email email)
+        public void Update(Email email)
         {
             Email = email;
         }

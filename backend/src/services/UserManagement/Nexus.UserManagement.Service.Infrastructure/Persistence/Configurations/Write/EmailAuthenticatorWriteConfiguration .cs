@@ -11,7 +11,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<EmailAuthenticator> builder)
         {
             builder.Property(x => x.Email)
-                .HasColumnName("Email")
+                .HasColumnName("email")
                 .HasConversion(
                     e => e.HasValue ? e.Value.Value : null,
                     db => string.IsNullOrWhiteSpace(db) ? null : Email.Create(db))

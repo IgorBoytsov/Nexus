@@ -8,6 +8,9 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts
     public sealed class WriteContext(DbContextOptions<WriteContext> options) : DbContext(options), IWriteDbContext
     {
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Dek> Deks { get; set; } = null!;
+        public DbSet<RecoveryKey> RecoveryKeys { get; set; } = null!;
+        public DbSet<UserAuthenticator> UserAuthenticators { get; set; } = null!;
         public DbSet<Role> Roles { get; set; } = null!;
         public DbSet<UserRoles> UserRoles { get; set; } = null!;
         public DbSet<Status> Statuses { get; set; } = null!;
@@ -27,7 +30,8 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts
             modelBuilder.ApplyConfiguration(new UserAuthenticatorsWriteConfigurations());
             modelBuilder.ApplyConfiguration(new SrpAuthenticatorWriteConfiguration());
             modelBuilder.ApplyConfiguration(new EmailAuthenticatorWriteConfiguration());
-            modelBuilder.ApplyConfiguration(new UserSecurityAssetsWriteConfigurations());
+            modelBuilder.ApplyConfiguration(new DekConfiguration());
+            modelBuilder.ApplyConfiguration(new RecoveryKeyConfiguration());
         }
     }
 }

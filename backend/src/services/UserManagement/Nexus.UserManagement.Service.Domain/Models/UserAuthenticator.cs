@@ -5,7 +5,7 @@ using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
 {
-    public abstract class UserAuthenticator : Entity<UserAuthenticatorId>
+    public abstract class UserAuthenticator : AggregateRoot<UserAuthenticatorId>
     {
         public UserId UserId { get; private set; }
         public UserAuthenticatorType Method { get; private set; }

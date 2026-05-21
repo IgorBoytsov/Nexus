@@ -41,7 +41,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
             return new SrpAuthenticator(userId, login, verificator, salt, srpVersion, encryptedVerifierWrapKey, keyWrapVersion, asymmetricKeyId);
         }
 
-        internal void Update(Verificator verifier, Salt salt, SrpVersion srpVersion, CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId)
+        public void Update(Verificator verifier, Salt salt, SrpVersion srpVersion, CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId)
         {
             EncryptedVerifier = verifier;
             Salt = salt;

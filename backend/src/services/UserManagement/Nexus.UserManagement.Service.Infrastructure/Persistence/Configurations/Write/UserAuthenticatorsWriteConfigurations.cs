@@ -11,7 +11,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<UserAuthenticator> builder)
         {
-            builder.ToTable("UserAuthenticators");
+            builder.ToTable("user_authenticators");
 
             builder.HasKey(ua => ua.Id);
 
@@ -19,10 +19,11 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasConversion(
                     id => id.Value,
                     dbValue => UserAuthenticatorId.From(dbValue))
-                .HasColumnName("Id")
+                .HasColumnName("id")
                 .ValueGeneratedNever();
 
             builder.Property(ua => ua.UserId)
+                .HasColumnName("user_id")
                 .HasConversion(
                     id => id.Value,
                     dbValue => UserId.From(dbValue))
@@ -33,17 +34,22 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasValue<EmailAuthenticator>(UserAuthenticatorType.Email);
 
             builder.Property(ua => ua.CreatedAt)
-                .HasColumnName(nameof(UserAuthenticator.CreatedAt))
+                .HasColumnName("created_at")
                 .IsRequired();
 
             builder.Property(ua => ua.LastUsedAt)
-                .HasColumnName(nameof(UserAuthenticator.LastUsedAt))
+                .HasColumnName("last_used_at")
                 .IsRequired(false);
 
             builder.Property(ua => ua.IsActive)
-                .HasColumnName(nameof(UserAuthenticator.IsActive))
+                .HasColumnName("is_active")
                 .HasDefaultValue(true)
                 .IsRequired();
+
+            builder.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(ua => ua.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
