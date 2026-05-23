@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(WriteContext))]
+    [DbContext(typeof(UserManagementContext))]
     [Migration("20251115155404_Add_UserRoles_Table_And_Remove_RoleId_From_Users")]
     partial class Add_UserRoles_Table_And_Remove_RoleId_From_Users
     {

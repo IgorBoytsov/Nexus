@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(WriteContext))]
+    [DbContext(typeof(UserManagementContext))]
     [Migration("20260117111023_Replacing_PasswordHash_Verifier")]
     partial class Replacing_PasswordHash_Verifier
     {

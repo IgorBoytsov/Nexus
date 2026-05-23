@@ -7,20 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Persistence\Configurations\Sql\view_countries.sql" />
-    <None Remove="Persistence\Configurations\Sql\view_genders.sql" />
-    <None Remove="Persistence\Configurations\Sql\view_roles.sql" />
-    <None Remove="Persistence\Configurations\Sql\view_statuses.sql" />
-    <None Remove="Persistence\Configurations\Sql\view_users.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Persistence\Configurations\Sql\Views\view_countries.sql" />
-    <EmbeddedResource Include="Persistence\Configurations\Sql\Views\view_genders.sql" />
-    <EmbeddedResource Include="Persistence\Configurations\Sql\Views\view_roles.sql" />
-    <EmbeddedResource Include="Persistence\Configurations\Sql\Views\view_statuses.sql" />
-    <EmbeddedResource Include="Persistence\Configurations\Sql\Views\view_users.sql" />
-  </ItemGroup>
+    <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetUserByIdAuth.sql" />
+    <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetUserByLoginAuth.sql" />
+    <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetProfileInfo.sql" />
+    <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetPublicEncryptionInfo.sql" />
+  </ItemGroup> 
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
@@ -29,12 +20,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Dapper" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
+    <ProjectReference Include="..\..\..\shared\infrastructure\Shared.Dapper\Shared.Dapper.csproj" />
+    <ProjectReference Include="..\..\..\shared\infrastructure\Shared.EntityFramework\Shared.EntityFramework.csproj" />
     <ProjectReference Include="..\..\..\shared\infrastructure\Shared.Redis\Shared.Redis.csproj" />
-    <ProjectReference Include="..\Nexus.UserManagement.Service.Application.Abstractions\Nexus.UserManagement.Service.Application.Abstractions.csproj" />
+    <ProjectReference Include="..\Nexus.UserManagement.Service.Application\Nexus.UserManagement.Service.Application.csproj" />
     <ProjectReference Include="..\Nexus.UserManagement.Service.Domain\Nexus.UserManagement.Service.Domain.csproj" />
   </ItemGroup>
 

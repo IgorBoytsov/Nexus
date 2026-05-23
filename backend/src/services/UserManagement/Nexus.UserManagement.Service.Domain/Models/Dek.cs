@@ -6,7 +6,7 @@ using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
 {
-    public sealed class Dek : AggregateRoot<DekId>
+    public sealed class Dek : Entity<DekId>
     {
         public UserId UserId { get; private set; }
         public EncryptedValue EncryptedValue { get; private set; }
@@ -28,12 +28,12 @@ namespace Nexus.UserManagement.Service.Domain.Models
             UpdateAt = DateTimeOffset.UtcNow;
         }
 
-        public static Dek Create(UserId userId, EncryptedValue encryptedValue, CryptoVersion version, DekType type)
+        internal static Dek Create(UserId userId, EncryptedValue encryptedValue, CryptoVersion version, DekType type)
         {
             return new Dek(userId, encryptedValue, version, type);
         }
 
-        public void Rotate(EncryptedValue encryptedValue, CryptoVersion version)
+        internal void Rotate(EncryptedValue encryptedValue, CryptoVersion version)
         {
             EncryptedValue = encryptedValue;
             Version = version;

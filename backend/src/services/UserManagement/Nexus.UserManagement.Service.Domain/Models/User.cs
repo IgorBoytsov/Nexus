@@ -1,5 +1,11 @@
-﻿using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
+﻿using Crossdyne.Toolkit.Results;
+using Nexus.UserManagement.Service.Domain.Enums;
+using Nexus.UserManagement.Service.Domain.Exceptions;
+using Nexus.UserManagement.Service.Domain.ValueObjects.Deks;
+using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
+using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
+using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
 using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
@@ -28,6 +34,15 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         private readonly List<UserRoles> _userRoles = [];
         public IReadOnlyCollection<UserRoles> UserRoles => _userRoles.AsReadOnly();
+
+        private readonly List<Dek> _deks = [];
+        public IReadOnlyCollection<Dek> Deks => _deks.AsReadOnly();
+
+        private readonly List<UserAuthenticator> _userAuthenticators = [];
+        public IReadOnlyCollection<UserAuthenticator> UserAuthenticators => _userAuthenticators.AsReadOnly();
+
+        private readonly List<RecoveryKey> _recoveryKeys = [];
+        public IReadOnlyCollection<RecoveryKey> RecoveryKeys => _recoveryKeys.AsReadOnly();
 
         private User() { }
 
@@ -68,7 +83,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
             if (userName != UserName)
             {
                 var oldUserName = UserName;
-                UserName = UserName.Create(userName);
+                UserName = userName;
             }
         }
 
@@ -97,5 +112,60 @@ namespace Nexus.UserManagement.Service.Domain.Models
         }
 
         #endregion
+
+        #region UserAuthentication
+
+        public void AddSrpAuthenticator(Login login, Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob credentialBlob, CryptoVersion cryptoVersion, AsymmetricKeyId asymmetricKeyId)
+        {
+            if (_userAuthenticators.Any(x => x.Method == UserAuthenticatorType.SRP))
+                throw new UserAuthenticatorException(new Error(ErrorCode.Exist, "Метод входа через пароль уже существует для данного аккаунта"));
+
+                _userAuthenticators.Add(SrpAuthenticator.Create(this.Id, login, verificator, salt, srpVersion, credentialBlob, cryptoVersion, asymmetricKeyId));
+        }
+
+        public void UpdateSrp(Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob credentialBlob, CryptoVersion cryptoVersion, AsymmetricKeyId asymmetricKeyId)
+        {
+            var srp = UserAuthenticators.OfType<SrpAuthenticator>().FirstOrDefault();
+
+            srp!.Update(verificator, salt, srpVersion, credentialBlob, cryptoVersion, asymmetricKeyId);
+        }
+
+        public void AddEmailAuthenticator(Email email)
+        {
+            _userAuthenticators.Add(EmailAuthenticator.Create(this.Id, email));
+        }
+
+        #endregion
+
+        #region Deks
+       
+        public void AddMainDek(EncryptedValue encryptedValue, CryptoVersion cryptoVersion)
+        {
+            if (_deks.Any(x => x.Type == DekType.Main))
+                throw new DekException(new Error(ErrorCode.Exist, "Основной ключ шифрования уже настроен."));
+
+            _deks.Add(Dek.Create(this.Id, encryptedValue, cryptoVersion, DekType.Main));
+        }
+
+        public void RotateMainDek(EncryptedValue encryptedValue, CryptoVersion cryptoVersion)
+        {
+            var dek = Deks.FirstOrDefault(x => x.Type == DekType.Main);
+            dek!.Rotate(encryptedValue, cryptoVersion);
+        }
+
+        #endregion
+
+        #region RecoveryKeys
+
+        public void ClearRecoveryKeys() => _recoveryKeys.Clear();
+
+        public void AddRecoveryKey(EncryptedValue encryptedValue, CryptoVersion cryptoVersion, KeyHint keyHint)
+        {
+            var key = RecoveryKey.Create(this.Id, encryptedValue, cryptoVersion, keyHint);
+            _recoveryKeys.Add(key);
+        }
+
+        #endregion
+
     }
 }

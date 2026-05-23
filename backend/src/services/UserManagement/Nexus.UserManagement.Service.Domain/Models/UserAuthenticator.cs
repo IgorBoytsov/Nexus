@@ -5,7 +5,7 @@ using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
 {
-    public abstract class UserAuthenticator : AggregateRoot<UserAuthenticatorId>
+    public abstract class UserAuthenticator : Entity<UserAuthenticatorId>
     {
         public UserId UserId { get; private set; }
         public UserAuthenticatorType Method { get; private set; }
@@ -24,8 +24,8 @@ namespace Nexus.UserManagement.Service.Domain.Models
             Method = method;
         }
 
-        public void MarkUsed() => LastUsedAt = DateTime.UtcNow;
-        public void Activate() => IsActive = true;
-        public void Deactivate() => IsActive = false;
+        internal void MarkUsed() => LastUsedAt = DateTime.UtcNow;
+        internal void Activate() => IsActive = true;
+        internal void Deactivate() => IsActive = false;
     }
 }

@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(WriteContext))]
+    [DbContext(typeof(UserManagementContext))]
     [Migration("20251212054221_Add_ClientSalt_EncryptedDek_For_Suppotring_Zero-Knowledge")]
     partial class Add_ClientSalt_EncryptedDek_For_Suppotring_ZeroKnowledge
     {

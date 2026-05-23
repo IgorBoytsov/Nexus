@@ -3,7 +3,7 @@ using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
 {
-    public sealed class Status : Entity<Guid>
+    public sealed class Status : AggregateRoot<Guid>
     {
         public StatusName Name { get; set; } = null!;
 

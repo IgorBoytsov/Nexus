@@ -33,7 +33,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
             AsymmetricKeyId = asymmetricKeyId;
         }
 
-        public static SrpAuthenticator Create(
+        internal static SrpAuthenticator Create(
             UserId userId, 
             Login login, Verificator verificator, Salt salt, SrpVersion srpVersion,
             CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId)
@@ -41,7 +41,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
             return new SrpAuthenticator(userId, login, verificator, salt, srpVersion, encryptedVerifierWrapKey, keyWrapVersion, asymmetricKeyId);
         }
 
-        public void Update(Verificator verifier, Salt salt, SrpVersion srpVersion, CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId)
+        internal void Update(Verificator verifier, Salt salt, SrpVersion srpVersion, CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId)
         {
             EncryptedVerifier = verifier;
             Salt = salt;
@@ -51,6 +51,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
             AsymmetricKeyId = asymmetricKeyId;
         }
 
-        public Verificator GetVerificator() => EncryptedVerifier ?? throw new InvalidOperationException("SRP Verificator not initialized");
+        internal Verificator GetVerificator() => EncryptedVerifier ?? throw new InvalidOperationException("SRP Verificator not initialized");
     }
 }

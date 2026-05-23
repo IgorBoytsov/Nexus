@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(WriteContext))]
+    [DbContext(typeof(UserManagementContext))]
     partial class WriteContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -69,7 +69,8 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_deks_UserId");
 
                     b.ToTable("deks", (string)null);
                 });
@@ -128,7 +129,8 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_recovery_keys_UserId");
 
                     b.ToTable("recovery_keys", (string)null);
                 });
@@ -219,12 +221,6 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdCountry");
-
-                    b.HasIndex("IdGender");
-
-                    b.HasIndex("IdStatus");
-
                     b.HasIndex(new[] { "Email" }, "IX_Users_Email")
                         .IsUnique();
 
@@ -263,7 +259,8 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_user_authenticators_UserId");
 
                     b.ToTable("user_authenticators", (string)null);
 
@@ -339,7 +336,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.Dek", b =>
                 {
                     b.HasOne("Nexus.UserManagement.Service.Domain.Models.User", null)
-                        .WithMany()
+                        .WithMany("Deks")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -348,35 +345,16 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.RecoveryKey", b =>
                 {
                     b.HasOne("Nexus.UserManagement.Service.Domain.Models.User", null)
-                        .WithMany()
+                        .WithMany("RecoveryKeys")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.User", b =>
-                {
-                    b.HasOne("Nexus.UserManagement.Service.Domain.Models.Country", null)
-                        .WithMany()
-                        .HasForeignKey("IdCountry")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Nexus.UserManagement.Service.Domain.Models.Gender", null)
-                        .WithMany()
-                        .HasForeignKey("IdGender")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Nexus.UserManagement.Service.Domain.Models.Status", null)
-                        .WithMany()
-                        .HasForeignKey("IdStatus")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.UserAuthenticator", b =>
                 {
                     b.HasOne("Nexus.UserManagement.Service.Domain.Models.User", null)
-                        .WithMany()
+                        .WithMany("UserAuthenticators")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -399,6 +377,12 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.User", b =>
                 {
+                    b.Navigation("Deks");
+
+                    b.Navigation("RecoveryKeys");
+
+                    b.Navigation("UserAuthenticators");
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

@@ -3,7 +3,7 @@ using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
 {
-    public sealed class Gender : Entity<Guid>
+    public sealed class Gender : AggregateRoot<Guid>
     {
         public GenderName Name { get; private set; } = null!;
 

@@ -22,7 +22,6 @@
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
     <ProjectReference Include="..\..\..\shared\security\Shared.Security\Shared.Security.csproj" />
     <ProjectReference Include="..\..\..\shared\validations\Shared.Validations\Shared.Validations.csproj" />
-    <ProjectReference Include="..\Nexus.UserManagement.Service.Application.Abstractions\Nexus.UserManagement.Service.Application.Abstractions.csproj" />
     <ProjectReference Include="..\Nexus.UserManagement.Service.Domain\Nexus.UserManagement.Service.Domain.csproj" />
   </ItemGroup>
 

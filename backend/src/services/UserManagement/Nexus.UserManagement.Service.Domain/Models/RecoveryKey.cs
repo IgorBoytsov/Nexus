@@ -10,7 +10,7 @@ using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
 {
-    public sealed class RecoveryKey : AggregateRoot<RecoveryKeyId>
+    public sealed class RecoveryKey : Entity<RecoveryKeyId>
     {
         public UserId UserId { get; private set; }
         public EncryptedValue EncryptedValue { get; private set; }
@@ -33,12 +33,12 @@ namespace Nexus.UserManagement.Service.Domain.Models
             IsUsed = false;
         }
 
-        public static RecoveryKey Create(UserId userId, EncryptedValue encryptedValue, CryptoVersion version, KeyHint keyHint)
+        internal static RecoveryKey Create(UserId userId, EncryptedValue encryptedValue, CryptoVersion version, KeyHint keyHint)
         {
             return new RecoveryKey(userId, encryptedValue, version, keyHint);
         }
 
-        public void MarkAsUsed()
+        internal void MarkAsUsed()
         {
             if (IsUsed)
                 throw new DomainException(new Error(AppErrors.AlreadyUsed, "This recovery key has already been used."));

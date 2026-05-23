@@ -17,12 +17,12 @@ namespace Nexus.UserManagement.Service.Domain.Models
             Email = email;
         }
 
-        public static EmailAuthenticator Create(UserId userId, Email email)
+        internal static EmailAuthenticator Create(UserId userId, Email email)
         {
             return new EmailAuthenticator(userId, email);
         }
 
-        public void Update(Email email)
+        internal void Update(Email email)
         {
             Email = email;
         }
