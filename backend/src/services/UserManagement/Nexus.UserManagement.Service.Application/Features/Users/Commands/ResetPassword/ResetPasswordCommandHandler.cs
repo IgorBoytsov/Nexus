@@ -1,52 +1,37 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
 using Crossdyne.Toolkit.Results;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Deks;
+using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Crossdyne.Toolkit.Primitives;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPassword
 {
-    public sealed class ResetPasswordCommandHandler(IWriteDbContext writeContext) : IRequestHandler<ResetPasswordCommand, Result>
+    public sealed class ResetPasswordCommandHandler(
+        IUnitOfWork unitOfWork,
+        IUserRepository userRepository) : IRequestHandler<ResetPasswordCommand, Result>
     {
-        private readonly IWriteDbContext _writeContext = writeContext;
-
         public async Task<Result> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var user = await _writeContext.Users.FirstOrDefaultAsync(u => u.Login == request.Login, cancellationToken);
+                Maybe<User> maybeUser = await userRepository.GetByAsync(x => x.Login == request.Login, includes: [x => x.UserAuthenticators, x => x.Deks, x => x.RecoveryKeys] ,clt: cancellationToken);
 
-                if (user is null)
+                if (maybeUser.IsNone)
                     return Result.Failure(new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера."));
 
-                var srp = await _writeContext.UserAuthenticators.OfType<SrpAuthenticator>().FirstOrDefaultAsync(a => a.UserId == user.Id);
+                User user = maybeUser.Value;
 
-                if (srp is null)
-                    return Result.Failure(new Error(ErrorCode.NotFound, "Способ входа по паролю не настроен."));
+                user.UpdateSrp(Verificator.Create(request.Verifier), Salt.Create(request.ClientSalt), SrpVersion.Create(request.SrpVersion), CredentialBlob.Create(request.EncryptedVerifierWrapKey), CryptoVersion.Create(request.KeyWrapVersion), AsymmetricKeyId.Create(request.AsymmetricKeyId));
+                user.RotateMainDek(EncryptedValue.Create(request.EncryptedDek), CryptoVersion.Create(request.CryptoVersion));
 
-                srp.Update(
-                    Verificator.Create(request.Verifier), Salt.Create(request.ClientSalt), SrpVersion.Create(request.SrpVersion), 
-                    CredentialBlob.Create(request.EncryptedVerifierWrapKey), CryptoVersion.Create(request.KeyWrapVersion), AsymmetricKeyId.Create(request.AsymmetricKeyId));
+                user.ClearRecoveryKeys();
+                request.RecoveryKeys.ForEach(x => user.AddRecoveryKey(EncryptedValue.Create(x.EncryptedValue), CryptoVersion.Create(x.CryptoVersion), KeyHint.Create("1")));
 
-                var dek = await _writeContext.Deks.FirstOrDefaultAsync(d => d.UserId == user.Id && d.Type == DekType.Main);
-
-                if (dek is null)
-                    return Result.Failure(new Error(ErrorCode.NotFound, "Ключа для шифрования не найдено."));
-
-                dek.Rotate(EncryptedValue.Create(request.EncryptedDek), CryptoVersion.Create(request.CryptoVersion));
-            
-                _writeContext.RecoveryKeys.RemoveRange(_writeContext.RecoveryKeys.Where(x => x.UserId == user.Id).ToList());
-
-                List<RecoveryKey> recoveryKeys = [];
-                foreach (var item in request.RecoveryKeys)
-                    recoveryKeys.Add(RecoveryKey.Create(user.Id, EncryptedValue.Create(item.EncryptedValue), CryptoVersion.Create(item.CryptoVersion), KeyHint.Create("1")));
-
-                await _writeContext.RecoveryKeys.AddRangeAsync(recoveryKeys, cancellationToken);
-
-                await _writeContext.SaveChangesAsync(cancellationToken);
+                await unitOfWork.SaveChangesAsync(cancellationToken);
 
                 user.ClearDomainEvents();
 

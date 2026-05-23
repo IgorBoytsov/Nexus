@@ -1,23 +1,24 @@
 ﻿using MediatR;
-using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Models;
 using Crossdyne.Toolkit.Results;
+using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
 
 namespace Nexus.UserManagement.Service.Application.Features.Roles.Commands.Create
 {
-    public sealed class CreateRoleCommandHandler(IWriteDbContext writeContext) : IRequestHandler<CreateRoleCommand, Result<Guid>>
+    public sealed class CreateRoleCommandHandler(
+        IUnitOfWork unitOfWork, 
+        IRoleRepository roleRepository) : IRequestHandler<CreateRoleCommand, Result<Guid>>
     {
-        private readonly IWriteDbContext _writeContext = writeContext;
-
         public async Task<Result<Guid>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 var role = Role.Create(request.Name);
 
-                await _writeContext.Roles.AddAsync(role, cancellationToken);
+                await roleRepository.AddAsync(role, cancellationToken);
 
-                await _writeContext.SaveChangesAsync(cancellationToken);
+                await unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<Guid>.Success(role.Id);
             }

@@ -1,23 +1,24 @@
 ﻿using MediatR;
-using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.Models;
 using Crossdyne.Toolkit.Results;
+using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
 
 namespace Nexus.UserManagement.Service.Application.Features.Statuses.Commands.Create
 {
-    public sealed class CreateStatusCommandHandler(IWriteDbContext writeContext) : IRequestHandler<CreateStatusCommand, Result<Guid>>
+    public sealed class CreateStatusCommandHandler(
+        IUnitOfWork unitOfWork,
+        IStatusRepository statusRepository) : IRequestHandler<CreateStatusCommand, Result<Guid>>
     {
-        private readonly IWriteDbContext _writeContext = writeContext;
-
         public async Task<Result<Guid>> Handle(CreateStatusCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var status = Status.Create(request.Name);
+                Status status = Status.Create(request.Name);
 
-                await _writeContext.Statuses.AddAsync(status, cancellationToken);
+                await statusRepository.AddAsync(status, cancellationToken);
 
-                await _writeContext.SaveChangesAsync(cancellationToken);
+                await unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<Guid>.Success(status.Id);
             }

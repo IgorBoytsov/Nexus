@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nexus.UserManagement.Service.Application.Features.UserInternal.Queries.GetByLoginInternal;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
-using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetByLoginInternal;
 using Shared.Web.Extensions;
 
 namespace Nexus.UserManagement.Service.Api.Controllers
@@ -33,18 +33,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             var command = new GetUserByIdQuery(id);
 
             var result = await _mediator.Send(command);
-
-            return result.Match<IActionResult>(
-                onSuccess: Ok,
-                onFailure: errors =>
-                {
-                    return Unauthorized(new
-                    {
-                        Title = "Не валидные данные",
-                        Message = result.StringMessage
-                    });
-
-                });
+            return Ok(result);
         }
     }
 }

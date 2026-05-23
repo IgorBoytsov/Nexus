@@ -1,26 +1,30 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Crossdyne.Toolkit.Results;
+using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Domain.Models;
+using Crossdyne.Toolkit.Primitives;
 
 namespace Nexus.UserManagement.Service.Application.Features.Genders.Commands.Delete
 {
-    public sealed class DeleteGenderCommandHandler(IWriteDbContext writeContext) : IRequestHandler<DeleteGenderCommand, Result>
+    public sealed class DeleteGenderCommandHandler(
+        IUnitOfWork unitOfWork, 
+        IGenderRepository genderRepository) : IRequestHandler<DeleteGenderCommand, Result>
     {
-        private readonly IWriteDbContext _writeContext = writeContext;
-
         public async Task<Result> Handle(DeleteGenderCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var gender = await _writeContext.Genders.FirstOrDefaultAsync(g => g.Id == request.Id, cancellationToken);
+                Maybe<Gender> maybeGender = await genderRepository.GetByAsync(g => g.Id == request.Id, cancellationToken);
 
-                if (gender == null)
+                if (maybeGender.IsNone)
                     return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
 
-                _writeContext.Genders.Remove(gender);
+                Gender gender = maybeGender.Value;
 
-                await _writeContext.SaveChangesAsync(cancellationToken);
+                genderRepository.Remove(gender);
+
+                await unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result.Success();
             }

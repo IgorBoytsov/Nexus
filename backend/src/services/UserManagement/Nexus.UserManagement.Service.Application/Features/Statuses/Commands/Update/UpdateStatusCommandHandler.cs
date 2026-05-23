@@ -1,27 +1,31 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Status;
 using Crossdyne.Toolkit.Results;
+using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Crossdyne.Toolkit.Primitives;
+using Nexus.UserManagement.Service.Domain.Models;
 
 namespace Nexus.UserManagement.Service.Application.Features.Statuses.Commands.Update
 {
-    public sealed class UpdateStatusCommandHandler(IWriteDbContext writeContext) : IRequestHandler<UpdateStatusCommand, Result>
+    public sealed class UpdateStatusCommandHandler(
+        IUnitOfWork unitOfWork, 
+        IStatusRepository statusRepository) : IRequestHandler<UpdateStatusCommand, Result>
     {
-        private readonly IWriteDbContext _writeContext = writeContext;
-
         public async Task<Result> Handle(UpdateStatusCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var status = await _writeContext.Statuses.FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
+                Maybe<Status> maybeStatus = await statusRepository.GetByAsync(r => r.Id == request.Id, cancellationToken);
 
-                if (status == null)
+                if (maybeStatus.IsNone)
                     return Result.Failure(new Error(ErrorCode.Update, "Такой записи не существует."));
+
+                Status status = maybeStatus.Value;
 
                 status.UpdateName(StatusName.Create(request.Name));
 
-                await _writeContext.SaveChangesAsync(cancellationToken);
+                await unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result.Success();
             }
