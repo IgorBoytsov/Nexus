@@ -66,23 +66,9 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             if (!Guid.TryParse(userIdString, out var userId))
                 return BadRequest("Не верный User ID формат.");
 
-            var result = await _mediator.Send(new GetUserByIdQuery(userId));
+            var result = await _mediator.Send(new GetUserByIdQuery(Guid.Parse("95eeb97e-f172-44b3-a117-ce673cab3e38")));
 
-            return result.Match<IActionResult>(
-                onSuccess: () => Ok(result.Value),
-                onFailure: errors =>
-                {
-                    if (errors.Any(e => e.Code == ErrorCode.Server))
-                    {
-                        var serverError = errors.FirstOrDefault(e => e.Code == ErrorCode.Save);
-                        return StatusCode(StatusCodes.Status500InternalServerError, new
-                        {
-                            Tittle = "Внутренняя ошибка сервера",
-                            Details = serverError?.Message,
-                        });
-                    }
-                    return BadRequest(result.StringMessage);
-                });
+            return Ok(result);
         }
 
         [HttpGet("public-encryption-info/{login}")]

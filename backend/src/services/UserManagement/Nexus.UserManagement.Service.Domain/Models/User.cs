@@ -1,11 +1,11 @@
-﻿using Nexus.UserManagement.Service.Domain.Enums;
+﻿using Crossdyne.Toolkit.Results;
+using Nexus.UserManagement.Service.Domain.Enums;
 using Nexus.UserManagement.Service.Domain.Exceptions;
+using Nexus.UserManagement.Service.Domain.ValueObjects.Deks;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
-using Crossdyne.Toolkit.Results;
-using Shared.Kernel.Errors;
 using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
@@ -35,11 +35,14 @@ namespace Nexus.UserManagement.Service.Domain.Models
         private readonly List<UserRoles> _userRoles = [];
         public IReadOnlyCollection<UserRoles> UserRoles => _userRoles.AsReadOnly();
 
+        private readonly List<Dek> _deks = [];
+        public IReadOnlyCollection<Dek> Deks => _deks.AsReadOnly();
+
         private readonly List<UserAuthenticator> _userAuthenticators = [];
         public IReadOnlyCollection<UserAuthenticator> UserAuthenticators => _userAuthenticators.AsReadOnly();
 
-        private readonly List<UserSecurityAsset> _userSecurityAssets = [];
-        public IReadOnlyCollection<UserSecurityAsset> UserSecurityAssets => _userSecurityAssets.AsReadOnly();
+        private readonly List<RecoveryKey> _recoveryKeys = [];
+        public IReadOnlyCollection<RecoveryKey> RecoveryKeys => _recoveryKeys.AsReadOnly();
 
         private User() { }
 
@@ -80,7 +83,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
             if (userName != UserName)
             {
                 var oldUserName = UserName;
-                UserName = UserName.Create(userName);
+                UserName = userName;
             }
         }
 
@@ -110,105 +113,59 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         #endregion
 
-        #region UserAuthenticators
+        #region UserAuthentication
 
-        public void AddSrpAuthenticator(Login login, Verificator encryptedVerifier, Salt salt, SrpVersion srpVersion, CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId)
+        public void AddSrpAuthenticator(Login login, Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob credentialBlob, CryptoVersion cryptoVersion, AsymmetricKeyId asymmetricKeyId)
         {
-            EnsureNoAuthenticatorOfType(UserAuthenticatorType.SRP);
-            var srp = SrpAuthenticator.Create(this.Id, login, encryptedVerifier, salt, srpVersion, encryptedVerifierWrapKey, keyWrapVersion, asymmetricKeyId);
-            _userAuthenticators.Add(srp);
+            if (_userAuthenticators.Any(x => x.Method == UserAuthenticatorType.SRP))
+                throw new UserAuthenticatorException(new Error(ErrorCode.Exist, "Метод входа через пароль уже существует для данного аккаунта"));
 
-            MarkUpdate();
+                _userAuthenticators.Add(SrpAuthenticator.Create(this.Id, login, verificator, salt, srpVersion, credentialBlob, cryptoVersion, asymmetricKeyId));
         }
 
-        public void UpdateSrpAuthenticator( Verificator encryptedVerifier, Salt salt, SrpVersion srpVersion, CredentialBlob encryptedVerifierWrapKey, CryptoVersion keyWrapVersion, AsymmetricKeyId asymmetricKeyId)
+        public void UpdateSrp(Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob credentialBlob, CryptoVersion cryptoVersion, AsymmetricKeyId asymmetricKeyId)
         {
-            var srp = GetAuthenticator<SrpAuthenticator>(UserAuthenticatorType.SRP);
-            srp?.Update(encryptedVerifier, salt, srpVersion, encryptedVerifierWrapKey, keyWrapVersion, asymmetricKeyId);
+            var srp = UserAuthenticators.OfType<SrpAuthenticator>().FirstOrDefault();
 
-            MarkUpdate(); 
+            srp!.Update(verificator, salt, srpVersion, credentialBlob, cryptoVersion, asymmetricKeyId);
         }
 
         public void AddEmailAuthenticator(Email email)
         {
-            EnsureNoAuthenticatorOfType(UserAuthenticatorType.Email);
-            var emailAuth = EmailAuthenticator.Create(this.Id, email);
-            _userAuthenticators.Add(emailAuth);
-
-            MarkUpdate();
-        }
-
-        public void UpdateEmailAuthenticator(Email email)
-        {
-            var emailAuth = GetAuthenticator<EmailAuthenticator>(UserAuthenticatorType.Email);
-            emailAuth?.Update(email);
-
-            MarkUpdate();
-        }
-
-        public void ActivatedAuthenticator(UserAuthenticatorType type)
-        {
-            var auth = GetAuthenticator(type);
-            auth?.Activate();
-        }
-
-        public void DeactivateAuthenticator(UserAuthenticatorType type)
-        {
-            var auth = GetAuthenticator(type);
-            auth?.Deactivate();
+            _userAuthenticators.Add(EmailAuthenticator.Create(this.Id, email));
         }
 
         #endregion
 
-        #region UserSecurityAssets
-
-        public void AddUserSecurityAssets(AssetType assetType, EncryptedAssetValue encryptedAssetValue, int cryptoVersion)
+        #region Deks
+       
+        public void AddMainDek(EncryptedValue encryptedValue, CryptoVersion cryptoVersion)
         {
-            if (assetType == AssetType.MainDek && _userSecurityAssets.Any(us => us.AssetType == AssetType.MainDek))
-                throw new UserSecurityAssetsException(new Error(AppErrors.Duplicate, "Основной ключ шифрования уже существует. Для его смены используйте процедуру ротации."));
+            if (_deks.Any(x => x.Type == DekType.Main))
+                throw new DekException(new Error(ErrorCode.Exist, "Основной ключ шифрования уже настроен."));
 
-            var userSecurity = UserSecurityAsset.Create(this.Id, assetType, encryptedAssetValue, cryptoVersion);
-            _userSecurityAssets.Add(userSecurity);
-
-            DateUpdate = DateTime.UtcNow;
+            _deks.Add(Dek.Create(this.Id, encryptedValue, cryptoVersion, DekType.Main));
         }
 
-        public void UpdateMainDek(EncryptedAssetValue encryptedAssetValue, int cryptoVersion)
+        public void RotateMainDek(EncryptedValue encryptedValue, CryptoVersion cryptoVersion)
         {
-            var dek = _userSecurityAssets.FirstOrDefault(x => x.AssetType == AssetType.MainDek);
-
-            dek?.UpdateMainDek(encryptedAssetValue, cryptoVersion);
-        }
-
-        public void ClearRecoveryKeys()
-        {
-            _userSecurityAssets.RemoveAll(x => x.AssetType == AssetType.RecoveryKey);
-            MarkUpdate();
+            var dek = Deks.FirstOrDefault(x => x.Type == DekType.Main);
+            dek!.Rotate(encryptedValue, cryptoVersion);
         }
 
         #endregion
 
-        #region Public Helpers
+        #region RecoveryKeys
 
-        private T? GetAuthenticator<T>(UserAuthenticatorType type) where T : UserAuthenticator
-            => _userAuthenticators.OfType<T>().FirstOrDefault(a => a.Method == type && a.IsActive);
-            
-        private UserAuthenticator? GetAuthenticator(UserAuthenticatorType type)
-            => _userAuthenticators.FirstOrDefault(a => a.Method == type && a.IsActive);
+        public void ClearRecoveryKeys() => _recoveryKeys.Clear();
 
-
-        public void MarkUpdate() => DateUpdate = DateTime.UtcNow;
-
-        #endregion
-
-        #region Private Helpers
-
-        private void EnsureNoAuthenticatorOfType(UserAuthenticatorType type)
+        public void AddRecoveryKey(EncryptedValue encryptedValue, CryptoVersion cryptoVersion, KeyHint keyHint)
         {
-            if (_userAuthenticators.Any(a => a.Method == type && a.IsActive))
-                throw new UserAuthenticatorException(new Error(AppErrors.Duplicate, $"Метод аутентификации '{type}' уже добавлен."));
+            var key = RecoveryKey.Create(this.Id, encryptedValue, cryptoVersion, keyHint);
+            _recoveryKeys.Add(key);
         }
 
         #endregion
+
     }
 }

@@ -1,32 +1,31 @@
+using Crossdyne.Toolkit.Primitives;
 using Crossdyne.Toolkit.Results;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
-using Nexus.UserManagement.Service.Domain.Enums;
+using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Domain.Models;
 using Shared.Contracts;
 using Shared.Kernel.Errors;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeysInit
 {
-    public sealed class RecoveryViaKeysInitCommandHandler(IWriteDbContext context) : IRequestHandler<RecoveryViaKeysInitCommand, Result<RecoveryViaKeysPayloadResponse>>
+    public sealed class RecoveryViaKeysInitCommandHandler(
+        IUserRepository userRepository) : IRequestHandler<RecoveryViaKeysInitCommand, Result<RecoveryViaKeysPayloadResponse>>
     {
-        private readonly IWriteDbContext _context = context;
-
         public async Task<Result<RecoveryViaKeysPayloadResponse>> Handle(RecoveryViaKeysInitCommand request, CancellationToken cancellationToken)
         {
-            var user = await _context.Users
-                .Include(u => u.UserSecurityAssets)
-                    .FirstOrDefaultAsync(u => u.Login == request.Login);
+            Maybe<User> maybeUser = await userRepository.GetByAsync(u => u.Login == request.Login, includes: x => x.RecoveryKeys, clt: cancellationToken);
 
-            if (user is null)
+            if (maybeUser.IsNone)
                 return Result<RecoveryViaKeysPayloadResponse>.Failure(new Error(ErrorCode.NotFound, "Пользователя с таким логином не существует."));
 
-            var assetsRecoveryKeys = user.UserSecurityAssets.Where(x => x.AssetType == AssetType.RecoveryKey);
+            User user = maybeUser.Value;
 
-            if (!assetsRecoveryKeys.Any())
+            var recoveryKeys = user.RecoveryKeys;
+
+            if (!recoveryKeys.Any())
                 return Result<RecoveryViaKeysPayloadResponse>.Failure(new Error(AppErrors.AccountNotSetUpForRecovery, "Данные для восстановления не найдены, скорее всего процесс регистрации не был до конца завершён, либо данные были повреждены."));
 
-            var response = new RecoveryViaKeysPayloadResponse([.. assetsRecoveryKeys.Select(x => new RecoveryKeysResponse(x.EncryptedValue, x.CryptoVersion))]);
+            var response = new RecoveryViaKeysPayloadResponse([.. recoveryKeys.Select(x => new RecoveryKeysResponse(x.EncryptedValue, x.Version))]);
             
             return Result<RecoveryViaKeysPayloadResponse>.Success(response);
         }

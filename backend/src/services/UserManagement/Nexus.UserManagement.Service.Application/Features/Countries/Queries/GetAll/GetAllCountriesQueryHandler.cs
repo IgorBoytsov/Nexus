@@ -1,16 +1,12 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
+using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.UserManagement.Service.Application.Features.Countries.Queries.GetAll
 {
-    public sealed class GetAllCountriesQueryHandler(IReadDbContext readContext) : IRequestHandler<GetAllCountriesQuery, List<CountryDTO>>
+    public sealed class GetAllCountriesQueryHandler(ICountryReadOnlyRepository countryRepository) : IRequestHandler<GetAllCountriesQuery, List<CountryResponse>>
     {
-        private readonly IReadDbContext _readContext = readContext;
-
-        public async Task<List<CountryDTO>> Handle(GetAllCountriesQuery request, CancellationToken cancellationToken)
-            => await _readContext.CountriesView
-                .Select(c => new CountryDTO(c.Id.ToString(), c.Name))
-                    .ToListAsync(cancellationToken);
+        public async Task<List<CountryResponse>> Handle(GetAllCountriesQuery request, CancellationToken cancellationToken)
+            => [.. await countryRepository.GetAllAsync(cancellationToken)];      
     }
 }

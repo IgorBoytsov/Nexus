@@ -1,26 +1,30 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Crossdyne.Toolkit.Results;
+using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Crossdyne.Toolkit.Primitives;
+using Nexus.UserManagement.Service.Domain.Models;
 
 namespace Nexus.UserManagement.Service.Application.Features.Countries.Commands.Delete
 {
-    public sealed class DeleteCountryCommandHandler(IWriteDbContext writeContext) : IRequestHandler<DeleteCountryCommand, Result>
+    public sealed class DeleteCountryCommandHandler(
+        IUnitOfWork unitOfWork, 
+        ICountryRepository countryRepository) : IRequestHandler<DeleteCountryCommand, Result>
     {
-        private readonly IWriteDbContext _writeContext = writeContext;
-
         public async Task<Result> Handle(DeleteCountryCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var country = await _writeContext.Countries.FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
+                Maybe<Country> maybeCountry = await countryRepository.GetByAsync(c => c.Id == request.Id, cancellationToken);
 
-                if (country == null)
+                if (maybeCountry.IsNone)
                     return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
 
-                _writeContext.Countries.Remove(country);
+                Country country = maybeCountry.Value;
 
-                await _writeContext.SaveChangesAsync(cancellationToken);
+                countryRepository.Remove(country);
+
+                await unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result.Success();
             }

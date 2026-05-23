@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(WriteContext))]
+    [DbContext(typeof(UserManagementContext))]
     partial class WriteContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -26,129 +26,200 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
-                        .HasColumnName("Id");
+                        .HasColumnName("id");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("Name")
+                        .HasColumnName("name")
                         .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries", (string)null);
+                    b.ToTable("countries", (string)null);
+                });
+
+            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.Dek", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("EncryptedValue")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("encrypted_value");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("dek_type");
+
+                    b.Property<DateTimeOffset>("UpdateAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("update_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("integer")
+                        .HasColumnName("crypto_version");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_deks_UserId");
+
+                    b.ToTable("deks", (string)null);
                 });
 
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.Gender", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
-                        .HasColumnName("Id");
+                        .HasColumnName("id");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("Name")
+                        .HasColumnName("name")
                         .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genders", (string)null);
+                    b.ToTable("genders", (string)null);
+                });
+
+            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.RecoveryKey", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("EncryptedValue")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("encrypted_value");
+
+                    b.Property<bool>("IsUsed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_used");
+
+                    b.Property<string>("KeyHint")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("key_hint");
+
+                    b.Property<DateTimeOffset?>("UsedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("used_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("integer")
+                        .HasColumnName("crypto_version");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_recovery_keys_UserId");
+
+                    b.ToTable("recovery_keys", (string)null);
                 });
 
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
-                        .HasColumnName("Id");
+                        .HasColumnName("id");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("Name")
+                        .HasColumnName("name")
                         .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("roles", (string)null);
                 });
 
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.Status", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
-                        .HasColumnName("Id");
+                        .HasColumnName("id");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("Name")
+                        .HasColumnName("name")
                         .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statuses", (string)null);
+                    b.ToTable("statuses", (string)null);
                 });
 
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
-                        .HasColumnName("Id");
+                        .HasColumnName("id");
 
                     b.Property<DateTime?>("DateEntry")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("DateEntry");
+                        .HasColumnName("date_entry");
 
                     b.Property<DateTime>("DateRegistration")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("DateRegistration");
+                        .HasColumnName("date_registration");
 
                     b.Property<DateTime>("DateUpdate")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("DateUpdate");
+                        .HasColumnName("date_update");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("Email")
+                        .HasColumnName("email")
                         .UseCollation("case_insensitive");
 
                     b.Property<Guid?>("IdCountry")
                         .HasColumnType("uuid")
-                        .HasColumnName("IdCountry");
+                        .HasColumnName("id_country");
 
                     b.Property<Guid?>("IdGender")
                         .HasColumnType("uuid")
-                        .HasColumnName("IdGender");
+                        .HasColumnName("id_gender");
 
                     b.Property<Guid>("IdStatus")
                         .HasColumnType("uuid")
-                        .HasColumnName("IdStatus");
+                        .HasColumnName("id_status");
 
                     b.Property<string>("Login")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("Login")
+                        .HasColumnName("login")
                         .UseCollation("case_insensitive");
 
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("UserName")
+                        .HasColumnName("user_name")
                         .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdCountry");
-
-                    b.HasIndex("IdGender");
-
-                    b.HasIndex("IdStatus");
 
                     b.HasIndex(new[] { "Email" }, "IX_Users_Email")
                         .IsUnique();
@@ -156,40 +227,42 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                     b.HasIndex(new[] { "Login" }, "IX_Users_Login")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.UserAuthenticator", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
-                        .HasColumnName("Id");
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("CreatedAt");
+                        .HasColumnName("created_at");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true)
-                        .HasColumnName("IsActive");
+                        .HasColumnName("is_active");
 
                     b.Property<DateTime?>("LastUsedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("LastUsedAt");
+                        .HasColumnName("last_used_at");
 
                     b.Property<int>("Method")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_user_authenticators_UserId");
 
-                    b.ToTable("UserAuthenticators", (string)null);
+                    b.ToTable("user_authenticators", (string)null);
 
                     b.HasDiscriminator<int>("Method");
 
@@ -200,45 +273,17 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
-                        .HasColumnName("UserId");
+                        .HasColumnName("user_id");
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid")
-                        .HasColumnName("RoleId");
+                        .HasColumnName("role_id");
 
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.UserSecurityAsset", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("Id");
-
-                    b.Property<int>("AssetType")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CryptoVersion")
-                        .HasColumnType("integer")
-                        .HasColumnName("CryptoVersion");
-
-                    b.Property<string>("EncryptedValue")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("EncryptedValue");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserSecurityAssets", (string)null);
+                    b.ToTable("user_roles", (string)null);
                 });
 
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.EmailAuthenticator", b =>
@@ -247,7 +292,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Email")
                         .HasColumnType("text")
-                        .HasColumnName("Email")
+                        .HasColumnName("email")
                         .UseCollation("case_insensitive");
 
                     b.HasDiscriminator().HasValue(2);
@@ -259,51 +304,50 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("AsymmetricKeyId")
                         .HasColumnType("text")
-                        .HasColumnName("SrpAsymmetricKeyId");
+                        .HasColumnName("srp_asymmetric_key_id");
 
                     b.Property<string>("EncryptedVerifier")
                         .HasColumnType("text")
-                        .HasColumnName("SrpEncryptedVerifier");
+                        .HasColumnName("srp_encrypted_verifier");
 
                     b.Property<string>("EncryptedVerifierWrapKey")
                         .HasColumnType("text")
-                        .HasColumnName("SrpEncryptedVerifierWrapKey");
+                        .HasColumnName("srp_encrypted_verifier_wrapKey");
 
                     b.Property<int?>("KeyWrapVersion")
                         .HasColumnType("integer")
-                        .HasColumnName("SrpKeyWrapVersion");
+                        .HasColumnName("srp_key_wrap_version");
 
                     b.Property<string>("Login")
                         .HasColumnType("text")
-                        .HasColumnName("SrpLogin");
+                        .HasColumnName("srp_login");
 
                     b.Property<string>("Salt")
                         .HasColumnType("text")
-                        .HasColumnName("SrpSalt");
+                        .HasColumnName("srp_salt");
 
                     b.Property<int?>("SrpVersion")
                         .HasColumnType("integer")
-                        .HasColumnName("SrpVersion");
+                        .HasColumnName("srp_version");
 
                     b.HasDiscriminator().HasValue(1);
                 });
 
-            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.User", b =>
+            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.Dek", b =>
                 {
-                    b.HasOne("Nexus.UserManagement.Service.Domain.Models.Country", null)
-                        .WithMany()
-                        .HasForeignKey("IdCountry")
-                        .OnDelete(DeleteBehavior.SetNull);
+                    b.HasOne("Nexus.UserManagement.Service.Domain.Models.User", null)
+                        .WithMany("Deks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.HasOne("Nexus.UserManagement.Service.Domain.Models.Gender", null)
-                        .WithMany()
-                        .HasForeignKey("IdGender")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Nexus.UserManagement.Service.Domain.Models.Status", null)
-                        .WithMany()
-                        .HasForeignKey("IdStatus")
-                        .OnDelete(DeleteBehavior.Restrict)
+            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.RecoveryKey", b =>
+                {
+                    b.HasOne("Nexus.UserManagement.Service.Domain.Models.User", null)
+                        .WithMany("RecoveryKeys")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -331,22 +375,15 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.UserSecurityAsset", b =>
-                {
-                    b.HasOne("Nexus.UserManagement.Service.Domain.Models.User", null)
-                        .WithMany("UserSecurityAssets")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.User", b =>
                 {
+                    b.Navigation("Deks");
+
+                    b.Navigation("RecoveryKeys");
+
                     b.Navigation("UserAuthenticators");
 
                     b.Navigation("UserRoles");
-
-                    b.Navigation("UserSecurityAssets");
                 });
 #pragma warning restore 612, 618
         }

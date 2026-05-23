@@ -1,12 +1,11 @@
 ﻿using MediatR;
-using Nexus.Authentication.Service.Application.Services;
 using Crossdyne.Security.Abstractions;
 using Crossdyne.Toolkit.Results;
 using Shared.Security.Verifiers;
 using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Contracts;
 using Crossdyne.Security.Configuration;
-using System.Numerics;
+using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {
@@ -37,7 +36,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
             var cryptoProfile = CryptoProfileRegistry.GetProfile((CryptoVersion)userData.KeyWrapVersion);
             var aesGcmOptions = cryptoProfile.AesGcmOptions;
 
-            var encryptedVerifier = userData.Verifier;
+            var encryptedVerifier = userData.EncryptedVerifier;
             var encryptedVerifierWrapKey = userData.EncryptedVerifierWrapKey;
             var verifierWrapKey = _verifierProtector.Unprotect(encryptedVerifierWrapKey);
             var verifierWrapKeyBytes = Convert.FromBase64String(verifierWrapKey);

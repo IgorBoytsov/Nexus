@@ -1,27 +1,31 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Nexus.UserManagement.Service.Application.Abstractions.Contexts;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Crossdyne.Toolkit.Results;
+using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Domain.Models;
+using Crossdyne.Toolkit.Primitives;
 
 namespace Nexus.UserManagement.Service.Application.Features.Roles.Commands.Update
 {
-    public sealed class UpdateRoleCommandHandler(IWriteDbContext writeContext) : IRequestHandler<UpdateRoleCommand, Result>
+    public sealed class UpdateRoleCommandHandler(
+        IUnitOfWork unitOfWork, 
+        IRoleRepository roleRepository) : IRequestHandler<UpdateRoleCommand, Result>
     {
-        private readonly IWriteDbContext _writeContext = writeContext;
-
         public async Task<Result> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var role = await _writeContext.Roles.FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
+                Maybe<Role> maybeRole = await roleRepository.GetByAsync(r => r.Id == request.Id, cancellationToken);
 
-                if (role == null)
-                    return Result.Failure(new Error(ErrorCode.Update, "Такой записи не существует."));
+                if (maybeRole.IsNone)
+                    return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
+
+                Role role = maybeRole.Value;
 
                 role.UpdateName(RoleName.Create(request.Name));
 
-                await _writeContext.SaveChangesAsync(cancellationToken);
+                await unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result.Success();
             }

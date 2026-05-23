@@ -3,7 +3,7 @@ using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Domain.Models
 {
-    public sealed class Country : Entity<Guid>
+    public sealed class Country : AggregateRoot<Guid>
     {
         public CountryName Name { get; private set; } = null!;
 

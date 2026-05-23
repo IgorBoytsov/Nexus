@@ -1,0 +1,12 @@
+using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Domain.Models;
+using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
+using Shared.EntityFramework;
+
+namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Genders
+{
+    internal sealed class GenderRepository(UserManagementContext context) : Repository<Gender, UserManagementContext>(context), IGenderRepository
+    {
+        
+    }
+}

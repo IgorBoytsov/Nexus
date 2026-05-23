@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Mirgrations
 {
-    [DbContext(typeof(WriteContext))]
+    [DbContext(typeof(UserManagementContext))]
     [Migration("20260512151226_Replace_EncryptionMetadata_On_CryptoVersion")]
     partial class Replace_EncryptionMetadata_On_CryptoVersion
     {
