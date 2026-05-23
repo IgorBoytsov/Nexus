@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Authentication.Service.Application;
+using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
+using Nexus.Authentication.Service.Infrastructure.HttpClients;
 using Nexus.Authentication.Service.Infrastructure.Persistence.Contexts;
 using Shared.Redis;
 
@@ -16,6 +18,8 @@ namespace Nexus.Authentication.Service.Infrastructure.Ioc
             services.AddDbContext<AuthenticationContext>(option => option.UseNpgsql(connectionString));
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AuthenticationContext>());
             services.AddCashService(configuration);
+            services.AddHttpClient<IUserManagementServiceClient, UserManagementServiceClient>(client => client.BaseAddress = new Uri(configuration["ServiceUrls:UserManagement"]!));
+
             return services;
         }
     }

@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using Nexus.Authentication.Service.Application.Services;
 using Crossdyne.Security.Abstractions;
 using Crossdyne.Toolkit.Results;
 using Shared.Security.Verifiers;
 using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Contracts;
 using Crossdyne.Security.Configuration;
+using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {

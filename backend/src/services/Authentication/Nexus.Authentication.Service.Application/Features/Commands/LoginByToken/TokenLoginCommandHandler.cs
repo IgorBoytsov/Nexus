@@ -4,6 +4,7 @@ using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.Authentication.v1;
+using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.LoginByToken
 {

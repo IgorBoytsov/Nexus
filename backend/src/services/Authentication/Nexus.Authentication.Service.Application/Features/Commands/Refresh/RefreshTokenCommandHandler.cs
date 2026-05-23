@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
 {

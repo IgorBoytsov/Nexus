@@ -7,6 +7,7 @@ using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Contracts;
 using Shared.Kernel.Errors;
 using Crossdyne.Security.Configuration;
+using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {

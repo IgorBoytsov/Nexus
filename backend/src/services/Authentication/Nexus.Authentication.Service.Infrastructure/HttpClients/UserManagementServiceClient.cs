@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
+using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Shared.Contracts;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace Nexus.Authentication.Service.Application.Services
+namespace Nexus.Authentication.Service.Infrastructure.HttpClients
 {
     public class UserManagementServiceClient(HttpClient httpClient, IOptions<JsonSerializerOptions> jsonOptions) : IUserManagementServiceClient
     {

@@ -1,4 +1,3 @@
-using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Infrastructure.Ioc;
 using System.IdentityModel.Tokens.Jwt;
 using Nexus.Authentication.Service.Application.Ioc;
@@ -23,8 +22,6 @@ namespace Nexus.Authentication.Service.Api
 
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
-
-            builder.Services.AddHttpClient<IUserManagementServiceClient, UserManagementServiceClient>(client => client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:UserManagement"]!));
 
             var app = builder.Build();
 

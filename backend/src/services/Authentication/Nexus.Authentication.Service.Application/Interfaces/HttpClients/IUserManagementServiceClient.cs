@@ -1,6 +1,6 @@
 ﻿using Shared.Contracts;
 
-namespace Nexus.Authentication.Service.Application.Services
+namespace Nexus.Authentication.Service.Application.Interfaces.HttpClients
 {
     public interface IUserManagementServiceClient
     {
