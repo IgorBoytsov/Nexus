@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Nexus.Authentication.Service.Application.Services;
@@ -11,20 +10,18 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
+using Nexus.Authentication.Service.Application.Interfaces.Repositories;
+using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
 {
     public sealed class RefreshTokenCommandHandler(
-        IApplicationDbContext context,
+        IUnitOfWork unitOfWork,
+        IAccessDataRepository accessDataRepository,
         IJwtTokenGenerator jwtTokenGenerator,
         IConfiguration configuration,
         IUserManagementServiceClient userManagementServiceClient) : IRequestHandler<RefreshTokenCommand, Result<AuthResponse>>
     {
-        private readonly IApplicationDbContext _context = context;
-        private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
-        private readonly IConfiguration _configuration = configuration;
-        private readonly IUserManagementServiceClient _userManagementServiceClient = userManagementServiceClient;
-
         public async Task<Result<AuthResponse>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
             var principal = GetPrincipalFromExpiredToken(request.AccessToken);
@@ -32,21 +29,23 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
             if (!Guid.TryParse(principal?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value, out var userIdFromJwt))
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "Не валидный токен."));
             
-            var storageToken = await _context.AccessData.FirstOrDefaultAsync(rt => rt.RefreshToken == request.RefreshToken, cancellationToken);
+            var maybeStorageToken = await accessDataRepository.GetByAsync(rt => rt.RefreshToken == request.RefreshToken, cancellationToken);
+
+            var storageToken = maybeStorageToken.Value;
 
             if (storageToken == null || storageToken.UserId != userIdFromJwt || storageToken.IsUsed || storageToken.IsRevoked || DateTime.UtcNow > storageToken.ExpiryDate)
                 return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "Не валидный Refresh токен."));
 
             storageToken.MarkAsUsed();
-            await _context.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var userData = await _userManagementServiceClient.GetUserByIdAsync(storageToken.UserId); 
-            var newAccessToken = _jwtTokenGenerator.GenerateAccessToken(userData!);
-            var newRefreshToken = _jwtTokenGenerator.GenerateRefreshToken();
+            var userData = await userManagementServiceClient.GetUserByIdAsync(storageToken.UserId); 
+            var newAccessToken = jwtTokenGenerator.GenerateAccessToken(userData!);
+            var newRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
 
             var newAccessData = AccessData.Create(Guid.Parse(userData!.Id), newRefreshToken, newAccessToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(30), false, false);
-            await _context.AccessData.AddAsync(newAccessData, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await accessDataRepository.AddAsync(newAccessData, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<AuthResponse>.Success(new AuthResponse(newAccessToken, newRefreshToken));
         }
@@ -58,7 +57,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]!)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!)),
                 ValidateLifetime = false
             };
 

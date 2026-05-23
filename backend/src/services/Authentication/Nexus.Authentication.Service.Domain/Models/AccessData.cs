@@ -1,8 +1,9 @@
-﻿namespace Nexus.Authentication.Service.Domain.Models
+﻿using Shared.Kernel.Primitives;
+
+namespace Nexus.Authentication.Service.Domain.Models
 {
-    public sealed class AccessData
+    public sealed class AccessData : AggregateRoot<Guid>
     {
-        public Guid Id { get; private set; }
         public Guid UserId { get; private set; }
         public string RefreshToken { get; private set; } = null!;
         public string AccessToken { get; private set; } = null!;

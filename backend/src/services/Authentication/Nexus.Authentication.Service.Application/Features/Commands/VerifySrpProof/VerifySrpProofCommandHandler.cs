@@ -8,22 +8,19 @@ using Shared.Contracts;
 using Shared.Kernel.Errors;
 using Crossdyne.Security.Configuration;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
+using Nexus.Authentication.Service.Application.Interfaces.Repositories;
+using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {
     public class VerifySrpProofHandler(
-       IApplicationDbContext context,
-       IRedisCacheService redisCacheService,
-       IJwtTokenGenerator jwtTokenGenerator,
-       ISrpServer srpServer,
-       IUserManagementServiceClient userManagementClient) : IRequestHandler<VerifySrpProofCommand, Result<AuthResponse>>
+        IUnitOfWork unitOfWork,
+        IAccessDataRepository accessDataRepository,
+        IRedisCacheService redisCacheService,
+        IJwtTokenGenerator jwtTokenGenerator,
+        ISrpServer srpServer,
+        IUserManagementServiceClient userManagementClient) : IRequestHandler<VerifySrpProofCommand, Result<AuthResponse>>
     {
-        private readonly IApplicationDbContext _context = context;
-        private readonly IRedisCacheService _redisCacheService = redisCacheService;
-        private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
-        private readonly ISrpServer _srpServer = srpServer;
-        private readonly IUserManagementServiceClient _userManagementServiceClient = userManagementClient;
-
         public async Task<Result<AuthResponse>> Handle(VerifySrpProofCommand request, CancellationToken cancellationToken)
         {
             SrpProfile profile = SrpProfileRegistry.GetProfile(SrpGroup.Rfc5054_3072); 
@@ -34,16 +31,16 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
 
             string normalizedLogin = request.Login.Trim().ToLowerInvariant();  
 
-            var session = await _redisCacheService.GetJsonAsync<SrpSessionState>($"srp_{normalizedLogin}");
+            var session = await redisCacheService.GetJsonAsync<SrpSessionState>($"srp_{normalizedLogin}");
 
             if (session is null)
                 return Result<AuthResponse>.Failure(new Error(AppErrors.SessionExpired, "Сессия аутентификации истекла или недействительна. Повторите вход."));
 
-            var M2_server = _srpServer.VerifySrpProof(session, request.A, request.M1, srpContext);
+            var M2_server = srpServer.VerifySrpProof(session, request.A, request.M1, srpContext);
 
-            var userData = await _userManagementServiceClient.GetUserByLoginAsync(normalizedLogin);
-            var accessToken = _jwtTokenGenerator.GenerateAccessToken(userData!);
-            var refreshToken = _jwtTokenGenerator.GenerateRefreshToken();
+            var userData = await userManagementClient.GetUserByLoginAsync(normalizedLogin);
+            var accessToken = jwtTokenGenerator.GenerateAccessToken(userData!);
+            var refreshToken = jwtTokenGenerator.GenerateRefreshToken();
 
             var accessData = AccessData.Create(Guid.Parse(userData!.Id), refreshToken, accessToken,
                 DateTime.UtcNow,
@@ -51,10 +48,10 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
                 isUsed: false,
                 isRevoked: false);
 
-            await _context.AccessData.AddAsync(accessData, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await accessDataRepository.AddAsync(accessData, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await _redisCacheService.RemoveAsync($"srp_{normalizedLogin}");
+            await redisCacheService.RemoveAsync($"srp_{normalizedLogin}");
             return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, M2_server));
         }
     }
