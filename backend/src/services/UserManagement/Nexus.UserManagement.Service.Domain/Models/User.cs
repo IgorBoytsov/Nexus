@@ -123,11 +123,11 @@ namespace Nexus.UserManagement.Service.Domain.Models
                 _userAuthenticators.Add(SrpAuthenticator.Create(this.Id, login, verificator, salt, srpVersion, credentialBlob, cryptoVersion, asymmetricKeyId));
         }
 
-        public void UpdateSrp(Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob credentialBlob, CryptoVersion cryptoVersion, AsymmetricKeyId asymmetricKeyId)
+        public void UpdateSrp(Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob encryptedVerifierWrapKey, CryptoVersion cryptoVersion, AsymmetricKeyId asymmetricKeyId)
         {
             var srp = UserAuthenticators.OfType<SrpAuthenticator>().FirstOrDefault();
 
-            srp!.Update(verificator, salt, srpVersion, credentialBlob, cryptoVersion, asymmetricKeyId);
+            srp!.Update(verificator, salt, srpVersion, encryptedVerifierWrapKey, cryptoVersion, asymmetricKeyId);
         }
 
         public void AddEmailAuthenticator(Email email)
