@@ -15,6 +15,9 @@ using Shared.Web.Extensions;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ExistByLogin;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeysInit;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeysSet;
+using Shared.Contracts.UserManagement.Requests;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangePasswordInit;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangePassword;
 
 namespace Nexus.UserManagement.Service.Api.Controllers
 {
@@ -196,6 +199,32 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         
             var result = await _mediator.Send(command);
 
+            if (result.IsFailure)
+                return this.MapActionResult(result.Errors);
+
+            return Ok();
+        }
+
+        [HttpPost("change-password-init")]
+        public async Task<IActionResult> ChangePasswordInit([FromBody] ChangePasswordInitRequest request)
+        {
+            var command = new ChangePasswordInitCommand(Guid.Parse(request.UserId));
+
+            var result = await _mediator.Send(command);
+            
+             if (result.IsFailure)
+                return this.MapActionResult(result.Errors);
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var command = new ChangePasswordCommand(Guid.Parse(request.UserId!), request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion, request.SrpVersion, request.EncryptedVerifierWrapKey, request.KeyWrapVersion, request.AsymmetricKeyId);
+            
+            var result = await _mediator.Send(command);
+            
             if (result.IsFailure)
                 return this.MapActionResult(result.Errors);
 
