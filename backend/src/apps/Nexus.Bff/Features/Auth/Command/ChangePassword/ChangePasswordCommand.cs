@@ -6,16 +6,19 @@ namespace Nexus.Bff.Features.Auth.Command.ChangePassword
 {
     public sealed record ChangePasswordCommand(
         Guid UserId,
-        string Verifier, 
-        string ClientSalt, 
-        string EncryptedDek,
-        int CryptoVersion, 
+        // Srp
+        string EncryptedVerifier, 
+        string SrpSalt, 
         int SrpVersion, 
         string EncryptedVerifierWrapKey, 
         int KeyWrapVersion, 
-        string AsymmetricKeyId) : IRequest<Result>,
+        string AsymmetricKeyId,
+        // Dek
+        string EncryptedDek,
+        string DekSalt,
+        int CryptoVersion) : IRequest<Result>,
         IHasGuidUserId,
-        IHasVerifier, 
-        IHasClientSalt, 
+        IHasEncryptedVerifier, 
+        IHasSrpSalt, 
         IHasEncryptedDek;
 }

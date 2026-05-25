@@ -24,8 +24,8 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Chang
 
                 User user = maybeUser.Value;
 
-                user.UpdateSrp(Verificator.Create(request.Verifier), Salt.Create(request.ClientSalt), SrpVersion.Create(request.SrpVersion), CredentialBlob.Create(request.EncryptedVerifierWrapKey), CryptoVersion.Create(request.KeyWrapVersion), AsymmetricKeyId.Create(request.AsymmetricKeyId));
-                user.RotateMainDek(EncryptedValue.Create(request.EncryptedDek), CryptoVersion.Create(request.CryptoVersion));
+                user.UpdateSrp(Verificator.Create(request.EncryptedVerifier), Salt.Create(request.SrpSalt), SrpVersion.Create(request.SrpVersion), CredentialBlob.Create(request.EncryptedVerifierWrapKey), CryptoVersion.Create(request.KeyWrapVersion), AsymmetricKeyId.Create(request.AsymmetricKeyId));
+                user.RotateMainDek(EncryptedValue.Create(request.EncryptedDek), Salt.Create(request.SrpSalt), CryptoVersion.Create(request.CryptoVersion));
 
                 await unitOfWork.SaveChangesAsync(cancellationToken);
 

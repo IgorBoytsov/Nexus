@@ -228,7 +228,17 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
-            var command = new ChangePasswordCommand(Guid.Parse(request.UserId!), request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion, request.SrpVersion, request.EncryptedVerifierWrapKey, request.KeyWrapVersion, request.AsymmetricKeyId);
+            var command = new ChangePasswordCommand(
+                Guid.Parse(request.UserId!), 
+                request.EncryptedVerifier, 
+                request.SrpSalt, 
+                request.SrpVersion, 
+                request.EncryptedVerifierWrapKey, 
+                request.KeyWrapVersion, 
+                request.AsymmetricKeyId, 
+                request.EncryptedDek,
+                request.DekSalt,
+                request.CryptoVersion);
             
             var result = await _mediator.Send(command);
             

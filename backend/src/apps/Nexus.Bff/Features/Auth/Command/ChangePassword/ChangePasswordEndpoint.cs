@@ -20,7 +20,17 @@ namespace Nexus.Bff.Features.Auth.Command.ChangePassword
                 var token = await httpContext.GetTokenAsync("access_token");
                 var tokenData = jwtReaderService.ExtractData(token!);
 
-                var command = new ChangePasswordCommand(Guid.Parse(tokenData.UserId), request.Verifier, request.ClientSalt, request.EncryptedDek, request.CryptoVersion, request.SrpVersion, request.EncryptedVerifierWrapKey, request.KeyWrapVersion, request.AsymmetricKeyId);
+                var command = new ChangePasswordCommand(
+                    Guid.Parse(tokenData.UserId),
+                    request.EncryptedVerifier, 
+                    request.SrpSalt, 
+                    request.SrpVersion, 
+                    request.EncryptedVerifierWrapKey, 
+                    request.KeyWrapVersion, 
+                    request.AsymmetricKeyId, 
+                    request.EncryptedDek, 
+                    request.DekSalt,
+                    request.CryptoVersion);
 
                 var result = await mediator.Send(command);
 

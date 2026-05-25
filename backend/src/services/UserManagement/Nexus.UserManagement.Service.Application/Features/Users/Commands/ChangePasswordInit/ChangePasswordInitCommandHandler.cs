@@ -19,7 +19,12 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Chang
             var dek = user.Deks.FirstOrDefault(x => x.Type == DekType.Main);
             var srp = user.UserAuthenticators.OfType<SrpAuthenticator>().FirstOrDefault(x => x.Method == UserAuthenticatorType.SRP);
 
-            var response = new ChangePasswordInitResponse(user.Login, dek!.EncryptedValue, dek.Version, srp!.Salt!, srp!.AsymmetricKeyId!.Value);
+            var response = new ChangePasswordInitResponse(
+                user.Login,
+                dek!.EncryptedValue,
+                dek.Salt, 
+                dek.Version, 
+                srp!.AsymmetricKeyId!.Value);
 
             return Result<ChangePasswordInitResponse>.Success(response);
         }

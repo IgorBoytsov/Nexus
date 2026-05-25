@@ -35,9 +35,10 @@ namespace Nexus.UserManagement.Service.Domain.Models
             return new Dek(userId, encryptedValue, salt, version, type);
         }
 
-        internal void Rotate(EncryptedValue encryptedValue, CryptoVersion version)
+        internal void Rotate(EncryptedValue encryptedValue, Salt salt, CryptoVersion version)
         {
             EncryptedValue = encryptedValue;
+            Salt = salt;
             Version = version;
             UpdateAt = DateTimeOffset.UtcNow;
         }

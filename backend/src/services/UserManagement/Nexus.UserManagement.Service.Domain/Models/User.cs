@@ -147,10 +147,10 @@ namespace Nexus.UserManagement.Service.Domain.Models
             _deks.Add(Dek.Create(this.Id, encryptedValue, salt, cryptoVersion, DekType.Main));
         }
 
-        public void RotateMainDek(EncryptedValue encryptedValue,  CryptoVersion cryptoVersion)
+        public void RotateMainDek(EncryptedValue encryptedValue, Salt salt, CryptoVersion cryptoVersion)
         {
             var dek = Deks.FirstOrDefault(x => x.Type == DekType.Main);
-            dek!.Rotate(encryptedValue, cryptoVersion);
+            dek!.Rotate(encryptedValue, salt, cryptoVersion);
         }
 
         #endregion
