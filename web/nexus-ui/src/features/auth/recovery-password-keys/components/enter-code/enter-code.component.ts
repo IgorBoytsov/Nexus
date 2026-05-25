@@ -51,7 +51,7 @@ export class StepEnterCodeComponent {
                 }
 
                 const { recoveryKeys } = result.value;
-                let decryptedKeyStr: string | null = null;
+                let decryptedKeyStr: Uint8Array | null = null;
                 let successfulCryptoVersion: number | null = null;
 
                 for (const rk of recoveryKeys) {
@@ -59,7 +59,7 @@ export class StepEnterCodeComponent {
                     const profile = CryptoProfileRegistry.getProfile(rkCryptoVersion as CryptoVersion);
 
                     try {
-                        decryptedKeyStr = await this.crypto.decryptData<string>(key, codeBytes, profile.aesGcmOptions);
+                        decryptedKeyStr = await this.crypto.decryptData<Uint8Array>(key, codeBytes, profile.aesGcmOptions, true);
                         if (decryptedKeyStr) {
                             successfulCryptoVersion = rkCryptoVersion;
                             break;
@@ -76,7 +76,7 @@ export class StepEnterCodeComponent {
    
                 console.log('DEK успешно восстановлен');
                 
-                this.state.setDek(decryptedKeyStr);
+                this.state.setDek(SecurityUtils.toBase64(decryptedKeyStr));
                 this.router.navigate(['recovery/keys/set']);
                 
             } catch (error) {

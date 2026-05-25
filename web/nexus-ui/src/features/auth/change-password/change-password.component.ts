@@ -86,9 +86,9 @@ export class ChangePasswordComponent {
             
             const storageDekSaltBytes = SecurityUtils.fromBase64(dekSalt);
             const { kek: oldKek } = await this.keyDerivationService.deriveKeysFromPassword(login, oldPassword, storageDekSaltBytes, profile.kdfOptions);
-            const decryptedDek = await this.cryptoService.decryptData<Uint8Array>(encryptedDek, oldKek, profile.aesGcmOptions);
+            const decryptedDek = await this.cryptoService.decryptData<Uint8Array>(encryptedDek, oldKek, profile.aesGcmOptions, true);
             const { kek: newKek } = await this.keyDerivationService.deriveKeysFromPassword(login, newPassword, dekKeyDerivationSalt, profile.kdfOptions);
-            const reEncryptedDek = await this.cryptoService.encryptData<Uint8Array>(decryptedDek!, newKek, profile.aesGcmOptions);
+            const reEncryptedDek = await this.cryptoService.encryptData(decryptedDek!, newKek, profile.aesGcmOptions);
 
             //#endregion
 

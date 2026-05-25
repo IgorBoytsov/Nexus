@@ -115,7 +115,8 @@ export class StepSetPasswordComponent {
                 //#region Перешифрование DEK
                 
                 const { kek } = await this.keyDerivation.deriveKeysFromPassword(this.state.login!, newPassword, dekKeyDerivationSalt);
-                const encryptedDek = await this.crypto.encryptData(this.state.dek!, kek, profile.aesGcmOptions);
+                const rawDekBytes = SecurityUtils.fromBase64(this.state.dek!);
+                const encryptedDek = await this.crypto.encryptData(rawDekBytes, kek, profile.aesGcmOptions);
 
                 //#endregion
 
@@ -123,9 +124,9 @@ export class StepSetPasswordComponent {
 
                 for (let index = 0; index < this.countRecoveryKays; index++) {
                     const rowKey = this.crypto.generateRandomBytes(32)
-                    const encryptedDek = await this.crypto.encryptData(this.state.dek, rowKey, profile.aesGcmOptions);
+                    const encryptedDekForRecovery = await this.crypto.encryptData(rawDekBytes, rowKey, profile.aesGcmOptions);
                     this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
-                    this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: profile.version})
+                    this.recoveryAssets.push({ encryptedDek: encryptedDekForRecovery, rowKey: rowKey, version: profile.version })
                 }
 
                 //#endregion
