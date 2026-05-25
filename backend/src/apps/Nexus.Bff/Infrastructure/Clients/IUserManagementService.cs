@@ -2,6 +2,8 @@ using Nexus.Bff.Features.Profile.Query.Info;
 using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
 using Shared.Contracts;
+using Shared.Contracts.UserManagement.Requests;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.Bff.Infrastructure.Clients
 {
@@ -16,5 +18,7 @@ namespace Nexus.Bff.Infrastructure.Clients
         Task<Result> ExistUserByLogin(ExistUserBuLoginRequest request);
         Task<Result<RecoveryViaKeysPayloadResponse>> RecoveryViaKeys(RecoveryViaKeysGetPayloadRequest request);
         Task<Result> RecoveryViaKeysSet(RecoveryViaKeysSetRequest request);
+        Task<Result<ChangePasswordInitResponse>> ChangePasswordInit(ChangePasswordInitRequest request);
+        Task<Result> ChangePassword(ChangePasswordRequest request);
     }
 }

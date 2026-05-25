@@ -18,6 +18,6 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator
 
         public override string ToString() => Value.ToString();
 
-        public static implicit operator string(SrpVersion value) => value.ToString();
+        public static implicit operator int(SrpVersion value) => value.Value;
     }
 }

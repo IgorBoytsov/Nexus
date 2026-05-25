@@ -4,6 +4,8 @@ using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.UserManagement.v1;
 using Shared.Contracts;
 using Microsoft.Extensions.Options;
+using Shared.Contracts.UserManagement.Requests;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.Bff.Infrastructure.Clients
 {
@@ -177,6 +179,46 @@ namespace Nexus.Bff.Infrastructure.Clients
             try
             {
                 var response = await _httpClient.PostAsJsonAsync($"api/users/set-recovery-keys", request);
+                                                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result.Failure(errors!)!;
+                }
+
+                return Result.Success();
+            }
+            catch (System.Exception ex)
+            {
+                return Result.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+            }
+        }
+
+        public async Task<Result<ChangePasswordInitResponse>> ChangePasswordInit(ChangePasswordInitRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"api/users/change-password-init", request);
+                                                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result<ChangePasswordInitResponse>.Failure(errors!)!;
+                }
+
+                return Result<ChangePasswordInitResponse>.Success(await response.Content.ReadFromJsonAsync<ChangePasswordInitResponse>(_jsonOptions));
+            }
+            catch (Exception ex)
+            {
+                return Result<ChangePasswordInitResponse>.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+            }
+        }
+
+        public async Task<Result> ChangePassword(ChangePasswordRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"api/users/change-password", request);
                                                                 
                 if (!response.IsSuccessStatusCode)
                 {

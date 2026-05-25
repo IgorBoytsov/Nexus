@@ -14,6 +14,7 @@ import { StepFindLoginComponent } from '../features/auth/recovery-password-keys/
 import { StepEnterCodeComponent } from '../features/auth/recovery-password-keys/components/enter-code/enter-code.component';
 import { StepSetPasswordComponent } from '../features/auth/recovery-password-keys/components/set-password/set-password.component';
 import { recoveryStepGuard as recoveryKeysStepGuard } from '../features/auth/recovery-password-keys/guards/recovery-password-keys.guard';
+import { ChangePasswordComponent } from '../features/auth/change-password/change-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -23,7 +24,8 @@ export const routes: Routes = [
     children:[
       { path: 'login', loadComponent: () => LoginComponent },
       { path: 'register', loadComponent: () => RegisterComponent },
-            {
+      { path: 'change/password', loadComponent: () => ChangePasswordComponent},
+      {
         path: 'recovery/keys',
         component: RecoveryPasswordKeysComponent,
         children: [
