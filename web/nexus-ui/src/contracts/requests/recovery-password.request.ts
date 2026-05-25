@@ -1,12 +1,16 @@
 export interface RecoveryPasswordRequest{
     login: string;
-    verifier: string;
-    clientSalt: string;
-    encryptedDek: string;
-    cryptoVersion: number,
+    // Srp
+    encryptedVerifier: string;
+    srpSalt: string;
     srpVersion: number,
     encryptedVerifierWrapKey: string, 
     keyWrapVersion: number, 
     asymmetricKeyId: string,
-    recoveryKeys: Array<{encryptedValue: string, cryptoVersion: number}>
+    // Dek 
+    encryptedDek: string;
+    dekSalt: string;
+    cryptoVersion: number;
+    // RecoveryKeys
+    recoveryKeys: Array<{encryptedValue: string, cryptoVersion: number}>;
 }

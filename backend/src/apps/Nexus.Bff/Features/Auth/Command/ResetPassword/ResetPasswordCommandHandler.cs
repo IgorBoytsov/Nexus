@@ -12,14 +12,15 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPassword
         public async Task<Result> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
             => await _userManagementService.RecoveryPassword(new RecoveryPasswordRequest(
                 request.Login, 
-                request.Verifier, 
-                request.ClientSalt, 
-                request.EncryptedDek, 
-                request.CryptoVersion, 
+                request.EncryptedVerifier, 
+                request.SrpSalt, 
                 request.SrpVersion, 
                 request.EncryptedVerifierWrapKey, 
                 request.KeyWrapVersion, 
-                request.AsymmetricKeyId,
+                request.AsymmetricKeyId, 
+                request.EncryptedDek, 
+                request.DekSalt,
+                request.CryptoVersion,
                 [.. request.RecoveryKeys.Select(x => new RecoveryKeysRequestData(x.EncryptedValue, x.CryptoVersion))]));
     }
 }

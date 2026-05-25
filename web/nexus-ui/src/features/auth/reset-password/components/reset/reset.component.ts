@@ -60,7 +60,11 @@ export class StepResetComponent{
 
             const { newPassword } = this.resetForm.value;
             
-            const salt = this.crypto.generateRandomBytes(16);
+            const srpAuthenticationSalt = this.crypto.generateRandomBytes(32);
+            const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
+
+            const dekKeyDerivationSalt = this.crypto.generateRandomBytes(32);
+            const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
 
             //#endregion
 
@@ -86,7 +90,7 @@ export class StepResetComponent{
 
             //#region Верификатор SRP
 
-            const srpAuthHashBytes = await this.keyDerivation.deriveAuthHashForSrp(this.state.login!, newPassword, salt, ctx.hashAlgorithmName);
+            const srpAuthHashBytes = await this.keyDerivation.deriveAuthHashForSrp(this.state.login!, newPassword, srpAuthenticationSalt, ctx.hashAlgorithmName);
             const srpAuthHashBase64 = SecurityUtils.toBase64(srpAuthHashBytes);
 
             const verifierBase64 = await this.srp.generateSrpVerifier(srpAuthHashBase64, ctx);
@@ -106,8 +110,7 @@ export class StepResetComponent{
 
             //#region Генерация DEK
            
-            const saltBase64 = SecurityUtils.toBase64(salt);
-            const { kek } = await this.keyDerivation.deriveKeysFromPassword(this.state.login!, newPassword, salt, );
+            const { kek } = await this.keyDerivation.deriveKeysFromPassword(this.state.login!, newPassword, dekKeyDerivationSalt);
 
             const dek = this.crypto.generateRandomBytes(32);
             const encryptedDek = await this.crypto.encryptData(dek, kek, profile.aesGcmOptions);
@@ -127,14 +130,15 @@ export class StepResetComponent{
 
             const recoveryAccessPasswordRequest: RecoveryPasswordRequest = {
                 login: this.state.login!,
-                verifier: encryptedVerifier,
-                clientSalt: saltBase64,
-                encryptedDek: encryptedDek,
-                cryptoVersion: profile.version,
+                encryptedVerifier: encryptedVerifier,
+                srpSalt: srpAuthenticationSaltBase64,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
-                asymmetricKeyId: "env_v1",
                 keyWrapVersion: profile.version, 
+                asymmetricKeyId: "env_v1",
+                encryptedDek: encryptedDek,
+                dekSalt: dekKeyDerivationSaltBase64,
+                cryptoVersion: profile.version,
                 recoveryKeys: this.recoveryAssets.map(a => ({encryptedValue: a.encryptedDek, cryptoVersion: a.version}))
             }
 
@@ -145,12 +149,9 @@ export class StepResetComponent{
                 return;
             }
 
-            alert("Пароль успешно изменен");
-
             this.state.resetState();
             this.generatedRecoveryKeys.set(this.recoveryKeysDisplay);
             this.showRecoveryKeys.set(true);
-            this.errorMessage.set(null);
         } catch (error) {
             console.error(error);
         } finally {

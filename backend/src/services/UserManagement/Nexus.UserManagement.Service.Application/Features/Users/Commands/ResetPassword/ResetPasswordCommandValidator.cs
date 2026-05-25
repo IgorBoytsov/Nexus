@@ -8,8 +8,8 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
         public ResetPasswordCommandValidator()
         {
             Include(LoginValidator.Create());
-            Include(VerifierValidator.Create());
-            Include(ClientSaltValidator.Create());
+            Include(EncryptedVerifierValidator.Create());
+            Include(SrpSaltValidator.Create());
             Include(EncryptedDekValidator.Create());
         }
     }
