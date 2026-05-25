@@ -3,13 +3,13 @@ using Shared.Validations.Common.Abstractions;
 
 namespace Shared.Validations.Common.Validators
 {
-    public sealed class VerifierValidator : AbstractValidator<IHasVerifier>
+    public sealed class EncryptedVerifierValidator : AbstractValidator<IHasEncryptedVerifier>
     {
-        public static VerifierValidator Create() => new();
+        public static EncryptedVerifierValidator Create() => new();
         
-        public VerifierValidator()
+        public EncryptedVerifierValidator()
         {
-            RuleFor(x => x.Verifier)
+            RuleFor(x => x.EncryptedVerifier)
             .NotEmpty().WithMessage("Верификатор не может быть пустым.");
         }
     }

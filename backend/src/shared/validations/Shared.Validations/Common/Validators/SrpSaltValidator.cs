@@ -3,13 +3,13 @@ using Shared.Validations.Common.Abstractions;
 
 namespace Shared.Validations.Common.Validators
 {
-    public sealed class ClientSaltValidator : AbstractValidator<IHasClientSalt>
+    public sealed class SrpSaltValidator : AbstractValidator<IHasSrpSalt>
     {
-        public static ClientSaltValidator Create() => new();
+        public static SrpSaltValidator Create() => new();
 
-        public ClientSaltValidator()
+        public SrpSaltValidator()
         {
-            RuleFor(x => x.ClientSalt)
+            RuleFor(x => x.SrpSalt)
             .NotEmpty().WithMessage("Клиентская соль не должна быть пустой.");
         }
     }
