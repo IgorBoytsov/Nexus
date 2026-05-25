@@ -8,6 +8,7 @@ import { firstValueFrom } from "rxjs";
 import { RecoveryPasswordRequest } from "../../../../../contracts/requests/recovery-password.request";
 import { StepResetApi } from "./reset.api";
 import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
+import { CryptoConstants } from "../../../../../core/constants/security.constants";
 
 @Component({
     selector: 'app-reset',
@@ -31,7 +32,7 @@ export class StepResetComponent{
     isLoading = signal(false);
     errorMessage = signal<string | null>(null);
 
-    readonly countRecoveryKays = 10;
+    readonly countRecoveryKays = CryptoConstants.RECOVERY_KEYS_COUNT; // 10
 
     readonly showRecoveryKeys = signal(false);
     readonly generatedRecoveryKeys = signal<string[] | null>(null);
@@ -60,10 +61,10 @@ export class StepResetComponent{
 
             const { newPassword } = this.resetForm.value;
             
-            const srpAuthenticationSalt = this.crypto.generateRandomBytes(32);
+            const srpAuthenticationSalt = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
             const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
 
-            const dekKeyDerivationSalt = this.crypto.generateRandomBytes(32);
+            const dekKeyDerivationSalt = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
             const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
 
             //#endregion
@@ -95,7 +96,7 @@ export class StepResetComponent{
 
             const verifierBase64 = await this.srp.generateSrpVerifier(srpAuthHashBase64, ctx);
 
-            const dekForVerifier = this.crypto.generateRandomBytes(32);
+            const dekForVerifier = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
             const encryptedVerifier = await this.crypto.encryptData(verifierBase64, dekForVerifier, profile.aesGcmOptions);
 
             const encryptedKekForVerifier = await window.crypto.subtle.encrypt(
@@ -120,7 +121,7 @@ export class StepResetComponent{
             //#region генерация ключей восстановления 
 
             for (let index = 0; index < this.countRecoveryKays; index++) {
-                const rowKey = this.crypto.generateRandomBytes(32)
+                const rowKey = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
                 const encryptedDek = await this.crypto.encryptData(dek, rowKey, profile.aesGcmOptions);
                 this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
                 this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: profile.version})

@@ -7,6 +7,7 @@ import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationServi
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { RecoveryKeysListComponent } from "../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
+import { CryptoConstants } from "../../../core/constants/security.constants";
 
 @Component({
   selector: 'app-register',
@@ -37,7 +38,7 @@ export class RegisterComponent {
 
     readonly minLoginLength = 3;
     readonly minUsernameLength = 3;
-    readonly countRecoveryKays = 10;
+    readonly countRecoveryKays = CryptoConstants.RECOVERY_KEYS_COUNT; // 10
 
     constructor() {
         this.registerForm = this.fb.group({
@@ -105,7 +106,7 @@ export class RegisterComponent {
 
             const verifierBase64 = await this.srp.generateSrpVerifier(srpAuthHashBase64, ctx);
 
-            const dekForVerifier = this.crypto.generateRandomBytes(32);
+            const dekForVerifier = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
             const encryptedVerifier = await this.crypto.encryptData(verifierBase64, dekForVerifier, profile.aesGcmOptions);
 
             const encryptedKekForVerifier = await window.crypto.subtle.encrypt(
@@ -122,7 +123,7 @@ export class RegisterComponent {
 
             const { kek } = await this.keyDerivationService.deriveKeysFromPassword(login, password, dekKeyDerivationSalt);
 
-            const dek = this.crypto.generateRandomBytes(32);
+            const dek = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
             const encryptedDek = await this.crypto.encryptData(dek, kek, profile.aesGcmOptions);
 
             //#endregion
@@ -130,7 +131,7 @@ export class RegisterComponent {
             //#region генерация ключей восстановления 
 
             for (let index = 0; index < this.countRecoveryKays; index++) {
-                const rowKey = this.crypto.generateRandomBytes(32)
+                const rowKey = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
                 const encryptedDek = await this.crypto.encryptData(dek, rowKey, profile.aesGcmOptions);
                 this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
                 this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: profile.version})

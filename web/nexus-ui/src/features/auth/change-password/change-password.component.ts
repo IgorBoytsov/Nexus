@@ -7,6 +7,7 @@ import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationServi
 import { CryptoApi } from "../../../core/clients/crypto.api";
 import { ChangePasswordRequest } from "../../../contracts/requests/change-password.request";
 import { HttpErrorResponse } from "@angular/common/http";
+import { CryptoConstants } from "../../../core/constants/security.constants";
 
 @Component({
     selector: 'profile-change-password',
@@ -55,10 +56,10 @@ export class ChangePasswordComponent {
             const srpGroup = SrpGroup.Rfc5054_3072;
             const srpContext = await SrpContextFactory.create(srpGroup);
 
-            const srpAuthenticationSalt = this.cryptoService.generateRandomBytes(32);
+            const srpAuthenticationSalt = this.cryptoService.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
             const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
 
-            const dekKeyDerivationSalt = this.cryptoService.generateRandomBytes(32);
+            const dekKeyDerivationSalt = this.cryptoService.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
             const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
 
             //#region Получение RSA ключа
@@ -97,7 +98,7 @@ export class ChangePasswordComponent {
             const srpAuthHashBytes = await this.keyDerivationService.deriveAuthHashForSrp(login, newPassword, srpAuthenticationSalt, srpContext.hashAlgorithmName);
             const srpAuthHashBase64 = SecurityUtils.toBase64(srpAuthHashBytes);
 
-            const dekForVerifier = this.cryptoService.generateRandomBytes(32);
+            const dekForVerifier = this.cryptoService.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
             const verifierBase64 = await this.srpClientService.generateSrpVerifier(srpAuthHashBase64, srpContext);
             const encryptedVerifier = await this.cryptoService.encryptData(verifierBase64, dekForVerifier, profile.aesGcmOptions);
 
