@@ -5,19 +5,28 @@ using Shared.Validations.Common.Abstractions;
 namespace Nexus.Bff.Features.Users.Command.Register
 {
     public sealed record RegisterCommand(
-        string Login, string UserName, 
-        string Verifier, string ClientSalt,  string EncryptedVerifierWrapKey, 
-        int CryptoVersion,
-        int SrpVersion,
-        string Email,
-        string EncryptedDek, int KekWrapVersion, string KekKeyId,
-        Guid? IdGender,
+        // Общая информация об аккаунте
+        string Login, 
+        string UserName, 
+        string Email, 
+        Guid? IdGender, 
         Guid? IdCountry,
+        // Srp
+        string EncryptedVerifier, 
+        string SrpSalt, 
+        int SrpVersion, 
+        string EncryptedVerifierWrapKey, 
+        int KeyWrapVersion, 
+        string AsymmetricKeyId,
+        // Dek 
+        string EncryptedDek, 
+        string DekSalt, 
+        int CryptoVersion,
         IReadOnlyCollection<RecoveryKeyCommandData> RecoveryKeys) : IRequest<Result>,    
         IHasLogin,
         IHasUserName, 
-        IHasVerifier, 
-        IHasClientSalt, 
+        IHasEncryptedVerifier, 
+        IHasSrpSalt, 
         IHasEncryptedDek;
 
     public record RecoveryKeyCommandData(string EncryptedValue, int CryptoVersion);

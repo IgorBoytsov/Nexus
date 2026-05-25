@@ -10,6 +10,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
     {
         public UserId UserId { get; private set; }
         public EncryptedValue EncryptedValue { get; private set; }
+        public Salt Salt { get; private set; }
         public CryptoVersion Version { get; private set; }
         public DekType Type { get; private set; }
         public DateTimeOffset UpdateAt { get; private set; }
@@ -19,18 +20,19 @@ namespace Nexus.UserManagement.Service.Domain.Models
             
         }
 
-        private Dek(UserId userId, EncryptedValue encryptedValue, CryptoVersion version, DekType type) : base(DekId.New())
+        private Dek(UserId userId, EncryptedValue encryptedValue, Salt salt, CryptoVersion version, DekType type) : base(DekId.New())
         {
             UserId = userId;
             EncryptedValue = encryptedValue;
+            Salt = salt;
             Version = version;
             Type = type;
             UpdateAt = DateTimeOffset.UtcNow;
         }
 
-        internal static Dek Create(UserId userId, EncryptedValue encryptedValue, CryptoVersion version, DekType type)
+        internal static Dek Create(UserId userId, EncryptedValue encryptedValue, Salt salt, CryptoVersion version, DekType type)
         {
-            return new Dek(userId, encryptedValue, version, type);
+            return new Dek(userId, encryptedValue, salt, version, type);
         }
 
         internal void Rotate(EncryptedValue encryptedValue, CryptoVersion version)

@@ -31,6 +31,11 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasConversion(ev => ev.Value, db => EncryptedValue.Create(db))
                 .IsRequired();
 
+            builder.Property(d => d.Salt)
+                .HasColumnName("salt")
+                .HasConversion(s => s.Value, db => Salt.Create(db))
+                .IsRequired();
+
             builder.Property(d => d.Version)
                 .HasColumnName("crypto_version")
                 .HasConversion(cv => cv.Value, db => CryptoVersion.Create(db))

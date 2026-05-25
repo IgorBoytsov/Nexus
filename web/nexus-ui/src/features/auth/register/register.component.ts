@@ -69,8 +69,11 @@ export class RegisterComponent {
 
             const { login, username, password, email } = this.registerForm.value;
 
-            const salt = this.crypto.generateRandomBytes(16);
+            const srpAuthenticationSalt = this.crypto.generateRandomBytes(32);
+            const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
 
+            const dekKeyDerivationSalt = this.crypto.generateRandomBytes(32);
+            const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
             //#endregion
 
             //#region Получение RSA ключа
@@ -97,7 +100,7 @@ export class RegisterComponent {
 
             //#region Верификатор SRP
 
-            const srpAuthHashBytes = await this.keyDerivationService.deriveAuthHashForSrp(login, password, salt, ctx.hashAlgorithmName);
+            const srpAuthHashBytes = await this.keyDerivationService.deriveAuthHashForSrp(login, password, srpAuthenticationSalt, ctx.hashAlgorithmName);
             const srpAuthHashBase64 = SecurityUtils.toBase64(srpAuthHashBytes);
 
             const verifierBase64 = await this.srp.generateSrpVerifier(srpAuthHashBase64, ctx);
@@ -116,9 +119,8 @@ export class RegisterComponent {
             //#endregion
 
             //#region Генерация DEK
-           
-            const saltBase64 = SecurityUtils.toBase64(salt);
-            const { kek } = await this.keyDerivationService.deriveKeysFromPassword(login, password, salt);
+
+            const { kek } = await this.keyDerivationService.deriveKeysFromPassword(login, password, dekKeyDerivationSalt);
 
             const dek = this.crypto.generateRandomBytes(32);
             const encryptedDek = await this.crypto.encryptData(dek, kek, profile.aesGcmOptions);
@@ -141,9 +143,10 @@ export class RegisterComponent {
             const request: RegisterRequest = {
                 login: login,
                 userName: username,
-                verifier: encryptedVerifier,
-                clientSalt: saltBase64,
+                encryptedVerifier: encryptedVerifier,
+                srpSalt: srpAuthenticationSaltBase64,
                 encryptedDek: encryptedDek,
+                dekSalt: dekKeyDerivationSaltBase64,
                 cryptoVersion: profile.version,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedKekForVerifierBase64,

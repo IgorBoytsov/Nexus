@@ -9,8 +9,8 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
         {
             Include(LoginValidator.Create());
             Include(UserNameValidator.Create());
-            Include(VerifierValidator.Create());
-            Include(ClientSaltValidator.Create());
+            Include(EncryptedVerifierValidator.Create());
+            Include(SrpSaltValidator.Create());
             Include(EncryptedDekValidator.Create());
         }
     }

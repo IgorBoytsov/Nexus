@@ -41,13 +41,20 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
             var command = new RegisterCommand(
-                request.Login, request.UserName, 
-                request.Verifier, request.ClientSalt, request.EncryptedVerifierWrapKey, 
-                request.CryptoVersion, request.SrpVersion, 
-                request.EncryptedDek, request.KeyWrapVersion, request.AsymmetricKeyId, 
+                request.Login,
+                request.UserName, 
                 request.Email, 
                 string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender), 
                 string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry),
+                request.EncryptedVerifier, 
+                request.SrpSalt,
+                request.SrpVersion, 
+                request.EncryptedVerifierWrapKey, 
+                request.KeyWrapVersion, 
+                request.AsymmetricKeyId, 
+                request.EncryptedDek, 
+                request.DekSalt, 
+                request.CryptoVersion, 
                 [.. request.RecoveryKeys.Select(rk => new Application.Features.Users.Commands.Register.RecoveryKeyCommandData(rk.EncryptedValue, rk.CryptoVersion))]);
 
             var result = await _mediator.Send(command);

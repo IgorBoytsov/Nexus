@@ -1,11 +1,24 @@
 namespace Shared.Contracts
 {
     public record RegisterUserRequest(
-        string Login, string UserName, 
-        string Verifier, int SrpVersion, string ClientSalt, 
-        string EncryptedVerifierWrapKey, int CryptoVersion,
-        string EncryptedDek, int KeyWrapVersion, string AsymmetricKeyId, 
-        string Email, string? IdGender, string? IdCountry,
+        // Общая информация об аккаунте
+        string Login, 
+        string UserName, 
+        string Email, 
+        string? IdGender, 
+        string? IdCountry,
+        // Srp
+        string EncryptedVerifier, 
+        string SrpSalt, 
+        int SrpVersion, 
+        string EncryptedVerifierWrapKey, 
+        int KeyWrapVersion, 
+        string AsymmetricKeyId,
+        // Dek 
+        string EncryptedDek, 
+        string DekSalt, 
+        int CryptoVersion,
+        // RecoveryKeys
         IReadOnlyCollection<RecoveryKeyData> RecoveryKeys);
 
     public record RecoveryKeyData(string EncryptedValue, int CryptoVersion);
