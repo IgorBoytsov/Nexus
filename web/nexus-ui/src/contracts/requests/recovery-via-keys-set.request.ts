@@ -1,13 +1,17 @@
 export interface RecoveryViaKeysSetRequest {
-    login: string,
-    verifier: string,
-    clientSalt: string,
-    encryptedVerifierWrapKey: string ,
-    cryptoVersion: number,
-    srpVersion: number,
-    encryptedDek: string, 
-    keyWrapVersion: number,
-    asymmetricKeyId: string,
+    login: string;
+    // Srp
+    encryptedVerifier: string;
+    srpSalt: string; 
+    srpVersion: number;
+    encryptedVerifierWrapKey: string; 
+    keyWrapVersion: number; 
+    asymmetricKeyId: string;
+    // Dek
+    encryptedDek: string;
+    dekSalt: string;
+    cryptoVersion: number; 
+    // Recovery Keys
     recoveryKeys: Array<RecoveryKeyRequestData>;
 }
 

@@ -61,8 +61,12 @@ export class StepSetPasswordComponent {
                 const srpGroup = SrpGroup.Rfc5054_3072;
                 const ctx = await SrpContextFactory.create(srpGroup);
                 const profile = CryptoProfileRegistry.latest;
-                const salt = this.crypto.generateRandomBytes(16);
-                const saltBase64 = SecurityUtils.toBase64(salt);
+
+                const srpAuthenticationSalt = this.crypto.generateRandomBytes(32);
+                const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
+
+                const dekKeyDerivationSalt = this.crypto.generateRandomBytes(32);
+                const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
 
                 //#endregion
                 
@@ -90,7 +94,7 @@ export class StepSetPasswordComponent {
 
                 //#region Верификатор SRP
 
-                const srpAuthHashBytes = await this.keyDerivation.deriveAuthHashForSrp(this.state.login!, newPassword, salt, ctx.hashAlgorithmName);
+                const srpAuthHashBytes = await this.keyDerivation.deriveAuthHashForSrp(this.state.login!, newPassword, srpAuthenticationSalt, ctx.hashAlgorithmName);
                 const srpAuthHashBase64 = SecurityUtils.toBase64(srpAuthHashBytes);
 
                 const verifierBase64 = await this.srp.generateSrpVerifier(srpAuthHashBase64, ctx);
@@ -110,7 +114,7 @@ export class StepSetPasswordComponent {
 
                 //#region Перешифрование DEK
                 
-                const { kek } = await this.keyDerivation.deriveKeysFromPassword(this.state.login!, newPassword, salt);
+                const { kek } = await this.keyDerivation.deriveKeysFromPassword(this.state.login!, newPassword, dekKeyDerivationSalt);
                 const encryptedDek = await this.crypto.encryptData(this.state.dek!, kek, profile.aesGcmOptions);
 
                 //#endregion
@@ -128,14 +132,15 @@ export class StepSetPasswordComponent {
 
                 const request: RecoveryViaKeysSetRequest = {
                     login: this.state.login!,
-                    verifier: encryptedVerifier,
-                    clientSalt: saltBase64,
-                    encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
-                    cryptoVersion: profile.version,
+                    encryptedVerifier: encryptedVerifier,
+                    srpSalt: srpAuthenticationSaltBase64,
                     srpVersion: srpGroup,
-                    encryptedDek: encryptedDek,
+                    encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
                     keyWrapVersion: profile.version,
                     asymmetricKeyId: 'env_v1',
+                    encryptedDek: encryptedDek,
+                    dekSalt: dekKeyDerivationSaltBase64,
+                    cryptoVersion: profile.version,
                     recoveryKeys: this.recoveryAssets.map(a => ({ encryptedValue: a.encryptedDek, cryptoVersion: a.version }))
                 }
 

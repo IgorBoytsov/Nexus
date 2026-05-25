@@ -12,15 +12,16 @@ namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeysSet
         public async Task<Result> Handle(RecoveryViaKeysSetCommand request, CancellationToken cancellationToken)
             => await _userManagementService.RecoveryViaKeysSet(
                 new RecoveryViaKeysSetRequest(
-                    request.Login, 
-                    request.Verifier, 
-                    request.ClientSalt, 
-                    request.EncryptedVerifierWrapKey, 
-                    request.CryptoVersion, 
+                    request.Login,
+                    request.EncryptedVerifier, 
+                    request.SrpSalt, 
                     request.SrpVersion, 
-                    request.EncryptedDek, 
+                    request.EncryptedVerifierWrapKey, 
                     request.KeyWrapVersion, 
-                    request.AsymmetricKeyId,
+                    request.AsymmetricKeyId, 
+                    request.EncryptedDek, 
+                    request.DekSalt,
+                    request.CryptoVersion,
                     [.. request.RecoveryKeys.Select(x => new RecoveryKeyRequestData(x.EncryptedValue, x.CryptoVersion))]));
     }
 }

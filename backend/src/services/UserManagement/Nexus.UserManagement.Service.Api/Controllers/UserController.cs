@@ -195,14 +195,15 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         {
             var command = new RecoveryViaKeysSetCommand(
                 request.Login, 
-                request.Verifier, 
-                request.ClientSalt, 
-                request.EncryptedVerifierWrapKey, 
-                request.CryptoVersion, 
+                request.EncryptedVerifier, 
+                request.SrpSalt, 
                 request.SrpVersion, 
-                request.EncryptedDek, 
+                request.EncryptedVerifierWrapKey, 
                 request.KeyWrapVersion, 
                 request.AsymmetricKeyId, 
+                request.EncryptedDek, 
+                request.DekSalt,
+                request.CryptoVersion, 
                 [.. request.RecoveryKeys.Select(x => new Application.Features.Users.Commands.RecoveryViaKeysSet.RecoveryKeyCommandData(x.EncryptedValue, x.CryptoVersion))]);
         
             var result = await _mediator.Send(command);

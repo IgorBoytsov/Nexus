@@ -6,18 +6,22 @@ namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeysSet
 {
     public sealed record RecoveryViaKeysSetCommand(
         string Login,
-        string Verifier,
-        string ClientSalt,
-        string EncryptedVerifierWrapKey,
-        int CryptoVersion,
+        // Srp
+        string EncryptedVerifier,
+        string SrpSalt,
         int SrpVersion,
-        string EncryptedDek, 
+        string EncryptedVerifierWrapKey,
         int KeyWrapVersion,
         string AsymmetricKeyId,
+        // Dek
+        string EncryptedDek,
+        string DekSalt, 
+        int CryptoVersion,
+        // Recovery Keys
         List<RecoveryKeyCommandData> RecoveryKeys) : IRequest<Result>,
         IHasLogin,
-        IHasVerifier, 
-        IHasClientSalt, 
+        IHasEncryptedVerifier, 
+        IHasSrpSalt, 
         IHasEncryptedDek;
 
         public record RecoveryKeyCommandData(string EncryptedValue, int CryptoVersion);
