@@ -1,17 +1,16 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Contracts;
 using Shared.Web.Extensions;
 
-namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeysInit
+namespace Nexus.Bff.Features.Auth.Query.RecoveryViaKeysInit
 {
     public static class RecoveryViaKeysInitEndpoint
     {
         public static void MapRecoveryViaKeysInit(this IEndpointRouteBuilder app)
         {
-            app.MapPost("init-recovery-keys", async ( [FromBody] RecoveryViaKeysGetPayloadRequest request, [FromServices] IMediator mediator) =>
+            app.MapGet("init-recovery-keys", async ([FromQuery] string login, [FromServices] IMediator mediator) =>
             {
-                var command = new RecoveryViaKeysInitCommand(request.Login);
+                var command = new RecoveryViaKeysInitQuery(login);
 
                 var result = await mediator.Send(command);
 

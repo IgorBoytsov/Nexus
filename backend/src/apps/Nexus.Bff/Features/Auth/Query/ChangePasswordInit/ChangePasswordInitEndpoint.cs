@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Nexus.Bff.Services;
 using Shared.Web.Extensions;
 
-namespace Nexus.Bff.Features.Auth.Command.ChangePasswordInit
+namespace Nexus.Bff.Features.Auth.Query.ChangePasswordInit
 {
     public static class ChangePasswordInitEndpoint
     {
         public static void MapChangePassword(this IEndpointRouteBuilder app)
         {
-            app.MapPost("change-password-init", async (
+            app.MapGet("change-password-init", async (
                 HttpContext httpContext, 
                 [FromServices] IMediator mediator,
                 [FromServices] JwtReadService jwtReadService) =>
@@ -18,7 +18,7 @@ namespace Nexus.Bff.Features.Auth.Command.ChangePasswordInit
                 var token = await httpContext.GetTokenAsync("access_token");
                 var tokenData = jwtReadService.ExtractData(token!);
 
-                var command = new ChangePasswordInitCommand(Guid.Parse(tokenData.UserId));
+                var command = new ChangePasswordInitQuery(Guid.Parse(tokenData.UserId));
 
                 var result = await mediator.Send(command);
 

@@ -1,9 +1,9 @@
 using FluentValidation;
 using Shared.Validations.Common.Validators;
 
-namespace Nexus.Bff.Features.Users.Command.ExistUserByLogin
+namespace Nexus.Bff.Features.Users.Query.ExistUserByLogin
 {
-    public sealed class ExistUserByLoginCommandValidator : AbstractValidator<ExistUserByLoginCommand>
+    public sealed class ExistUserByLoginCommandValidator : AbstractValidator<ExistUserByLoginQuery>
     {
         public ExistUserByLoginCommandValidator()
         {

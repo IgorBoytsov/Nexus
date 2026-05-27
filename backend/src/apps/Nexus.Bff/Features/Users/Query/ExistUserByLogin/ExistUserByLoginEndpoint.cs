@@ -1,17 +1,16 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Contracts;
 using Shared.Web.Extensions;
 
-namespace Nexus.Bff.Features.Users.Command.ExistUserByLogin
+namespace Nexus.Bff.Features.Users.Query.ExistUserByLogin
 {
     public static class ExistUserByLoginEndpoint
     {
         public static void MapExistUserByLogin(IEndpointRouteBuilder app)
         {
-            app.MapPost("exist-user-by-login", async ([FromBody] ExistUserBuLoginRequest request, [FromServices] IMediator mediator, CancellationToken ct) =>
+            app.MapGet("exist-user-by-login", async ([FromQuery] string login, [FromServices] IMediator mediator, CancellationToken ct) =>
             {
-                var command = new ExistUserByLoginCommand(request.Login);
+                var command = new ExistUserByLoginQuery(login);
 
                 var result = await mediator.Send(command, ct);
 

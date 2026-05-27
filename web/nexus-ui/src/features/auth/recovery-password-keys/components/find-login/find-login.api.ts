@@ -12,7 +12,7 @@ export class StepLoginApi{
     private http = inject(HttpClient);
 
     existLogin(request: ExistUserBuLoginRequest) : Observable<Result<Unit>> {
-        return this.http.post("/exist-user-by-login/", request)
+        return this.http.get("/exist-user-by-login/", { params: { login: request.login } })
         .pipe(
             map(() => Result.success()),
             catchError((error: HttpErrorResponse) => of(ResultHttp.failure<Unit>(error)))

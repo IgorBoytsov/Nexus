@@ -1,5 +1,7 @@
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfileInfo;
 using Rebout.Nexus.Contracts.UserManagement.v1;
+using Shared.Contracts;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.UserManagement.Service.Application.Interfaces.Repositories
 {
@@ -9,5 +11,8 @@ namespace Nexus.UserManagement.Service.Application.Interfaces.Repositories
         Task<Shared.Contracts.UserAuthDataResponse> GetUserByLoginAuth(string login);
         Task<ProfileInfoResponse> GetProfileInfo(Guid userId);
         Task<PublicEncryptionInfoResponse> GetPublicEncryptionInfoResponse(string login);
+        Task<ChangePasswordInitResponse> ChangePasswordInit(Guid userId);
+        Task<RecoveryViaKeysPayloadResponse> RecoveryViaKeysInit(string login);
+        Task<bool> ExistUserByLoginAsync(string login);
     }
 }

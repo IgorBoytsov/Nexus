@@ -138,7 +138,7 @@ namespace Nexus.Bff.Infrastructure.Clients
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"api/users/exist", request);
+                var response = await _httpClient.GetAsync($"api/users/exist?login={request.Login}");
                                                                 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -158,7 +158,7 @@ namespace Nexus.Bff.Infrastructure.Clients
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"api/users/init-recovery-keys", request);
+                var response = await _httpClient.GetAsync($"api/users/init-recovery-keys?login={request.Login}");
                                                                 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -198,7 +198,7 @@ namespace Nexus.Bff.Infrastructure.Clients
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"api/users/change-password-init", request);
+                var response = await _httpClient.GetAsync($"api/users/change-password-init?userId={request.UserId}");
                                                                 
                 if (!response.IsSuccessStatusCode)
                 {

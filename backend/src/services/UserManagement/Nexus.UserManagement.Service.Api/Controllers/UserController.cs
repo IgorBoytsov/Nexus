@@ -12,12 +12,12 @@ using Crossdyne.Toolkit.Results;
 using Shared.Contracts;
 using System.Security.Claims;
 using Shared.Web.Extensions;
-using Nexus.UserManagement.Service.Application.Features.Users.Commands.ExistByLogin;
-using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeysInit;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeysSet;
 using Shared.Contracts.UserManagement.Requests;
-using Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangePasswordInit;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangePassword;
+using Nexus.UserManagement.Service.Application.Features.Users.Queries.ChangePasswordInit;
+using Nexus.UserManagement.Service.Application.Features.Users.Queries.RecoveryViaKeysInit;
+using Nexus.UserManagement.Service.Application.Features.Users.Queries.ExistByLogin;
 
 namespace Nexus.UserManagement.Service.Api.Controllers
 {
@@ -162,10 +162,10 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             return Ok();
         }
    
-        [HttpPost("exist")]
-        public async Task<IActionResult> ExistUserByLogin([FromBody] ExistUserBuLoginRequest request)
+        [HttpGet("exist")]
+        public async Task<IActionResult> ExistUserByLogin([FromQuery] ExistUserBuLoginRequest request)
         {
-            var command = new ExistUserByLoginCommand(request.Login);
+            var command = new ExistUserByLoginQuery(request.Login);
 
             var result = await _mediator.Send(command);
 
@@ -175,10 +175,10 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("init-recovery-keys")]
-        public async Task<IActionResult> RecoveryViaKeysInit([FromBody] RecoveryViaKeysGetPayloadRequest request)
+        [HttpGet("init-recovery-keys")]
+        public async Task<IActionResult> RecoveryViaKeysInit([FromQuery] RecoveryViaKeysGetPayloadRequest request)
         {
-            var command = new RecoveryViaKeysInitCommand(request.Login);
+            var command = new RecoveryViaKeysInitQuery(request.Login);
 
             var result = await _mediator.Send(command);
 
@@ -214,10 +214,10 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("change-password-init")]
-        public async Task<IActionResult> ChangePasswordInit([FromBody] ChangePasswordInitRequest request)
+        [HttpGet("change-password-init")]
+        public async Task<IActionResult> ChangePasswordInit([FromQuery] ChangePasswordInitRequest request)
         {
-            var command = new ChangePasswordInitCommand(Guid.Parse(request.UserId));
+            var command = new ChangePasswordInitQuery(Guid.Parse(request.UserId));
 
             var result = await _mediator.Send(command);
             
