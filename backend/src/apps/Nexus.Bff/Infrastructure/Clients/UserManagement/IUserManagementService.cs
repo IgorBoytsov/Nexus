@@ -5,20 +5,20 @@ using Shared.Contracts;
 using Shared.Contracts.UserManagement.Requests;
 using Shared.Contracts.UserManagement.Responses;
 
-namespace Nexus.Bff.Infrastructure.Clients
+namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {
     public interface IUserManagementService
     {
         Task<Result> Register(Shared.Contracts.RegisterUserRequest request);
         Task<Result<PublicEncryptionInfoResponse?>> GetPublicEncryptionInfo(string login);
         Task<Result<ProfileInfoResponse>> GetProfileInfo(string userId);
-        Task<Result> SendConfirmCodeEmail(string login);
-        Task<Result> ConfirmCodeEmail(string login, string code);
-        Task<Result> RecoveryPassword(RecoveryPasswordRequest request);
+        Task<Result> InitPasswordReset(string login);
+        Task<Result> ConfirmPasswordReset(string login, ConfirmCodeRequest request);
+        Task<Result> CompletePasswordReset(RecoveryPasswordRequest request);
         Task<Result> ExistUserByLogin(ExistUserBuLoginRequest request);
-        Task<Result<RecoveryViaKeysPayloadResponse>> RecoveryViaKeys(RecoveryViaKeysGetPayloadRequest request);
-        Task<Result> RecoveryViaKeysSet(RecoveryViaKeysSetRequest request);
-        Task<Result<ChangePasswordInitResponse>> ChangePasswordInit(ChangePasswordInitRequest request);
+        Task<Result<RecoveryViaKeysPayloadResponse>> InitRecoveryKeys(RecoveryViaKeysGetPayloadRequest request);
+        Task<Result> SetRecoveryKeys(RecoveryViaKeysSetRequest request);
+        Task<Result<ChangePasswordInitResponse>> InitPasswordChange(ChangePasswordInitRequest request);
         Task<Result> ChangePassword(ChangePasswordRequest request);
     }
 }

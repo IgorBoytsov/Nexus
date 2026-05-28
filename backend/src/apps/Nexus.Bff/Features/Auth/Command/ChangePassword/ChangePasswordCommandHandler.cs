@@ -1,6 +1,6 @@
 using Crossdyne.Toolkit.Results;
 using MediatR;
-using Nexus.Bff.Infrastructure.Clients;
+using Nexus.Bff.Infrastructure.Clients.UserManagement;
 using Shared.Contracts.UserManagement.Requests;
 
 namespace Nexus.Bff.Features.Auth.Command.ChangePassword

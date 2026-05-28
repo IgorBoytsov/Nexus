@@ -1,5 +1,6 @@
 using System.Reflection;
 using Nexus.Bff.Infrastructure.Clients;
+using Nexus.Bff.Infrastructure.Clients.UserManagement;
 using Nexus.Bff.Services;
 
 namespace Nexus.Bff.Extensions
