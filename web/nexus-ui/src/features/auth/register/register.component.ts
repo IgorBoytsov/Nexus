@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
 import { RegisterRequest } from '../../../contracts/requests/register-user.request'
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityConstants, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { RecoveryKeysListComponent } from "../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
@@ -63,17 +63,18 @@ export class RegisterComponent {
             
             //#region Конфигурация
 
-            const srpGroup = SrpGroup.Rfc5054_3072;
+            const srpGroup = CryptoConstants.ACTUAL_SRP_GROUT; // Rfc5054_3072
             const ctx = await SrpContextFactory.create(srpGroup);
             
-            const profile = CryptoProfileRegistry.latest;
+            const cryptoVersion = CryptoVersion.V1;
+            const profile = CryptoProfileRegistry.getProfile(cryptoVersion);
 
             const { login, username, password, email } = this.registerForm.value;
 
-            const srpAuthenticationSalt = this.crypto.generateRandomBytes(32);
+            const srpAuthenticationSalt = this.crypto.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
             const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
 
-            const dekKeyDerivationSalt = this.crypto.generateRandomBytes(32);
+            const dekKeyDerivationSalt = this.crypto.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
             const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
             //#endregion
 
@@ -134,7 +135,7 @@ export class RegisterComponent {
                 const rowKey = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
                 const encryptedDek = await this.crypto.encryptData(dek, rowKey, profile.aesGcmOptions);
                 this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
-                this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: profile.version})
+                this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: cryptoVersion})
             }
 
             //#endregion
@@ -148,11 +149,11 @@ export class RegisterComponent {
                 srpSalt: srpAuthenticationSaltBase64,
                 encryptedDek: encryptedDek,
                 dekSalt: dekKeyDerivationSaltBase64,
-                cryptoVersion: profile.version,
+                cryptoVersion: cryptoVersion,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
                 asymmetricKeyId: "env_v1",
-                keyWrapVersion: profile.version, 
+                keyWrapVersion: cryptoVersion, 
                 email: email,
                 idGender: null, 
                 idCountry: null,

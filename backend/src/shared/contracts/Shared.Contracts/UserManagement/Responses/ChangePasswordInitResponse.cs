@@ -5,5 +5,6 @@ namespace Shared.Contracts.UserManagement.Responses
         string EncryptedDek, 
         string DekSalt, 
         int CryptoVersionDek, 
-        string AsymmetricKeyId);
+        string AsymmetricKeyId,
+        int SrvVersion);
 }

@@ -59,9 +59,12 @@ export class StepSetPasswordComponent {
                 //#region Конфигурация
 
                 const { newPassword } = this.stepSetPasswordForm.value;
-                const srpGroup = SrpGroup.Rfc5054_3072;
+
+                const srpGroup = CryptoConstants.ACTUAL_SRP_GROUT; // Rfc5054_3072
                 const ctx = await SrpContextFactory.create(srpGroup);
-                const profile = CryptoProfileRegistry.latest;
+
+                const cryptoVersion = CryptoVersion.V1;
+                const profile = CryptoProfileRegistry.getProfile(cryptoVersion);
 
                 const srpAuthenticationSalt = this.crypto.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
                 const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
@@ -127,7 +130,7 @@ export class StepSetPasswordComponent {
                     const rowKey = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
                     const encryptedDekForRecovery = await this.crypto.encryptData(rawDekBytes, rowKey, profile.aesGcmOptions);
                     this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
-                    this.recoveryAssets.push({ encryptedDek: encryptedDekForRecovery, rowKey: rowKey, version: profile.version })
+                    this.recoveryAssets.push({ encryptedDek: encryptedDekForRecovery, rowKey: rowKey, version: cryptoVersion })
                 }
 
                 //#endregion
@@ -138,11 +141,11 @@ export class StepSetPasswordComponent {
                     srpSalt: srpAuthenticationSaltBase64,
                     srpVersion: srpGroup,
                     encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
-                    keyWrapVersion: profile.version,
+                    keyWrapVersion: cryptoVersion,
                     asymmetricKeyId: 'env_v1',
                     encryptedDek: encryptedDek,
                     dekSalt: dekKeyDerivationSaltBase64,
-                    cryptoVersion: profile.version,
+                    cryptoVersion: cryptoVersion,
                     recoveryKeys: this.recoveryAssets.map(a => ({ encryptedValue: a.encryptedDek, cryptoVersion: a.version }))
                 }
 

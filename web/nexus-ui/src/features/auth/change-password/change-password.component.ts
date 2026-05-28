@@ -49,11 +49,13 @@ export class ChangePasswordComponent {
                 return;
             }
 
-            const { login, encryptedDek, cryptoVersionDek, dekSalt } = initResult.value;
+            //#region Конфигурация
+
+            const { login, encryptedDek, cryptoVersionDek, dekSalt, srvVersion } = initResult.value;
 
             const profile = CryptoProfileRegistry.getProfile(cryptoVersionDek as CryptoVersion);
 
-            const srpGroup = SrpGroup.Rfc5054_3072;
+            const srpGroup = CryptoConstants.ACTUAL_SRP_GROUT;
             const srpContext = await SrpContextFactory.create(srpGroup);
 
             const srpAuthenticationSalt = this.cryptoService.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
@@ -61,6 +63,8 @@ export class ChangePasswordComponent {
 
             const dekKeyDerivationSalt = this.cryptoService.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
             const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
+
+            //#endregion
 
             //#region Получение RSA ключа
             

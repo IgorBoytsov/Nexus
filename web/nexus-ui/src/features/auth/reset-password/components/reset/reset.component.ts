@@ -55,9 +55,11 @@ export class StepResetComponent{
 
             //#region Конфигурация
 
-            const srpGroup = SrpGroup.Rfc5054_3072;
+            const srpGroup = CryptoConstants.ACTUAL_SRP_GROUT; // Rfc5054_3072;
             const ctx = await SrpContextFactory.create(srpGroup);
-            const profile = CryptoProfileRegistry.latest;
+
+            const cryptoVersion = CryptoVersion.V1;
+            const profile = CryptoProfileRegistry.getProfile(cryptoVersion);
 
             const { newPassword } = this.resetForm.value;
             
@@ -124,7 +126,7 @@ export class StepResetComponent{
                 const rowKey = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
                 const encryptedDek = await this.crypto.encryptData(dek, rowKey, profile.aesGcmOptions);
                 this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
-                this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: profile.version})
+                this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: cryptoVersion})
             }
 
             //#endregion
@@ -135,11 +137,11 @@ export class StepResetComponent{
                 srpSalt: srpAuthenticationSaltBase64,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
-                keyWrapVersion: profile.version, 
+                keyWrapVersion: cryptoVersion, 
                 asymmetricKeyId: "env_v1",
                 encryptedDek: encryptedDek,
                 dekSalt: dekKeyDerivationSaltBase64,
-                cryptoVersion: profile.version,
+                cryptoVersion: cryptoVersion,
                 recoveryKeys: this.recoveryAssets.map(a => ({encryptedValue: a.encryptedDek, cryptoVersion: a.version}))
             }
 
