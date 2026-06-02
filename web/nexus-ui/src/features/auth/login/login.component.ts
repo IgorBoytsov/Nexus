@@ -6,6 +6,7 @@ import { AuthApi } from './auth.api';
 import { firstValueFrom, Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Result } from '@crossdyne/toolkit';
+import { CryptoConstants } from '../../../core/constants/security.constants';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent {
   private readonly router = inject(Router); 
   private readonly authApi = inject(AuthApi);
   private readonly destroyRef = inject(DestroyRef);
+
   private readonly srpService = new SrpClientService();
 
   loginForm: FormGroup;
@@ -42,7 +44,7 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const ctx = await SrpContextFactory.create(SrpGroup.Rfc5054_3072);
+    const ctx = await SrpContextFactory.create(CryptoConstants.ACTUAL_SRP_GROUT); // Rfc5054_3072
 
     try {
       const { login: login, password } = this.loginForm.value;

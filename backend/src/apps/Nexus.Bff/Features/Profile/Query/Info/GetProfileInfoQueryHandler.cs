@@ -1,6 +1,6 @@
 using MediatR;
-using Nexus.Bff.Infrastructure.Clients;
 using Crossdyne.Toolkit.Results;
+using Nexus.Bff.Infrastructure.Clients.UserManagement;
 
 namespace Nexus.Bff.Features.Profile.Query.Info
 {

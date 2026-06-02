@@ -1,0 +1,1 @@
+SELECT EXISTS(SELECT 1 FROM users u WHERE u.login = @login)

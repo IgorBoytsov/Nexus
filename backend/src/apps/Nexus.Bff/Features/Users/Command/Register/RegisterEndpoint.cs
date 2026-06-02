@@ -12,17 +12,20 @@ namespace Nexus.Bff.Features.Users.Command.Register
             app.MapPost("register", async ([FromBody] RegisterUserRequest request, [FromServices] IMediator mediator, CancellationToken ct) =>
             {
                 var command = new RegisterCommand(
-                    request.Login, 
+                    request.Login,
                     request.UserName, 
-                    request.Verifier, 
-                    request.ClientSalt, 
-                    request.EncryptedVerifierWrapKey, 
-                    request.CryptoVersion,
-                    request.SrpVersion,
                     request.Email,
-                    request.EncryptedVerifierWrapKey, request.KeyWrapVersion, request.AsymmetricKeyId,
                     string.IsNullOrWhiteSpace(request.IdGender) ? null : Guid.Parse(request.IdGender),
                     string.IsNullOrWhiteSpace(request.IdCountry) ? null : Guid.Parse(request.IdCountry),
+                    request.EncryptedVerifier, 
+                    request.SrpSalt,
+                    request.SrpVersion, 
+                    request.EncryptedVerifierWrapKey, 
+                    request.KeyWrapVersion,
+                    request.AsymmetricKeyId,
+                    request.EncryptedDek,
+                    request.DekSalt,
+                    request.CryptoVersion,
                     [.. request.RecoveryKeys.Select(rk => new RecoveryKeyCommandData(rk.EncryptedValue, rk.CryptoVersion))]);
 
                 var result = await mediator.Send(command, ct);

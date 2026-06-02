@@ -1,6 +1,6 @@
 using MediatR;
-using Nexus.Bff.Infrastructure.Clients;
 using Crossdyne.Toolkit.Results;
+using Nexus.Bff.Infrastructure.Clients.UserManagement;
 
 namespace Nexus.Bff.Features.Auth.Command.ResetPasswordSendCode
 {
@@ -9,6 +9,6 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPasswordSendCode
         private readonly IUserManagementService _userManagement = userManagement;
 
         public async Task<Result> Handle(ResetPasswordSendCodeCommand request, CancellationToken cancellationToken)
-            => await _userManagement.SendConfirmCodeEmail(request.Login);
+            => await _userManagement.InitPasswordReset(request.Login);
     }
 }

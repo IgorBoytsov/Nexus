@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Contracts.UserManagement.Requests;
 using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Auth.Command.ResetPasswordConfirmCode
@@ -8,12 +9,12 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPasswordConfirmCode
     {
         public static void MapConfirmCodeEmail(this IEndpointRouteBuilder app)
         {
-            app.MapPost("recovery-password/confirm-code/{login}/{code}", async (
+            app.MapPost("recovery-password/confirm-code/{login}", async (
                 [FromRoute] string login, 
-                [FromRoute] string code,
+                [FromBody] ConfirmCodeRequest request,
                 [FromServices] IMediator mediator) =>
             {
-               var result = await mediator.Send(new ResetPasswordConfirmCodeCommand(login, code));
+               var result = await mediator.Send(new ResetPasswordConfirmCodeCommand(login, request.Code));
                
                 if (result.IsFailure)
                     return result.Errors.MapToMinimalApiResult();

@@ -2,12 +2,15 @@ namespace Shared.Contracts.UserManagement.Requests
 {
     public sealed record ChangePasswordRequest(
         string? UserId,
-        string Verifier, 
-        string ClientSalt, 
-        string EncryptedDek,
-        int CryptoVersion, 
+        // Srp
+        string EncryptedVerifier, 
+        string SrpSalt, 
         int SrpVersion, 
         string EncryptedVerifierWrapKey, 
         int KeyWrapVersion, 
-        string AsymmetricKeyId);
+        string AsymmetricKeyId,
+        // Dek
+        string EncryptedDek,
+        string DekSalt,
+        int CryptoVersion);
 }

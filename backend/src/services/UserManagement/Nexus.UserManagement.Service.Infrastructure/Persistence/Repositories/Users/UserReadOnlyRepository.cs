@@ -4,6 +4,8 @@ using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfile
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
 using Nexus.UserManagement.Service.Infrastructure.Helpers;
 using Rebout.Nexus.Contracts.UserManagement.v1;
+using Shared.Contracts;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Users
 {
@@ -39,6 +41,30 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.U
             var info = await connection.QueryFirstOrDefaultAsync<PublicEncryptionInfoResponse>(sql, new { login });
 
             return info!;
+        }
+
+        public async Task<ChangePasswordInitResponse> ChangePasswordInit(Guid userId)
+        {
+            var sql = SqlLoader.Load("Users", "ChangePasswordInit");
+            var init = await connection.QueryFirstOrDefaultAsync<ChangePasswordInitResponse>(sql, new { userId });
+
+            return init!;
+        }
+
+        public async Task<RecoveryViaKeysPayloadResponse> RecoveryViaKeysInit(string login)
+        {
+            var sql = SqlLoader.Load("Users", "RecoveryViaKeysInit");
+            var init = await connection.QueryFirstOrDefaultAsync<RecoveryViaKeysPayloadResponse>(sql, new { login });
+
+            return init!;
+        }
+
+        public async Task<bool> ExistUserByLoginAsync(string login)
+        {
+            var sql = SqlLoader.Load("Users", "ExistUserByLogin");
+            var isExist = await connection.ExecuteScalarAsync<bool>(sql, new { login });
+
+            return isExist;
         }
     }
 }

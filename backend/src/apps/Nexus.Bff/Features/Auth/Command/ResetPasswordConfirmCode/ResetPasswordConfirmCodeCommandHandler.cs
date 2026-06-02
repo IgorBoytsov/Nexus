@@ -1,6 +1,7 @@
 using MediatR;
-using Nexus.Bff.Infrastructure.Clients;
 using Crossdyne.Toolkit.Results;
+using Shared.Contracts.UserManagement.Requests;
+using Nexus.Bff.Infrastructure.Clients.UserManagement;
 
 namespace Nexus.Bff.Features.Auth.Command.ResetPasswordConfirmCode
 {
@@ -9,6 +10,6 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPasswordConfirmCode
         private IUserManagementService _userManagementService = userManagementService;
 
         public async Task<Result> Handle(ResetPasswordConfirmCodeCommand request, CancellationToken cancellationToken)
-            => await _userManagementService.ConfirmCodeEmail(request.Login, request.Code);
+            => await _userManagementService.ConfirmPasswordReset(request.Login, new ConfirmCodeRequest(request.Code));
     }
 }

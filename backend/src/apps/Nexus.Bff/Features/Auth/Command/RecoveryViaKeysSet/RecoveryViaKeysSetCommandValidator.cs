@@ -8,8 +8,8 @@ namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeysSet
         public RecoveryViaKeysSetCommandValidator()
         {
             Include(LoginValidator.Create());
-            Include(VerifierValidator.Create());
-            Include(ClientSaltValidator.Create());
+            Include(EncryptedVerifierValidator.Create());
+            Include(SrpSaltValidator.Create());
             Include(EncryptedDekValidator.Create());
         }
     }

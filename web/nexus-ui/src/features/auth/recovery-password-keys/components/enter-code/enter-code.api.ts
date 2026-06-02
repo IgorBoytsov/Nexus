@@ -13,7 +13,7 @@ export class StepEnterCodeApi {
     private http = inject(HttpClient);
 
     recoveryViaKeys(request: RecoveryViaKeysGetPayloadRequest): Observable<Result<RecoveryViaKeysPayloadResponse>> {
-        return this.http.post<RecoveryViaKeysPayloadResponse>('/init-recovery-keys', request)
+        return this.http.get<RecoveryViaKeysPayloadResponse>('/init-recovery-keys', { params: { login: request.login} })
         .pipe(
             map(response => Result.success<RecoveryViaKeysPayloadResponse>(response)),
             catchError((error: HttpErrorResponse) => of(ResultHttp.failure<RecoveryViaKeysPayloadResponse>(error)))

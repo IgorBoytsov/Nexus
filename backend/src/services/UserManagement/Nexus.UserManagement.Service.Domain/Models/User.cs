@@ -139,18 +139,18 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         #region Deks
        
-        public void AddMainDek(EncryptedValue encryptedValue, CryptoVersion cryptoVersion)
+        public void AddMainDek(EncryptedValue encryptedValue, Salt salt, CryptoVersion cryptoVersion)
         {
             if (_deks.Any(x => x.Type == DekType.Main))
                 throw new DekException(new Error(ErrorCode.Exist, "Основной ключ шифрования уже настроен."));
 
-            _deks.Add(Dek.Create(this.Id, encryptedValue, cryptoVersion, DekType.Main));
+            _deks.Add(Dek.Create(this.Id, encryptedValue, salt, cryptoVersion, DekType.Main));
         }
 
-        public void RotateMainDek(EncryptedValue encryptedValue, CryptoVersion cryptoVersion)
+        public void RotateMainDek(EncryptedValue encryptedValue, Salt salt, CryptoVersion cryptoVersion)
         {
             var dek = Deks.FirstOrDefault(x => x.Type == DekType.Main);
-            dek!.Rotate(encryptedValue, cryptoVersion);
+            dek!.Rotate(encryptedValue, salt, cryptoVersion);
         }
 
         #endregion

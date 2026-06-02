@@ -1,0 +1,16 @@
+using FluentValidation;
+using Shared.Validations.Common.Abstractions;
+
+namespace Shared.Validations.Common.Validators
+{
+    public sealed class EncryptedVerifierValidator : AbstractValidator<IHasEncryptedVerifier>
+    {
+        public static EncryptedVerifierValidator Create() => new();
+        
+        public EncryptedVerifierValidator()
+        {
+            RuleFor(x => x.EncryptedVerifier)
+            .NotEmpty().WithMessage("Верификатор не может быть пустым.");
+        }
+    }
+}

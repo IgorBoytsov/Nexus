@@ -1,7 +1,8 @@
 export interface ChangePasswordInitResponse {
     login: string;
     encryptedDek: string;
+    dekSalt: string;
     cryptoVersionDek: number;
-    clientSalt: string;
     asymmetricKeyId: string;
+    srvVersion: number;
 }

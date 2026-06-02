@@ -1,7 +1,7 @@
 using MediatR;
-using Nexus.Bff.Infrastructure.Clients;
 using Crossdyne.Toolkit.Results;
 using Shared.Contracts;
+using Nexus.Bff.Infrastructure.Clients.UserManagement;
 
 namespace Nexus.Bff.Features.Auth.Command.ResetPassword
 {
@@ -10,16 +10,17 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPassword
         private readonly IUserManagementService _userManagementService = userManagementService;
 
         public async Task<Result> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
-            => await _userManagementService.RecoveryPassword(new RecoveryPasswordRequest(
+            => await _userManagementService.CompletePasswordReset(new RecoveryPasswordRequest(
                 request.Login, 
-                request.Verifier, 
-                request.ClientSalt, 
-                request.EncryptedDek, 
-                request.CryptoVersion, 
+                request.EncryptedVerifier, 
+                request.SrpSalt, 
                 request.SrpVersion, 
                 request.EncryptedVerifierWrapKey, 
                 request.KeyWrapVersion, 
-                request.AsymmetricKeyId,
+                request.AsymmetricKeyId, 
+                request.EncryptedDek, 
+                request.DekSalt,
+                request.CryptoVersion,
                 [.. request.RecoveryKeys.Select(x => new RecoveryKeysRequestData(x.EncryptedValue, x.CryptoVersion))]));
     }
 }

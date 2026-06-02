@@ -1,7 +1,7 @@
 using MediatR;
-using Nexus.Bff.Infrastructure.Clients;
 using Crossdyne.Toolkit.Results;
 using Shared.Contracts;
+using Nexus.Bff.Infrastructure.Clients.UserManagement;
 
 namespace Nexus.Bff.Features.Users.Command.Register
 {
@@ -11,19 +11,20 @@ namespace Nexus.Bff.Features.Users.Command.Register
 
         public Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
             => _userManagementService.Register(new RegisterUserRequest(
-                request.Login, 
+                request.Login,
                 request.UserName, 
-                request.Verifier, 
-                request.SrpVersion, 
-                request.ClientSalt, 
-                request.EncryptedVerifierWrapKey, 
-                request.CryptoVersion, 
-                request.EncryptedVerifierWrapKey, 
-                request.KekWrapVersion, 
-                request.KekKeyId,
                 request.Email, 
                 request.IdGender?.ToString(),
                 request.IdCountry?.ToString(),
+                request.EncryptedVerifier, 
+                request.SrpSalt, 
+                request.SrpVersion, 
+                request.EncryptedVerifierWrapKey,
+                request.KeyWrapVersion, 
+                request.AsymmetricKeyId,
+                request.EncryptedDek, 
+                request.DekSalt, 
+                request.CryptoVersion,
                 [.. request.RecoveryKeys.Select(rk => new RecoveryKeyData(rk.EncryptedValue, rk.CryptoVersion))]));
     }
 }

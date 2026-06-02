@@ -51,6 +51,11 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("encrypted_value");
 
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("salt");
+
                     b.Property<int>("Type")
                         .HasColumnType("integer")
                         .HasColumnName("dek_type");

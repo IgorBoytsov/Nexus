@@ -8,6 +8,7 @@ import { firstValueFrom } from "rxjs";
 import { RecoveryPasswordRequest } from "../../../../../contracts/requests/recovery-password.request";
 import { StepResetApi } from "./reset.api";
 import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
+import { CryptoConstants } from "../../../../../core/constants/security.constants";
 
 @Component({
     selector: 'app-reset',
@@ -31,7 +32,7 @@ export class StepResetComponent{
     isLoading = signal(false);
     errorMessage = signal<string | null>(null);
 
-    readonly countRecoveryKays = 10;
+    readonly countRecoveryKays = CryptoConstants.RECOVERY_KEYS_COUNT; // 10
 
     readonly showRecoveryKeys = signal(false);
     readonly generatedRecoveryKeys = signal<string[] | null>(null);
@@ -54,13 +55,19 @@ export class StepResetComponent{
 
             //#region Конфигурация
 
-            const srpGroup = SrpGroup.Rfc5054_3072;
+            const srpGroup = CryptoConstants.ACTUAL_SRP_GROUT; // Rfc5054_3072;
             const ctx = await SrpContextFactory.create(srpGroup);
-            const profile = CryptoProfileRegistry.latest;
+
+            const cryptoVersion = CryptoVersion.V1;
+            const profile = CryptoProfileRegistry.getProfile(cryptoVersion);
 
             const { newPassword } = this.resetForm.value;
             
-            const salt = this.crypto.generateRandomBytes(16);
+            const srpAuthenticationSalt = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
+            const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
+
+            const dekKeyDerivationSalt = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
+            const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
 
             //#endregion
 
@@ -86,12 +93,12 @@ export class StepResetComponent{
 
             //#region Верификатор SRP
 
-            const srpAuthHashBytes = await this.keyDerivation.deriveAuthHashForSrp(this.state.login!, newPassword, salt, ctx.hashAlgorithmName);
+            const srpAuthHashBytes = await this.keyDerivation.deriveAuthHashForSrp(this.state.login!, newPassword, srpAuthenticationSalt, ctx.hashAlgorithmName);
             const srpAuthHashBase64 = SecurityUtils.toBase64(srpAuthHashBytes);
 
             const verifierBase64 = await this.srp.generateSrpVerifier(srpAuthHashBase64, ctx);
 
-            const dekForVerifier = this.crypto.generateRandomBytes(32);
+            const dekForVerifier = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
             const encryptedVerifier = await this.crypto.encryptData(verifierBase64, dekForVerifier, profile.aesGcmOptions);
 
             const encryptedKekForVerifier = await window.crypto.subtle.encrypt(
@@ -106,8 +113,7 @@ export class StepResetComponent{
 
             //#region Генерация DEK
            
-            const saltBase64 = SecurityUtils.toBase64(salt);
-            const { kek } = await this.keyDerivation.deriveKeysFromPassword(this.state.login!, newPassword, salt, );
+            const { kek } = await this.keyDerivation.deriveKeysFromPassword(this.state.login!, newPassword, dekKeyDerivationSalt);
 
             const dek = this.crypto.generateRandomBytes(32);
             const encryptedDek = await this.crypto.encryptData(dek, kek, profile.aesGcmOptions);
@@ -117,24 +123,25 @@ export class StepResetComponent{
             //#region генерация ключей восстановления 
 
             for (let index = 0; index < this.countRecoveryKays; index++) {
-                const rowKey = this.crypto.generateRandomBytes(32)
+                const rowKey = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
                 const encryptedDek = await this.crypto.encryptData(dek, rowKey, profile.aesGcmOptions);
                 this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
-                this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: profile.version})
+                this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: cryptoVersion})
             }
 
             //#endregion
 
             const recoveryAccessPasswordRequest: RecoveryPasswordRequest = {
                 login: this.state.login!,
-                verifier: encryptedVerifier,
-                clientSalt: saltBase64,
-                encryptedDek: encryptedDek,
-                cryptoVersion: profile.version,
+                encryptedVerifier: encryptedVerifier,
+                srpSalt: srpAuthenticationSaltBase64,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
+                keyWrapVersion: cryptoVersion, 
                 asymmetricKeyId: "env_v1",
-                keyWrapVersion: profile.version, 
+                encryptedDek: encryptedDek,
+                dekSalt: dekKeyDerivationSaltBase64,
+                cryptoVersion: cryptoVersion,
                 recoveryKeys: this.recoveryAssets.map(a => ({encryptedValue: a.encryptedDek, cryptoVersion: a.version}))
             }
 
@@ -145,12 +152,9 @@ export class StepResetComponent{
                 return;
             }
 
-            alert("Пароль успешно изменен");
-
             this.state.resetState();
             this.generatedRecoveryKeys.set(this.recoveryKeysDisplay);
             this.showRecoveryKeys.set(true);
-            this.errorMessage.set(null);
         } catch (error) {
             console.error(error);
         } finally {
