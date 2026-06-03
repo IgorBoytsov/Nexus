@@ -1,4 +1,4 @@
-export interface ChangePasswordInitResponse {
+export interface GetChangePasswordDataResponse {
     login: string;
     encryptedDek: string;
     dekSalt: string;

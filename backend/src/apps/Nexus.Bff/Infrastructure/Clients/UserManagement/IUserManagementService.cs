@@ -18,7 +18,7 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
         Task<Result> ExistUserByLogin(ExistUserBuLoginRequest request);
         Task<Result<RecoveryViaKeysPayloadResponse>> GetRecoveryKeys(RecoveryViaKeysGetPayloadRequest request);
         Task<Result> RecoveryKeys(RecoveryViaKeysRequest request);
-        Task<Result<ChangePasswordInitResponse>> InitPasswordChange(ChangePasswordInitRequest request);
+        Task<Result<GetChangePasswordDataResponse>> GetChangePasswordData(GetChangePasswordDataRequest request);
         Task<Result> ChangePassword(ChangePasswordRequest request);
     }
 }

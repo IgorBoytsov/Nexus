@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, map, Observable, of } from "rxjs";
-import { ChangePasswordInitResponse } from "../../../contracts/responses/auth/change-password-init.response";
+import { GetChangePasswordDataResponse } from "../../../contracts/responses/auth/get-change-password-data.response";
 import { ChangePasswordRequest } from "../../../contracts/requests/change-password.request";
 import { Result, Unit } from "@crossdyne/toolkit";
 import { ResultHttp } from "../../../core/result-helper/result-http";
@@ -12,11 +12,11 @@ import { ResultHttp } from "../../../core/result-helper/result-http";
 export class ChangePasswordApi {
     private http = inject(HttpClient);
 
-    init(): Observable<Result<ChangePasswordInitResponse>> {
-        return this.http.get<ChangePasswordInitResponse>('/change-password-init', { withCredentials: true })
+    init(): Observable<Result<GetChangePasswordDataResponse>> {
+        return this.http.get<GetChangePasswordDataResponse>('/change-password', { withCredentials: true })
         .pipe(
             map(response => Result.success(response)), 
-            catchError((error: HttpErrorResponse) => of(ResultHttp.failure<ChangePasswordInitResponse>(error)))
+            catchError((error: HttpErrorResponse) => of(ResultHttp.failure<GetChangePasswordDataResponse>(error)))
         );
     }
 

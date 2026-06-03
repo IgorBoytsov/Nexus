@@ -4,7 +4,7 @@ using Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangePas
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPassword;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordConfirmCode;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordSendCode;
-using Nexus.UserManagement.Service.Application.Features.Users.Queries.ChangePasswordInit;
+using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetChangePasswordData;
 using Shared.Contracts;
 using Shared.Contracts.UserManagement.Requests;
 using Shared.Web.Extensions;
@@ -63,10 +63,10 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             return Ok();
         }
 
-       [HttpGet("{userId:guid}/password/change/init")]
-        public async Task<IActionResult> InitPasswordChange([FromRoute] Guid userId)
+       [HttpGet("{userId:guid}/password/change")]
+        public async Task<IActionResult> GetChangePasswordData([FromRoute] Guid userId)
         {
-            var command = new ChangePasswordInitQuery(userId);
+            var command = new GetChangePasswordDataQuery(userId);
 
             var result = await mediator.Send(command);
             

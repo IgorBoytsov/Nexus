@@ -1,6 +1,6 @@
 namespace Shared.Contracts.UserManagement.Responses
 {
-    public sealed record ChangePasswordInitResponse(
+    public sealed record GetChangePasswordDataResponse(
         string Login, 
         string EncryptedDek, 
         string DekSalt, 

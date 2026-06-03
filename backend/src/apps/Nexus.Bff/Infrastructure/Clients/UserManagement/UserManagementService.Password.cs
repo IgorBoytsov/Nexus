@@ -49,17 +49,17 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
             }
         }
 
-        public async Task<Result<ChangePasswordInitResponse>> InitPasswordChange(ChangePasswordInitRequest request)
+        public async Task<Result<GetChangePasswordDataResponse>> GetChangePasswordData(GetChangePasswordDataRequest request)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"api/v1/users/{request.UserId}/password/change/init?userId={request.UserId}");
+                var response = await _httpClient.GetAsync($"api/v1/users/{request.UserId}/password/change?userId={request.UserId}");
                                                                 
-                return await HandleResponse<ChangePasswordInitResponse>(response);
+                return await HandleResponse<GetChangePasswordDataResponse>(response);
             }
             catch (Exception ex)
             {
-                return Result<ChangePasswordInitResponse>.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+                return Result<GetChangePasswordDataResponse>.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
             }
         }
 
