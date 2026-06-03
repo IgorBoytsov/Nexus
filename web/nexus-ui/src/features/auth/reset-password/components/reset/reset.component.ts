@@ -2,7 +2,7 @@ import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { RecoveryStateService } from "../../services/reset-password-state.service";
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpContextFactory } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { ResetPasswordCompleteRequest } from "../../../../../contracts/requests/reset-password-complete.request";
 import { StepResetApi } from "./reset.api";
@@ -11,6 +11,7 @@ import { CryptoConstants } from "../../../../../core/constants/security.constant
 import { RecoveryKeyService } from "../../../../../core/services/recovery-key.service";
 import { ArrayUtils } from "../../../../../core/utils/array.utils";
 import { RsaService } from "../../../../../core/services/rsa.service";
+import { SrpVerifierService } from "../../../../../core/services/srp-verifier.service";
 
 @Component({
     selector: 'app-reset',
@@ -26,10 +27,10 @@ export class StepResetComponent{
     private stepResetApi = inject(StepResetApi);
     private recoveryKeyService = inject(RecoveryKeyService);
     private rsaService = inject(RsaService);
+    private srpService = inject(SrpVerifierService);
 
     private readonly crypto = new CryptoService();
     private readonly keyDerivation = new KeyDerivationService();
-    private readonly srp = new SrpClientService();
 
     resetForm: FormGroup;
     isLoading = signal(false);
@@ -74,31 +75,9 @@ export class StepResetComponent{
 
             //#endregion
 
-            //#region Получение RSA ключа
-
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            //#endregion
-
-            //#region Верификатор SRP
-
-            const srpAuthHashBytes = await this.keyDerivation.deriveAuthHashForSrp(this.state.login!, newPassword, srpAuthenticationSalt, ctx.hashAlgorithmName);
-            const srpAuthHashBase64 = SecurityUtils.toBase64(srpAuthHashBytes);
-
-            const verifierBase64 = await this.srp.generateSrpVerifier(srpAuthHashBase64, ctx);
-
-            const dekForVerifier = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-            const encryptedVerifier = await this.crypto.encryptData(verifierBase64, dekForVerifier, profile.aesGcmOptions);
-
-            const encryptedKekForVerifier = await window.crypto.subtle.encrypt(
-                { name: "RSA-OAEP" },
-                rsaPublicKey,
-                dekForVerifier.buffer as ArrayBuffer
-            );
-
-            const encryptedKekForVerifierBase64 = SecurityUtils.toBase64(new Uint8Array(encryptedKekForVerifier));
-
-            //#endregion
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(this.state.login!, newPassword, rsaPublicKey, srpAuthenticationSalt, ctx, profile);
 
             //#region Генерация DEK
            
@@ -109,21 +88,17 @@ export class StepResetComponent{
 
             //#endregion
 
-            //#region генерация ключей восстановления 
-
             const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, dek, this.countRecoveryKays, profile);
 
             ArrayUtils.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
             ArrayUtils.reset(this.recoveryAssets, recoveryAssets);
-            
-            //#endregion
 
             const recoveryAccessPasswordRequest: ResetPasswordCompleteRequest = {
                 login: this.state.login!,
                 encryptedVerifier: encryptedVerifier,
                 srpSalt: srpAuthenticationSaltBase64,
                 srpVersion: srpGroup,
-                encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
+                encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
                 keyWrapVersion: cryptoVersion, 
                 asymmetricKeyId: "env_v1",
                 encryptedDek: encryptedDek,

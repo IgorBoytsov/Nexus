@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
 import { RegisterRequest } from '../../../contracts/requests/register-user.request'
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpContextFactory } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { RecoveryKeysListComponent } from "../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
@@ -11,6 +11,7 @@ import { CryptoConstants } from "../../../core/constants/security.constants";
 import { RecoveryKeyService } from "../../../core/services/recovery-key.service";
 import { ArrayUtils } from "../../../core/utils/array.utils";
 import { RsaService } from "../../../core/services/rsa.service";
+import { SrpVerifierService } from "../../../core/services/srp-verifier.service";
 
 @Component({
   selector: 'app-register',
@@ -26,10 +27,10 @@ export class RegisterComponent {
     private register = inject(RegisterApi)
     private recoveryKeyService = inject(RecoveryKeyService);
     private rsaService = inject(RsaService);
+    private srpService = inject(SrpVerifierService);
 
     private readonly crypto = new CryptoService();
     private readonly keyDerivationService = new KeyDerivationService();
-    private readonly srp = new SrpClientService();
 
     registerForm: FormGroup;
     isLoading = signal(false);
@@ -81,33 +82,12 @@ export class RegisterComponent {
 
             const dekKeyDerivationSalt = this.crypto.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
             const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
+
             //#endregion
 
-            //#region Получение RSA ключа
-            
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            //#endregion
-
-            //#region Верификатор SRP
-
-            const srpAuthHashBytes = await this.keyDerivationService.deriveAuthHashForSrp(login, password, srpAuthenticationSalt, ctx.hashAlgorithmName);
-            const srpAuthHashBase64 = SecurityUtils.toBase64(srpAuthHashBytes);
-
-            const verifierBase64 = await this.srp.generateSrpVerifier(srpAuthHashBase64, ctx);
-
-            const dekForVerifier = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-            const encryptedVerifier = await this.crypto.encryptData(verifierBase64, dekForVerifier, profile.aesGcmOptions);
-
-            const encryptedKekForVerifier = await window.crypto.subtle.encrypt(
-                { name: "RSA-OAEP" },
-                rsaPublicKey,
-                dekForVerifier.buffer as ArrayBuffer
-            );
-
-            const encryptedKekForVerifierBase64 = SecurityUtils.toBase64(new Uint8Array(encryptedKekForVerifier));
-
-            //#endregion
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, password, rsaPublicKey, srpAuthenticationSalt, ctx, profile);
 
             //#region Генерация DEK
 
@@ -138,7 +118,7 @@ export class RegisterComponent {
                 dekSalt: dekKeyDerivationSaltBase64,
                 cryptoVersion: cryptoVersion,
                 srpVersion: srpGroup,
-                encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
+                encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
                 asymmetricKeyId: "env_v1",
                 keyWrapVersion: cryptoVersion, 
                 email: email,
