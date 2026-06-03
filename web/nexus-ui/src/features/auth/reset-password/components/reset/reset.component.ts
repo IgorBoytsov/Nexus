@@ -10,7 +10,7 @@ import { StepResetApi } from "./reset.api";
 import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
 import { CryptoConstants } from "../../../../../core/constants/security.constants";
 import { RecoveryKeyService } from "../../../../../core/services/recovery-key.service";
-import { ArrayUtils } from "../../../../../core/Utils/array.utils";
+import { ArrayUtils } from "../../../../../core/utils/array.utils";
 
 @Component({
     selector: 'app-reset',
