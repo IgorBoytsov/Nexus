@@ -4,7 +4,7 @@ import { RegisterComponent } from '../features/auth/register/register.component'
 import { MainLayoutComponent } from '../core/layout/main/main-layout.component';
 import { ProfilePage } from '../pages/profile/profile.page';
 import { AuthLayoutComponent } from '../core/layout/auth/auth-layout.component';
-import { RecoveryComponent } from '../features/auth/reset-password/reset-password.component';
+import { ResetComponent } from '../features/auth/reset-password/reset-password.component';
 import { StepLoginComponent } from '../features/auth/reset-password/components/find-login/find-login.component';
 import { recoveryStepGuard } from '../features/auth/reset-password/guards/reset-password-step.guard';
 import { StepCodeComponent } from '../features/auth/reset-password/components/confirm-code/confirm-code.component';
@@ -36,12 +36,12 @@ export const routes: Routes = [
         ]
       },
       { 
-        path: 'recovery', 
-        loadComponent: () => RecoveryComponent, 
+        path: 'reset', 
+        loadComponent: () => ResetComponent, 
         children: [
           { path: '', component: StepLoginComponent, canActivate: [recoveryStepGuard] },
           { path: 'code', component: StepCodeComponent, canActivate: [recoveryStepGuard] },
-          { path: 'reset', component: StepResetComponent, canActivate: [recoveryStepGuard] },
+          { path: 'set', component: StepResetComponent, canActivate: [recoveryStepGuard] },
           { path: '**', redirectTo: '' }
         ]
       }

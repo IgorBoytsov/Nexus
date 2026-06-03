@@ -12,9 +12,9 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
         Task<Result> Register(Shared.Contracts.RegisterUserRequest request);
         Task<Result<PublicEncryptionInfoResponse?>> GetPublicEncryptionInfo(string login);
         Task<Result<ProfileInfoResponse>> GetProfileInfo(string userId);
-        Task<Result> InitPasswordReset(string login);
-        Task<Result> ConfirmPasswordReset(string login, ConfirmCodeRequest request);
-        Task<Result> CompletePasswordReset(RecoveryPasswordRequest request);
+        Task<Result> ResetPasswordSendCode(string login);
+        Task<Result> ResetPasswordConfirm(string login, ResetPasswordConfirmCodeRequest request);
+        Task<Result> ResetPasswordComplete(ResetPasswordCompleteRequest request);
         Task<Result> ExistUserByLogin(ExistUserBuLoginRequest request);
         Task<Result<RecoveryViaKeysPayloadResponse>> GetRecoveryKeys(RecoveryViaKeysGetPayloadRequest request);
         Task<Result> RecoveryKeys(RecoveryViaKeysRequest request);

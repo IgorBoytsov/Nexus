@@ -10,6 +10,6 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPasswordConfirmCode
         private IUserManagementService _userManagementService = userManagementService;
 
         public async Task<Result> Handle(ResetPasswordConfirmCodeCommand request, CancellationToken cancellationToken)
-            => await _userManagementService.ConfirmPasswordReset(request.Login, new ConfirmCodeRequest(request.Code));
+            => await _userManagementService.ResetPasswordConfirm(request.Login, new ResetPasswordConfirmCodeRequest(request.Code));
     }
 }

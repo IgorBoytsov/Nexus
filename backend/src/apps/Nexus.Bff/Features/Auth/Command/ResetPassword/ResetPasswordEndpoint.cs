@@ -10,7 +10,7 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPassword
         public static void MapRecoveryAccess(this IEndpointRouteBuilder app)
         {
             app.MapPost("reset-password", async (
-                [FromBody] RecoveryPasswordRequest request, 
+                [FromBody] ResetPasswordCompleteRequest request, 
                 [FromServices] IMediator mediator) =>
             {
                 var command = new ResetPasswordCommand(

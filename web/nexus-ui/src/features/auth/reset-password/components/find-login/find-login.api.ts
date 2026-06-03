@@ -11,7 +11,7 @@ export class StepLoginApi{
     private http = inject(HttpClient);
 
     generateCode(login: string) : Observable<Result<Unit>> {
-        return this.http.post(`/recovery-password/send-confirm-code/${login}`, null)
+        return this.http.post(`/password/reset/send-confirm-code/${login}`, null)
         .pipe(
             map(() => Result.success()),
             catchError((error: HttpErrorResponse) => of(ResultHttp.failure<Unit>(error)))

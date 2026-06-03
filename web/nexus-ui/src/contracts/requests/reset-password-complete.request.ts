@@ -1,4 +1,4 @@
-export interface RecoveryPasswordRequest{
+export interface ResetPasswordCompleteRequest{
     login: string;
     // Srp
     encryptedVerifier: string;

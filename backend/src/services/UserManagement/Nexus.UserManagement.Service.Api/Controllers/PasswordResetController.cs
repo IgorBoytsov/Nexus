@@ -28,7 +28,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         }
 
         [HttpPost("{login}/password/reset/confirm")]
-        public async Task<IActionResult> ConfirmPasswordReset([FromRoute] string login, [FromBody] ConfirmCodeRequest request)
+        public async Task<IActionResult> ConfirmPasswordReset([FromRoute] string login, [FromBody] ResetPasswordConfirmCodeRequest request)
         {
             var command = new ResetPasswordConfirmCodeCommand(login, request.Code);
             var result = await mediator.Send(command);
@@ -40,7 +40,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         }
 
         [HttpPost("{login}/password/reset/complete")]
-        public async Task<IActionResult> CompletePasswordReset([FromRoute] string login, [FromBody] RecoveryPasswordRequest request)
+        public async Task<IActionResult> CompletePasswordReset([FromRoute] string login, [FromBody] ResetPasswordCompleteRequest request)
         {
             var command = new ResetPasswordCommand(
                 request.Login, 

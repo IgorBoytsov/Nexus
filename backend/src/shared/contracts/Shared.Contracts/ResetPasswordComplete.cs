@@ -1,6 +1,6 @@
 namespace Shared.Contracts
 {
-    public sealed record RecoveryPasswordRequest(
+    public sealed record ResetPasswordCompleteRequest(
         string Login, 
         // Srp
         string EncryptedVerifier, 

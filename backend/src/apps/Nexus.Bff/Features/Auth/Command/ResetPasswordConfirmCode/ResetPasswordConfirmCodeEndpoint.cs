@@ -9,9 +9,9 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPasswordConfirmCode
     {
         public static void MapConfirmCodeEmail(this IEndpointRouteBuilder app)
         {
-            app.MapPost("recovery-password/confirm-code/{login}", async (
+            app.MapPost("password/reset/confirm-code/{login}", async (
                 [FromRoute] string login, 
-                [FromBody] ConfirmCodeRequest request,
+                [FromBody] ResetPasswordConfirmCodeRequest request,
                 [FromServices] IMediator mediator) =>
             {
                var result = await mediator.Send(new ResetPasswordConfirmCodeCommand(login, request.Code));

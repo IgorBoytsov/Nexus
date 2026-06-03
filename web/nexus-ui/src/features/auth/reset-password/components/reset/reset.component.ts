@@ -5,7 +5,7 @@ import { RecoveryStateService } from "../../services/reset-password-state.servic
 import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
 import { CryptoApi } from "../../../../../core/clients/crypto.api";
 import { firstValueFrom } from "rxjs";
-import { RecoveryPasswordRequest } from "../../../../../contracts/requests/recovery-password.request";
+import { ResetPasswordCompleteRequest } from "../../../../../contracts/requests/reset-password-complete.request";
 import { StepResetApi } from "./reset.api";
 import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
 import { CryptoConstants } from "../../../../../core/constants/security.constants";
@@ -133,7 +133,7 @@ export class StepResetComponent{
             
             //#endregion
 
-            const recoveryAccessPasswordRequest: RecoveryPasswordRequest = {
+            const recoveryAccessPasswordRequest: ResetPasswordCompleteRequest = {
                 login: this.state.login!,
                 encryptedVerifier: encryptedVerifier,
                 srpSalt: srpAuthenticationSaltBase64,

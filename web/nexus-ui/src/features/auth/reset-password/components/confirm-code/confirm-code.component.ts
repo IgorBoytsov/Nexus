@@ -45,7 +45,7 @@ export class StepCodeComponent{
                 }
 
                 this.state.verifyCode(code);
-                this.router.navigate(['reset'], { relativeTo: this.route.parent} );
+                this.router.navigate(['set'], { relativeTo: this.route.parent} );
                 
             } catch (error) {
                  console.error('Ошибка: ', error);
