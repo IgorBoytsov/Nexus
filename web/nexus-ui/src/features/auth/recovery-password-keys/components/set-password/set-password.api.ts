@@ -12,7 +12,7 @@ export class SetPasswordApi {
     private http = inject(HttpClient);
 
     setPassword(request: RecoveryViaKeysSetRequest): Observable<Result<Unit>> {
-        return this.http.post('/set-password-recovery-keys', request)
+        return this.http.post('/recovery-via-keys', request)
         .pipe(
             map(() => Result.success()),
             catchError((error: HttpErrorResponse) => of(ResultHttp.failure<Unit>(error)))

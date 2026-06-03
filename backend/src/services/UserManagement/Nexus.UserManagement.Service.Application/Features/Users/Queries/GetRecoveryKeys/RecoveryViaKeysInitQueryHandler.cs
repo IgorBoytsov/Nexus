@@ -6,12 +6,12 @@ using Nexus.UserManagement.Service.Domain.Models;
 using Shared.Contracts;
 using Shared.Kernel.Errors;
 
-namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.RecoveryViaKeysInit
+namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetRecoveryKeys
 {
-    public sealed class RecoveryViaKeysInitQueryHandler(
-        IUserRepository userRepository) : IRequestHandler<RecoveryViaKeysInitQuery, Result<RecoveryViaKeysPayloadResponse>>
+    public sealed class GetRecoveryKeysQueryHandler(
+        IUserRepository userRepository) : IRequestHandler<GetRecoveryKeysQuery, Result<RecoveryViaKeysPayloadResponse>>
     {
-        public async Task<Result<RecoveryViaKeysPayloadResponse>> Handle(RecoveryViaKeysInitQuery request, CancellationToken cancellationToken)
+        public async Task<Result<RecoveryViaKeysPayloadResponse>> Handle(GetRecoveryKeysQuery request, CancellationToken cancellationToken)
         {
             Maybe<User> maybeUser = await userRepository.GetByAsync(u => u.Login == request.Login, includes: x => x.RecoveryKeys, clt: cancellationToken);
 

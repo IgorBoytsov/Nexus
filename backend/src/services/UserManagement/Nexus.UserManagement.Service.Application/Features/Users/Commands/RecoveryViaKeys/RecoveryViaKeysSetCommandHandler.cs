@@ -9,13 +9,13 @@ using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
 using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
 using Shared.Kernel.Exceptions;
 
-namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeysSet
+namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeys
 {
-    public sealed class RecoveryViaKeysSetCommandHandler(
+    public sealed class RecoveryViaKeysCommandHandler(
         IUnitOfWork unitOfWork, 
-        IUserRepository userRepository) : IRequestHandler<RecoveryViaKeysSetCommand, Result>
+        IUserRepository userRepository) : IRequestHandler<RecoveryViaKeysCommand, Result>
     {
-        public async Task<Result> Handle(RecoveryViaKeysSetCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(RecoveryViaKeysCommand request, CancellationToken cancellationToken)
         {
             try
             {

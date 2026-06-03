@@ -2,9 +2,9 @@ using Crossdyne.Toolkit.Results;
 using MediatR;
 using Shared.Validations.Common.Abstractions;
 
-namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeysSet
+namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeys
 {
-    public sealed record RecoveryViaKeysSetCommand(
+    public sealed record RecoveryViaKeysCommand(
         string Login,
         // Srp
         string EncryptedVerifier,

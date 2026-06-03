@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.Contracts;
 using Shared.Web.Extensions;
 
-namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeysSet
+namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeys
 {
-    public static class RecoveryViaKeysSetEndpoint
+    public static class RecoveryViaKeysEndpoint
     {
         public static void MapRecoveryViaKeysSet(this IEndpointRouteBuilder app)
         {
-            app.MapPost("set-password-recovery-keys", async ( [FromBody] RecoveryViaKeysSetRequest request, [FromServices] IMediator mediator) =>
+            app.MapPost("recovery-via-keys", async ( [FromBody] RecoveryViaKeysRequest request, [FromServices] IMediator mediator) =>
             {
-                var command = new RecoveryViaKeysSetCommand(
+                var command = new RecoveryViaKeysCommand(
                     request.Login,
                     request.EncryptedVerifier,
                     request.SrpSalt,

@@ -3,15 +3,15 @@ using MediatR;
 using Nexus.Bff.Infrastructure.Clients.UserManagement;
 using Shared.Contracts;
 
-namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeysSet
+namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeys
 {
-    public sealed class RecoveryViaKeysSetCommandHandler(IUserManagementService userManagementService) : IRequestHandler<RecoveryViaKeysSetCommand, Result>
+    public sealed class RecoveryViaKeysCommandHandler(IUserManagementService userManagementService) : IRequestHandler<RecoveryViaKeysCommand, Result>
     {
         private readonly IUserManagementService _userManagementService = userManagementService;
 
-        public async Task<Result> Handle(RecoveryViaKeysSetCommand request, CancellationToken cancellationToken)
-            => await _userManagementService.SetRecoveryKeys(
-                new RecoveryViaKeysSetRequest(
+        public async Task<Result> Handle(RecoveryViaKeysCommand request, CancellationToken cancellationToken)
+            => await _userManagementService.RecoveryKeys(
+                new RecoveryViaKeysRequest(
                     request.Login,
                     request.EncryptedVerifier, 
                     request.SrpSalt, 

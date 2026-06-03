@@ -1,11 +1,11 @@
 using FluentValidation;
 using Shared.Validations.Common.Validators;
 
-namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeysSet
+namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeys
 {
-    public sealed class RecoveryViaKeysSetCommandValidator : AbstractValidator<RecoveryViaKeysSetCommand>
+    public sealed class RecoveryViaKeysCommandValidator : AbstractValidator<RecoveryViaKeysCommand>
     {
-        public RecoveryViaKeysSetCommandValidator()
+        public RecoveryViaKeysCommandValidator()
         {
             Include(LoginValidator.Create());
             Include(EncryptedVerifierValidator.Create());
