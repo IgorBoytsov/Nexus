@@ -2,7 +2,7 @@ import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { RecoveryStateService } from "../../services/reset-password-state.service";
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, SecurityUtils, SrpContextFactory } from "@crossdyne/security";
+import { CryptoService, CryptoVersion} from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { ResetPasswordCompleteRequest } from "../../../../../contracts/requests/reset-password-complete.request";
 import { StepResetApi } from "./reset.api";
@@ -13,6 +13,7 @@ import { ArrayUtils } from "../../../../../core/utils/array.utils";
 import { RsaService } from "../../../../../core/services/rsa.service";
 import { SrpVerifierService } from "../../../../../core/services/srp-verifier.service";
 import { KeyManagementService } from "../../../../../core/services/key-management.service";
+import { CryptoConfigurationService } from "../../../../../core/services/crypto-configuration.service";
 
 @Component({
     selector: 'app-reset',
@@ -30,6 +31,7 @@ export class StepResetComponent{
     private rsaService = inject(RsaService);
     private srpService = inject(SrpVerifierService);
     private keyManagement = inject(KeyManagementService);
+    private cryptoConfig = inject(CryptoConfigurationService);
     
     private readonly crypto = new CryptoService();
 
@@ -60,29 +62,23 @@ export class StepResetComponent{
 
             //#region Конфигурация
 
-            const srpGroup = CryptoConstants.ACTUAL_SRP_GROUT; // Rfc5054_3072;
-            const ctx = await SrpContextFactory.create(srpGroup);
+            const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
+            const cryptoProfile = this.cryptoConfig.getCryptoProfile(); // V1
 
-            const cryptoVersion = CryptoVersion.V1;
-            const profile = CryptoProfileRegistry.getProfile(cryptoVersion);
+            const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
+            const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
 
             const { newPassword } = this.resetForm.value;
-            
-            const srpAuthenticationSalt = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-            const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
-
-            const dekKeyDerivationSalt = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-            const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
 
             //#endregion
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(this.state.login!, newPassword, rsaPublicKey, srpAuthenticationSalt, ctx, profile);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(this.state.login!, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
 
-            const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(this.state.login!, newPassword, dekKeyDerivationSalt, profile);
+            const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(this.state.login!, newPassword, rawDekKeyDerivationSalt, cryptoProfile);
 
-            const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, this.countRecoveryKays, profile);
+            const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, this.countRecoveryKays, cryptoProfile);
 
             ArrayUtils.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
             ArrayUtils.reset(this.recoveryAssets, recoveryAssets);
@@ -90,15 +86,15 @@ export class StepResetComponent{
             const recoveryAccessPasswordRequest: ResetPasswordCompleteRequest = {
                 login: this.state.login!,
                 encryptedVerifier: encryptedVerifier,
-                srpSalt: srpAuthenticationSaltBase64,
+                srpSalt: base64SrpAuthSalt,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
-                keyWrapVersion: cryptoVersion, 
+                keyWrapVersion: cryptoProfile.version, 
                 asymmetricKeyId: "env_v1",
                 encryptedDek: encryptedDekBase64,
-                dekSalt: dekKeyDerivationSaltBase64,
-                cryptoVersion: cryptoVersion,
-                recoveryKeys: this.recoveryAssets.map(a => ({encryptedValue: a.encryptedDek, cryptoVersion: a.version}))
+                dekSalt: base64DekKeyDerivationSalt,
+                cryptoVersion: cryptoProfile.version,
+                recoveryKeys: this.recoveryAssets.map(a => ({ encryptedValue: a.encryptedDek, cryptoVersion: a.version }))
             }
 
             var recoveryResult = await firstValueFrom(this.stepResetApi.recoveryAccessPassword(recoveryAccessPasswordRequest));

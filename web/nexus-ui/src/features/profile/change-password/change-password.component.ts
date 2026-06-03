@@ -3,13 +3,13 @@ import { ChangePasswordApi } from "./change-password.api";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpContextFactory } from "@crossdyne/security";
+import { CryptoService, CryptoVersion} from "@crossdyne/security";
 import { ChangePasswordRequest } from "../../../contracts/requests/change-password.request";
 import { HttpErrorResponse } from "@angular/common/http";
-import { CryptoConstants } from "../../../core/constants/security.constants";
 import { RsaService } from "../../../core/services/rsa.service";
 import { SrpVerifierService } from "../../../core/services/srp-verifier.service";
 import { KeyManagementService } from "../../../core/services/key-management.service";
+import { CryptoConfigurationService } from "../../../core/services/crypto-configuration.service";
 
 @Component({
     selector: 'profile-change-password',
@@ -25,9 +25,9 @@ export class ChangePasswordComponent {
     private rsaService = inject(RsaService);
     private srpService = inject(SrpVerifierService);
     private keyManagement = inject(KeyManagementService);
+    private cryptoConfig = inject(CryptoConfigurationService);
 
     private readonly cryptoService = new CryptoService();
-    private readonly keyDerivationService = new KeyDerivationService();
 
     changePasswordForm: FormGroup; 
     isLoading = signal(false);
@@ -55,37 +55,32 @@ export class ChangePasswordComponent {
             //#region Конфигурация
 
             const { login, encryptedDek, cryptoVersionDek, dekSalt, srvVersion } = initResult.value;
+            
+            const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
+            const cryptoProfile = this.cryptoConfig.getCryptoProfile(cryptoVersionDek as CryptoVersion);
 
-            const profile = CryptoProfileRegistry.getProfile(cryptoVersionDek as CryptoVersion);
-
-            const srpGroup = CryptoConstants.ACTUAL_SRP_GROUT;
-            const ctx = await SrpContextFactory.create(srpGroup);
-
-            const srpAuthenticationSalt = this.cryptoService.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
-            const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
-
-            const dekKeyDerivationSalt = this.cryptoService.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
-            const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
+            const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
+            const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
 
             //#endregion
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, newPassword, rsaPublicKey, srpAuthenticationSalt, ctx, profile);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
 
-            const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(login, oldPassword, newPassword, dekSalt, encryptedDek, dekKeyDerivationSalt, profile);
+            const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(login, oldPassword, newPassword, dekSalt, encryptedDek, rawDekKeyDerivationSalt, cryptoProfile);
 
             const request: ChangePasswordRequest = {
                 userId: null,
                 encryptedVerifier: encryptedVerifier,
-                srpSalt: srpAuthenticationSaltBase64,
+                srpSalt: base64SrpAuthSalt,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
-                keyWrapVersion: profile.version,
+                keyWrapVersion: cryptoProfile.version,
                 asymmetricKeyId: "env_v1",
                 encryptedDek: reEncryptedDek,
-                dekSalt: dekKeyDerivationSaltBase64,
-                cryptoVersion: profile.version,
+                dekSalt: base64DekKeyDerivationSalt,
+                cryptoVersion: cryptoProfile.version,
             };
             
             await firstValueFrom(this.changedPasswordApi.changePassword(request));

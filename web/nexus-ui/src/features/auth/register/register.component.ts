@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
 import { RegisterRequest } from '../../../contracts/requests/register-user.request'
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, SecurityUtils, SrpContextFactory } from "@crossdyne/security";
+import { CryptoService, CryptoVersion } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { RecoveryKeysListComponent } from "../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
@@ -13,6 +13,7 @@ import { ArrayUtils } from "../../../core/utils/array.utils";
 import { RsaService } from "../../../core/services/rsa.service";
 import { SrpVerifierService } from "../../../core/services/srp-verifier.service";
 import { KeyManagementService } from "../../../core/services/key-management.service";
+import { CryptoConfigurationService } from "../../../core/services/crypto-configuration.service";
 
 @Component({
   selector: 'app-register',
@@ -30,6 +31,7 @@ export class RegisterComponent {
     private rsaService = inject(RsaService);
     private srpService = inject(SrpVerifierService);
     private keyManagement = inject(KeyManagementService);
+    private cryptoConfig = inject(CryptoConfigurationService);
 
     private readonly crypto = new CryptoService();
 
@@ -70,29 +72,23 @@ export class RegisterComponent {
             
             //#region Конфигурация
 
-            const srpGroup = CryptoConstants.ACTUAL_SRP_GROUT; // Rfc5054_3072
-            const ctx = await SrpContextFactory.create(srpGroup);
-            
-            const cryptoVersion = CryptoVersion.V1;
-            const profile = CryptoProfileRegistry.getProfile(cryptoVersion);
+            const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
+            const cryptoProfile = this.cryptoConfig.getCryptoProfile(); // V1
+
+            const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
+            const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
 
             const { login, username, password, email } = this.registerForm.value;
-
-            const srpAuthenticationSalt = this.crypto.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
-            const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
-
-            const dekKeyDerivationSalt = this.crypto.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
-            const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
 
             //#endregion
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, password, rsaPublicKey, srpAuthenticationSalt, ctx, profile);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, password, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
 
-            const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(login, password, dekKeyDerivationSalt, profile);
+            const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(login, password, rawDekKeyDerivationSalt, cryptoProfile);
 
-            const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, this.countRecoveryKays, profile);
+            const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, this.countRecoveryKays, cryptoProfile);
             
             ArrayUtils.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
             ArrayUtils.reset(this.recoveryAssets, recoveryAssets);
@@ -101,14 +97,14 @@ export class RegisterComponent {
                 login: login,
                 userName: username,
                 encryptedVerifier: encryptedVerifier,
-                srpSalt: srpAuthenticationSaltBase64,
+                srpSalt: base64SrpAuthSalt,
                 encryptedDek: encryptedDekBase64,
-                dekSalt: dekKeyDerivationSaltBase64,
-                cryptoVersion: cryptoVersion,
+                dekSalt: base64DekKeyDerivationSalt,
+                cryptoVersion: cryptoProfile.version,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
                 asymmetricKeyId: "env_v1",
-                keyWrapVersion: cryptoVersion, 
+                keyWrapVersion: cryptoProfile.version, 
                 email: email,
                 idGender: null, 
                 idCountry: null,
