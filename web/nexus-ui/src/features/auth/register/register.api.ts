@@ -1,6 +1,5 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { PublicKeyResponse } from "../../../contracts/responses/users/public-key-response";
 import { catchError, map, Observable, of } from "rxjs";
 import { RegisterRequest } from "../../../contracts/requests/register-user.request";
 import { Result, Unit, UnitResult } from "@crossdyne/toolkit";
@@ -18,9 +17,5 @@ export class RegisterApi {
             map(() => Result.success(Unit)), 
             catchError((error: HttpErrorResponse) => of(ResultHttp.failure<Unit>(error)))
         );
-    }
-
-    getPublicKey(): Observable<PublicKeyResponse> {
-        return this.http.get<PublicKeyResponse>(`/public-key`);
     }
 }

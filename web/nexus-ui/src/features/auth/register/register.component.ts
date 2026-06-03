@@ -10,6 +10,7 @@ import { RecoveryKeysListComponent } from "../../../shared/ui/recovery-keys-list
 import { CryptoConstants } from "../../../core/constants/security.constants";
 import { RecoveryKeyService } from "../../../core/services/recovery-key.service";
 import { ArrayUtils } from "../../../core/utils/array.utils";
+import { RsaService } from "../../../core/services/rsa.service";
 
 @Component({
   selector: 'app-register',
@@ -24,6 +25,7 @@ export class RegisterComponent {
     private router = inject(Router)
     private register = inject(RegisterApi)
     private recoveryKeyService = inject(RecoveryKeyService);
+    private rsaService = inject(RsaService);
 
     private readonly crypto = new CryptoService();
     private readonly keyDerivationService = new KeyDerivationService();
@@ -83,23 +85,7 @@ export class RegisterComponent {
 
             //#region Получение RSA ключа
             
-            const publicKeyResponse = await firstValueFrom(this.register.getPublicKey());
-            const firstParse = JSON.parse(publicKeyResponse.publicKey);
-            const publicKeyBase64 = typeof firstParse === 'string' 
-                ? firstParse 
-                : firstParse.publicKey;
-
-            const binaryKey = SecurityUtils.fromBase64(publicKeyBase64);
-            const rsaPublicKey = await window.crypto.subtle.importKey(
-                "spki",
-                binaryKey.buffer as ArrayBuffer,
-                {
-                    name: "RSA-OAEP",
-                    hash: "SHA-256"
-                },
-                false,
-                ["encrypt"]
-            );
+            const rsaPublicKey = await this.rsaService.getPublicKey();
 
             //#endregion
 

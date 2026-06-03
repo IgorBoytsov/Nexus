@@ -2,8 +2,7 @@ import { Component, Inject, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { SetPasswordApi } from "./set-password.api";
 import { RecoveryStateService } from "../../services/recovery-password-keys-state.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { CryptoApi } from "../../../../../core/clients/crypto.api";
+import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
 import { RecoveryViaKeysSetRequest } from "../../../../../contracts/requests/recovery-via-keys-set.request";
@@ -11,6 +10,7 @@ import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-key
 import { CryptoConstants } from "../../../../../core/constants/security.constants";
 import { RecoveryKeyService } from "../../../../../core/services/recovery-key.service";
 import { ArrayUtils } from "../../../../../core/utils/array.utils";
+import { RsaService } from "../../../../../core/services/rsa.service";
 
 @Component({
     selector: 'app-set-password',
@@ -22,11 +22,10 @@ import { ArrayUtils } from "../../../../../core/utils/array.utils";
 export class StepSetPasswordComponent {
     private fb = inject(FormBuilder);
     private router = inject(Router);
-    private route = inject(ActivatedRoute);
     private setPasswordApi = inject(SetPasswordApi);
-    private cryptoApi = inject(CryptoApi);
     private state = inject(RecoveryStateService);
     private recoveryKeyService = inject(RecoveryKeyService);
+    private rsaService = inject(RsaService);
 
     private readonly crypto = new CryptoService();
     private readonly keyDerivation = new KeyDerivationService();
@@ -79,23 +78,7 @@ export class StepSetPasswordComponent {
                 
                 //#region Получение RSA ключа
                 
-                const publicKeyResponse = await firstValueFrom(this.cryptoApi.getPublicKey());
-                const firstParse = JSON.parse(publicKeyResponse.publicKey);
-                const publicKeyBase64 = typeof firstParse === 'string' 
-                    ? firstParse 
-                    : firstParse.publicKey;
-
-                const binaryKey = SecurityUtils.fromBase64(publicKeyBase64);
-                const rsaPublicKey = await window.crypto.subtle.importKey(
-                    "spki",
-                    binaryKey.buffer as ArrayBuffer,
-                    {
-                        name: "RSA-OAEP",
-                        hash: "SHA-256"
-                    },
-                    false,
-                    ["encrypt"]
-                );
+                const rsaPublicKey = await this.rsaService.getPublicKey();
 
                 //#endregion
 

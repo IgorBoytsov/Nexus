@@ -3,11 +3,11 @@ import { ChangePasswordApi } from "./change-password.api";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
-import { CryptoApi } from "../../../core/clients/crypto.api";
+import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory } from "@crossdyne/security";
 import { ChangePasswordRequest } from "../../../contracts/requests/change-password.request";
 import { HttpErrorResponse } from "@angular/common/http";
 import { CryptoConstants } from "../../../core/constants/security.constants";
+import { RsaService } from "../../../core/services/rsa.service";
 
 @Component({
     selector: 'profile-change-password',
@@ -20,7 +20,7 @@ export class ChangePasswordComponent {
     private fb = inject(FormBuilder);
     private router = inject(Router);
     private changedPasswordApi = inject(ChangePasswordApi);
-    private cryptoApi = inject(CryptoApi);
+    private rsaService = inject(RsaService);
 
     private readonly cryptoService = new CryptoService();
     private readonly keyDerivationService = new KeyDerivationService();
@@ -68,22 +68,7 @@ export class ChangePasswordComponent {
 
             //#region Получение RSA ключа
             
-            const publicKeyResponse = await firstValueFrom(this.cryptoApi.getPublicKey());
-            const firstParse = JSON.parse(publicKeyResponse.publicKey);
-            const publicKeyBase64 = typeof firstParse === 'string' 
-                ? firstParse 
-                : firstParse.publicKey;
-            const binaryKey = SecurityUtils.fromBase64(publicKeyBase64);
-            const rsaPublicKey = await window.crypto.subtle.importKey(
-                "spki",
-                binaryKey.buffer as ArrayBuffer,
-                {
-                    name: "RSA-OAEP",
-                    hash: "SHA-256"
-                },
-                false,
-                ["encrypt"]
-            );
+            const rsaPublicKey = await this.rsaService.getPublicKey();
 
             //#endregion
 

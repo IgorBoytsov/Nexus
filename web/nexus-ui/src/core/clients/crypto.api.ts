@@ -8,9 +8,8 @@ import { HttpClient } from "@angular/common/http";
 })
 export class CryptoApi {
     private http = inject(HttpClient);
-    private baseUrl = 'http://127.0.0.1:5015';
     
     getPublicKey(): Observable<PublicKeyResponse> {
-        return this.http.get<PublicKeyResponse>(`${this.baseUrl}/public-key`);
+        return this.http.get<PublicKeyResponse>(`/public-key`);;
     }
 }

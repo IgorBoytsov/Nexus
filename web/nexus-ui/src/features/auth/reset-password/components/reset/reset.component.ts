@@ -1,9 +1,8 @@
 import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { RecoveryStateService } from "../../services/reset-password-state.service";
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
-import { CryptoApi } from "../../../../../core/clients/crypto.api";
+import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { ResetPasswordCompleteRequest } from "../../../../../contracts/requests/reset-password-complete.request";
 import { StepResetApi } from "./reset.api";
@@ -11,6 +10,7 @@ import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-key
 import { CryptoConstants } from "../../../../../core/constants/security.constants";
 import { RecoveryKeyService } from "../../../../../core/services/recovery-key.service";
 import { ArrayUtils } from "../../../../../core/utils/array.utils";
+import { RsaService } from "../../../../../core/services/rsa.service";
 
 @Component({
     selector: 'app-reset',
@@ -21,12 +21,11 @@ import { ArrayUtils } from "../../../../../core/utils/array.utils";
 })
 export class StepResetComponent{
     private fb = inject(FormBuilder);
-    private router = inject(Router);
-    private route = inject(ActivatedRoute);  
+    private router = inject(Router); 
     private state = inject(RecoveryStateService);
-    private cryptoApi = inject(CryptoApi);
     private stepResetApi = inject(StepResetApi);
     private recoveryKeyService = inject(RecoveryKeyService);
+    private rsaService = inject(RsaService);
 
     private readonly crypto = new CryptoService();
     private readonly keyDerivation = new KeyDerivationService();
@@ -77,21 +76,7 @@ export class StepResetComponent{
 
             //#region Получение RSA ключа
 
-            const publicKeyResponse = await firstValueFrom(this.cryptoApi.getPublicKey());
-            const firstParse = JSON.parse(publicKeyResponse.publicKey);
-            const publicKeyBase64 = typeof firstParse == 'string' ? firstParse :  firstParse.publicKey;
-
-            const binaryKey = SecurityUtils.fromBase64(publicKeyBase64);
-            const rsaPublicKey = await window.crypto.subtle.importKey(
-                "spki",
-                binaryKey.buffer as ArrayBuffer,
-                {
-                    name: "RSA-OAEP",
-                    hash: "SHA-256"
-                },
-                false,
-                ["encrypt"]
-            );
+            const rsaPublicKey = await this.rsaService.getPublicKey();
 
             //#endregion
 
