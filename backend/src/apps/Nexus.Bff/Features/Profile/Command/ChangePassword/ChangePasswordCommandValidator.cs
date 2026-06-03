@@ -1,7 +1,7 @@
 using FluentValidation;
 using Shared.Validations.Common.Validators;
 
-namespace Nexus.Bff.Features.Auth.Command.ChangePassword
+namespace Nexus.Bff.Features.Profile.Command.ChangePassword
 {
     public sealed class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommand>
     {

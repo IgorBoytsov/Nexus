@@ -4,7 +4,7 @@ using Nexus.Bff.Infrastructure.Clients.UserManagement;
 using Shared.Contracts.UserManagement.Requests;
 using Shared.Contracts.UserManagement.Responses;
 
-namespace Nexus.Bff.Features.Auth.Query.GetChangePasswordData
+namespace Nexus.Bff.Features.Profile.Query.GetChangePasswordData
 {
     public sealed class GetChangePasswordDataQueryHandler(IUserManagementService userManagementService) : IRequestHandler<GetChangePasswordDataQuery, Result<GetChangePasswordDataResponse>>
     {

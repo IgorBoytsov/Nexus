@@ -2,7 +2,7 @@ using Crossdyne.Toolkit.Results;
 using MediatR;
 using Shared.Validations.Common.Abstractions;
 
-namespace Nexus.Bff.Features.Auth.Command.ChangePassword
+namespace Nexus.Bff.Features.Profile.Command.ChangePassword
 {
     public sealed record ChangePasswordCommand(
         Guid UserId,

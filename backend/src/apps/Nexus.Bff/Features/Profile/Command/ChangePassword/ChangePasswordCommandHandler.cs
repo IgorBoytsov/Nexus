@@ -3,7 +3,7 @@ using MediatR;
 using Nexus.Bff.Infrastructure.Clients.UserManagement;
 using Shared.Contracts.UserManagement.Requests;
 
-namespace Nexus.Bff.Features.Auth.Command.ChangePassword
+namespace Nexus.Bff.Features.Profile.Command.ChangePassword
 {
     public sealed class ChangePasswordCommandHandler(IUserManagementService userManagementService) : IRequestHandler<ChangePasswordCommand, Result>
     {

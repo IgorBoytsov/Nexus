@@ -5,7 +5,7 @@ using Nexus.Bff.Services;
 using Shared.Contracts.UserManagement.Requests;
 using Shared.Web.Extensions;
 
-namespace Nexus.Bff.Features.Auth.Command.ChangePassword
+namespace Nexus.Bff.Features.Profile.Command.ChangePassword
 {
     public static class ChangePasswordEndpoint
     {

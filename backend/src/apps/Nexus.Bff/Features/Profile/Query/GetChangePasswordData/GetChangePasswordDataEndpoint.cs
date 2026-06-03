@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nexus.Bff.Services;
 using Shared.Web.Extensions;
 
-namespace Nexus.Bff.Features.Auth.Query.GetChangePasswordData
+namespace Nexus.Bff.Features.Profile.Query.GetChangePasswordData
 {
     public static class ChangePasswordInitEndpoint
     {
