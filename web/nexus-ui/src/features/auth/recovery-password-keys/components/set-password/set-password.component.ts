@@ -1,10 +1,10 @@
-import { Component, Inject, inject, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { SetPasswordApi } from "./set-password.api";
 import { RecoveryStateService } from "../../services/recovery-password-keys-state.service";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpContextFactory } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, CryptoVersion, SecurityUtils, SrpContextFactory } from "@crossdyne/security";
 import { RecoveryViaKeysSetRequest } from "../../../../../contracts/requests/recovery-via-keys-set.request";
 import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
 import { CryptoConstants } from "../../../../../core/constants/security.constants";
@@ -12,6 +12,7 @@ import { RecoveryKeyService } from "../../../../../core/services/recovery-key.se
 import { ArrayUtils } from "../../../../../core/utils/array.utils";
 import { RsaService } from "../../../../../core/services/rsa.service";
 import { SrpVerifierService } from "../../../../../core/services/srp-verifier.service";
+import { KeyManagementService } from "../../../../../core/services/key-management.service";
 
 @Component({
     selector: 'app-set-password',
@@ -28,9 +29,9 @@ export class StepSetPasswordComponent {
     private recoveryKeyService = inject(RecoveryKeyService);
     private rsaService = inject(RsaService);
     private srpService = inject(SrpVerifierService);
+    private keyManagement = inject(KeyManagementService);
 
     private readonly crypto = new CryptoService();
-    private readonly keyDerivation = new KeyDerivationService();
 
     readonly minLengthPassword = 9;
     readonly countRecoveryKays = CryptoConstants.RECOVERY_KEYS_COUNT; // 10
@@ -81,15 +82,9 @@ export class StepSetPasswordComponent {
 
                 const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(this.state.login!, newPassword, rsaPublicKey, srpAuthenticationSalt, ctx, profile);
 
-                //#region Перешифрование DEK
-                
-                const { kek } = await this.keyDerivation.deriveKeysFromPassword(this.state.login!, newPassword, dekKeyDerivationSalt);
-                const rawDekBytes = SecurityUtils.fromBase64(this.state.dek!);
-                const encryptedDek = await this.crypto.encryptData(rawDekBytes, kek, profile.aesGcmOptions);
+                const { rawDek, encryptedDekBase64 } = await this.keyManagement.reEncryptExistingDek(this.state.login!, newPassword, this.state.dek!, dekKeyDerivationSalt, profile);
 
-                //#endregion
-
-                const { recoveryKeysForDisplay, recoveryAssets} = await this.recoveryKeyService.generateKeys(this.crypto, rawDekBytes, this.countRecoveryKays, profile);
+                const { recoveryKeysForDisplay, recoveryAssets} = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, this.countRecoveryKays, profile);
 
                 ArrayUtils.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
                 ArrayUtils.reset(this.recoveryAssets, recoveryAssets);
@@ -102,7 +97,7 @@ export class StepSetPasswordComponent {
                     encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
                     keyWrapVersion: cryptoVersion,
                     asymmetricKeyId: 'env_v1',
-                    encryptedDek: encryptedDek,
+                    encryptedDek: encryptedDekBase64,
                     dekSalt: dekKeyDerivationSaltBase64,
                     cryptoVersion: cryptoVersion,
                     recoveryKeys: this.recoveryAssets.map(a => ({ encryptedValue: a.encryptedDek, cryptoVersion: a.version }))

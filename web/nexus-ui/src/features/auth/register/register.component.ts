@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
 import { RegisterRequest } from '../../../contracts/requests/register-user.request'
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpContextFactory } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, CryptoVersion, SecurityUtils, SrpContextFactory } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { RecoveryKeysListComponent } from "../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
@@ -12,6 +12,7 @@ import { RecoveryKeyService } from "../../../core/services/recovery-key.service"
 import { ArrayUtils } from "../../../core/utils/array.utils";
 import { RsaService } from "../../../core/services/rsa.service";
 import { SrpVerifierService } from "../../../core/services/srp-verifier.service";
+import { KeyManagementService } from "../../../core/services/key-management.service";
 
 @Component({
   selector: 'app-register',
@@ -28,9 +29,9 @@ export class RegisterComponent {
     private recoveryKeyService = inject(RecoveryKeyService);
     private rsaService = inject(RsaService);
     private srpService = inject(SrpVerifierService);
+    private keyManagement = inject(KeyManagementService);
 
     private readonly crypto = new CryptoService();
-    private readonly keyDerivationService = new KeyDerivationService();
 
     registerForm: FormGroup;
     isLoading = signal(false);
@@ -89,32 +90,19 @@ export class RegisterComponent {
 
             const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, password, rsaPublicKey, srpAuthenticationSalt, ctx, profile);
 
-            //#region Генерация DEK
+            const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(login, password, dekKeyDerivationSalt, profile);
 
-            const { kek } = await this.keyDerivationService.deriveKeysFromPassword(login, password, dekKeyDerivationSalt);
-
-            const dek = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-            const encryptedDek = await this.crypto.encryptData(dek, kek, profile.aesGcmOptions);
-
-            //#endregion
-
-            //#region генерация ключей восстановления 
-
-            const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, dek, this.countRecoveryKays, profile);
+            const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, this.countRecoveryKays, profile);
             
             ArrayUtils.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
             ArrayUtils.reset(this.recoveryAssets, recoveryAssets);
-
-            //#endregion
-
-            //#region Отправка данных на сервер
 
             const request: RegisterRequest = {
                 login: login,
                 userName: username,
                 encryptedVerifier: encryptedVerifier,
                 srpSalt: srpAuthenticationSaltBase64,
-                encryptedDek: encryptedDek,
+                encryptedDek: encryptedDekBase64,
                 dekSalt: dekKeyDerivationSaltBase64,
                 cryptoVersion: cryptoVersion,
                 srpVersion: srpGroup,
@@ -128,8 +116,6 @@ export class RegisterComponent {
             };
             
             const registerResult = await firstValueFrom(this.register.register(request));
-
-            //#endregion
 
             if (registerResult.isFailure){
                 this.isLoading.set(false);

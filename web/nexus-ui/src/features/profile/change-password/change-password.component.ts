@@ -9,6 +9,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { CryptoConstants } from "../../../core/constants/security.constants";
 import { RsaService } from "../../../core/services/rsa.service";
 import { SrpVerifierService } from "../../../core/services/srp-verifier.service";
+import { KeyManagementService } from "../../../core/services/key-management.service";
 
 @Component({
     selector: 'profile-change-password',
@@ -23,6 +24,7 @@ export class ChangePasswordComponent {
     private changedPasswordApi = inject(ChangePasswordApi);
     private rsaService = inject(RsaService);
     private srpService = inject(SrpVerifierService);
+    private keyManagement = inject(KeyManagementService);
 
     private readonly cryptoService = new CryptoService();
     private readonly keyDerivationService = new KeyDerivationService();
@@ -69,19 +71,9 @@ export class ChangePasswordComponent {
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64} = await this.srpService.generateVerifier(login, newPassword, rsaPublicKey, srpAuthenticationSalt, ctx, profile);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, newPassword, rsaPublicKey, srpAuthenticationSalt, ctx, profile);
 
-            //#region Расшифровка - зашифровка DEK
-            
-            const storageDekSaltBytes = SecurityUtils.fromBase64(dekSalt);
-            const { kek: oldKek } = await this.keyDerivationService.deriveKeysFromPassword(login, oldPassword, storageDekSaltBytes, profile.kdfOptions);
-            const decryptedDek = await this.cryptoService.decryptData<Uint8Array>(encryptedDek, oldKek, profile.aesGcmOptions, true);
-            const { kek: newKek } = await this.keyDerivationService.deriveKeysFromPassword(login, newPassword, dekKeyDerivationSalt, profile.kdfOptions);
-            const reEncryptedDek = await this.cryptoService.encryptData(decryptedDek!, newKek, profile.aesGcmOptions);
-
-            //#endregion
-
-            //#region Отправка данных на сервер
+            const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(login, oldPassword, newPassword, dekSalt, encryptedDek, dekKeyDerivationSalt, profile);
 
             const request: ChangePasswordRequest = {
                 userId: null,
@@ -97,8 +89,6 @@ export class ChangePasswordComponent {
             };
             
             await firstValueFrom(this.changedPasswordApi.changePassword(request));
-
-            //#endregion
 
             this.router.navigate(['/login'])
         } catch (error) {
