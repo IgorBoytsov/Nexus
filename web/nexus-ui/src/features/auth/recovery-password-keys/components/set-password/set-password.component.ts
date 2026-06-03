@@ -9,6 +9,8 @@ import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationServi
 import { RecoveryViaKeysSetRequest } from "../../../../../contracts/requests/recovery-via-keys-set.request";
 import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
 import { CryptoConstants } from "../../../../../core/constants/security.constants";
+import { RecoveryKeyService } from "../../../../../core/services/recovery-key.service";
+import { ArrayUtils } from "../../../../../core/Utils/array.utils";
 
 @Component({
     selector: 'app-set-password',
@@ -24,6 +26,7 @@ export class StepSetPasswordComponent {
     private setPasswordApi = inject(SetPasswordApi);
     private cryptoApi = inject(CryptoApi);
     private state = inject(RecoveryStateService);
+    private recoveryKeyService = inject(RecoveryKeyService);
 
     private readonly crypto = new CryptoService();
     private readonly keyDerivation = new KeyDerivationService();
@@ -126,12 +129,10 @@ export class StepSetPasswordComponent {
 
                 //#region генерация ключей восстановления 
 
-                for (let index = 0; index < this.countRecoveryKays; index++) {
-                    const rowKey = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-                    const encryptedDekForRecovery = await this.crypto.encryptData(rawDekBytes, rowKey, profile.aesGcmOptions);
-                    this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
-                    this.recoveryAssets.push({ encryptedDek: encryptedDekForRecovery, rowKey: rowKey, version: cryptoVersion })
-                }
+                var { recoveryKeysForDisplay, recoveryAssets} = await this.recoveryKeyService.generateKeys(this.crypto, rawDekBytes, this.countRecoveryKays, profile);
+
+                ArrayUtils.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
+                ArrayUtils.reset(this.recoveryAssets, recoveryAssets);
 
                 //#endregion
 

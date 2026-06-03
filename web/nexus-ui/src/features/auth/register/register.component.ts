@@ -3,11 +3,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
 import { RegisterRequest } from '../../../contracts/requests/register-user.request'
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityConstants, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
+import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils, SrpClientService, SrpContextFactory } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { RecoveryKeysListComponent } from "../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
 import { CryptoConstants } from "../../../core/constants/security.constants";
+import { RecoveryKeyService } from "../../../core/services/recovery-key.service";
+import { ArrayUtils } from "../../../core/Utils/array.utils";
 
 @Component({
   selector: 'app-register',
@@ -21,6 +23,7 @@ export class RegisterComponent {
     private fb = inject(FormBuilder);
     private router = inject(Router)
     private register = inject(RegisterApi)
+    private recoveryKeyService = inject(RecoveryKeyService);
 
     private readonly crypto = new CryptoService();
     private readonly keyDerivationService = new KeyDerivationService();
@@ -131,12 +134,10 @@ export class RegisterComponent {
 
             //#region генерация ключей восстановления 
 
-            for (let index = 0; index < this.countRecoveryKays; index++) {
-                const rowKey = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-                const encryptedDek = await this.crypto.encryptData(dek, rowKey, profile.aesGcmOptions);
-                this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
-                this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: cryptoVersion})
-            }
+            const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, dek, this.countRecoveryKays, profile);
+            
+            ArrayUtils.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
+            ArrayUtils.reset(this.recoveryAssets, recoveryAssets);
 
             //#endregion
 
