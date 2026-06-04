@@ -2,7 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { bffBaseUrlInterceptor } from '../interceptors/bff-base-url.interceptor';
+import { bffBaseUrlInterceptor } from '../core/interceptors/bff-base-url.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
