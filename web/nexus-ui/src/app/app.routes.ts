@@ -4,7 +4,7 @@ import { RegisterComponent } from '../features/auth/register/register.component'
 import { MainLayoutComponent } from '../core/layout/main/main-layout.component';
 import { ProfilePage } from '../pages/profile/profile.page';
 import { AuthLayoutComponent } from '../core/layout/auth/auth-layout.component';
-import { RecoveryComponent } from '../features/auth/reset-password/reset-password.component';
+import { ResetComponent } from '../features/auth/reset-password/reset-password.component';
 import { StepLoginComponent } from '../features/auth/reset-password/components/find-login/find-login.component';
 import { recoveryStepGuard } from '../features/auth/reset-password/guards/reset-password-step.guard';
 import { StepCodeComponent } from '../features/auth/reset-password/components/confirm-code/confirm-code.component';
@@ -14,7 +14,7 @@ import { StepFindLoginComponent } from '../features/auth/recovery-password-keys/
 import { StepEnterCodeComponent } from '../features/auth/recovery-password-keys/components/enter-code/enter-code.component';
 import { StepSetPasswordComponent } from '../features/auth/recovery-password-keys/components/set-password/set-password.component';
 import { recoveryStepGuard as recoveryKeysStepGuard } from '../features/auth/recovery-password-keys/guards/recovery-password-keys.guard';
-import { ChangePasswordComponent } from '../features/auth/change-password/change-password.component';
+import { ChangePasswordComponent } from '../features/profile/change-password/change-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -24,7 +24,6 @@ export const routes: Routes = [
     children:[
       { path: 'login', loadComponent: () => LoginComponent },
       { path: 'register', loadComponent: () => RegisterComponent },
-      { path: 'change/password', loadComponent: () => ChangePasswordComponent},
       {
         path: 'recovery/keys',
         component: RecoveryPasswordKeysComponent,
@@ -36,12 +35,12 @@ export const routes: Routes = [
         ]
       },
       { 
-        path: 'recovery', 
-        loadComponent: () => RecoveryComponent, 
+        path: 'reset', 
+        loadComponent: () => ResetComponent, 
         children: [
           { path: '', component: StepLoginComponent, canActivate: [recoveryStepGuard] },
           { path: 'code', component: StepCodeComponent, canActivate: [recoveryStepGuard] },
-          { path: 'reset', component: StepResetComponent, canActivate: [recoveryStepGuard] },
+          { path: 'set', component: StepResetComponent, canActivate: [recoveryStepGuard] },
           { path: '**', redirectTo: '' }
         ]
       }
@@ -52,6 +51,7 @@ export const routes: Routes = [
     loadComponent: () => MainLayoutComponent,
     children: [
       { path: 'profile', loadComponent: () => ProfilePage },
+      { path: 'change/password', loadComponent: () => ChangePasswordComponent},
       { path: '', redirectTo: 'profile', pathMatch: 'full' }
     ]
   },

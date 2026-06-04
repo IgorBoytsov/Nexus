@@ -1,12 +1,12 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { SrpClientService, SrpContextFactory, SrpGroup } from '@crossdyne/security'
+import { SrpClientService } from '@crossdyne/security'
 import { AuthApi } from './auth.api';
 import { firstValueFrom, Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Result } from '@crossdyne/toolkit';
-import { CryptoConstants } from '../../../core/constants/security.constants';
+import { CryptoConfigurationService } from '../../../core/services/crypto-configuration.service';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +21,7 @@ export class LoginComponent {
   private readonly router = inject(Router); 
   private readonly authApi = inject(AuthApi);
   private readonly destroyRef = inject(DestroyRef);
+  private cryptoConfig = inject(CryptoConfigurationService);
 
   private readonly srpService = new SrpClientService();
 
@@ -44,7 +45,7 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const ctx = await SrpContextFactory.create(CryptoConstants.ACTUAL_SRP_GROUT); // Rfc5054_3072
+    const { srpContext } = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
 
     try {
       const { login: login, password } = this.loginForm.value;
@@ -57,7 +58,7 @@ export class LoginComponent {
       }
 
       const { salt, b } = challengeResult.value; 
-      const {A, M1, S} = await this.srpService.generateSrpProof(login, password, salt, b, ctx);
+      const {A, M1, S} = await this.srpService.generateSrpProof(login, password, salt, b, srpContext);
 
       const verifierResult = await this.executeSafe(this.authApi.srpVerifyProof({ Login: login, A, M1}));
       
@@ -73,7 +74,7 @@ export class LoginComponent {
         return;
       }
 
-      const isServerValid = await this.srpService.verifyServerM2(A, M1, S, m2, ctx);
+      const isServerValid = await this.srpService.verifyServerM2(A, M1, S, m2, srpContext);
 
       if (!isServerValid) {
         this.errorMessage.set("Ошибка аутентификации: Подлинность сервера не подтверждена!");

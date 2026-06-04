@@ -43,17 +43,17 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.U
             return info!;
         }
 
-        public async Task<ChangePasswordInitResponse> ChangePasswordInit(Guid userId)
+        public async Task<GetChangePasswordDataResponse> GetChangePasswordData(Guid userId)
         {
-            var sql = SqlLoader.Load("Users", "ChangePasswordInit");
-            var init = await connection.QueryFirstOrDefaultAsync<ChangePasswordInitResponse>(sql, new { userId });
+            var sql = SqlLoader.Load("Users", "GetChangePasswordData");
+            var init = await connection.QueryFirstOrDefaultAsync<GetChangePasswordDataResponse>(sql, new { userId });
 
             return init!;
         }
 
-        public async Task<RecoveryViaKeysPayloadResponse> RecoveryViaKeysInit(string login)
+        public async Task<RecoveryViaKeysPayloadResponse> GetRecoveryKeys(string login)
         {
-            var sql = SqlLoader.Load("Users", "RecoveryViaKeysInit");
+            var sql = SqlLoader.Load("Users", "GetRecoveryKeys");
             var init = await connection.QueryFirstOrDefaultAsync<RecoveryViaKeysPayloadResponse>(sql, new { login });
 
             return init!;

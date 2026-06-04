@@ -3,11 +3,17 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
 import { RegisterRequest } from '../../../contracts/requests/register-user.request'
-import { CryptoProfileRegistry, CryptoService, CryptoVersion, KeyDerivationService, SecurityConstants, SecurityUtils, SrpClientService, SrpContextFactory, SrpGroup } from "@crossdyne/security";
+import { CryptoService, CryptoVersion } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { RecoveryKeysListComponent } from "../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
 import { CryptoConstants } from "../../../core/constants/security.constants";
+import { RecoveryKeyService } from "../../../core/services/recovery-key.service";
+import { ArrayUtils } from "../../../core/utils/array.utils";
+import { RsaService } from "../../../core/services/rsa.service";
+import { SrpVerifierService } from "../../../core/services/srp-verifier.service";
+import { KeyManagementService } from "../../../core/services/key-management.service";
+import { CryptoConfigurationService } from "../../../core/services/crypto-configuration.service";
 
 @Component({
   selector: 'app-register',
@@ -21,10 +27,13 @@ export class RegisterComponent {
     private fb = inject(FormBuilder);
     private router = inject(Router)
     private register = inject(RegisterApi)
+    private recoveryKeyService = inject(RecoveryKeyService);
+    private rsaService = inject(RsaService);
+    private srpService = inject(SrpVerifierService);
+    private keyManagement = inject(KeyManagementService);
+    private cryptoConfig = inject(CryptoConfigurationService);
 
     private readonly crypto = new CryptoService();
-    private readonly keyDerivationService = new KeyDerivationService();
-    private readonly srp = new SrpClientService();
 
     registerForm: FormGroup;
     isLoading = signal(false);
@@ -63,97 +72,39 @@ export class RegisterComponent {
             
             //#region Конфигурация
 
-            const srpGroup = CryptoConstants.ACTUAL_SRP_GROUT; // Rfc5054_3072
-            const ctx = await SrpContextFactory.create(srpGroup);
-            
-            const cryptoVersion = CryptoVersion.V1;
-            const profile = CryptoProfileRegistry.getProfile(cryptoVersion);
+            const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
+            const cryptoProfile = this.cryptoConfig.getCryptoProfile(); // V1
+
+            const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
+            const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
 
             const { login, username, password, email } = this.registerForm.value;
 
-            const srpAuthenticationSalt = this.crypto.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
-            const srpAuthenticationSaltBase64 = SecurityUtils.toBase64(srpAuthenticationSalt);
-
-            const dekKeyDerivationSalt = this.crypto.generateRandomBytes(CryptoConstants.SALT_SIZE_BYTES); // 32
-            const dekKeyDerivationSaltBase64 = SecurityUtils.toBase64(dekKeyDerivationSalt);
             //#endregion
 
-            //#region Получение RSA ключа
+            const rsaPublicKey = await this.rsaService.getPublicKey();
+
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, password, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
+
+            const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(login, password, rawDekKeyDerivationSalt, cryptoProfile);
+
+            const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, this.countRecoveryKays, cryptoProfile);
             
-            const publicKeyResponse = await firstValueFrom(this.register.getPublicKey());
-            const firstParse = JSON.parse(publicKeyResponse.publicKey);
-            const publicKeyBase64 = typeof firstParse === 'string' 
-                ? firstParse 
-                : firstParse.publicKey;
-
-            const binaryKey = SecurityUtils.fromBase64(publicKeyBase64);
-            const rsaPublicKey = await window.crypto.subtle.importKey(
-                "spki",
-                binaryKey.buffer as ArrayBuffer,
-                {
-                    name: "RSA-OAEP",
-                    hash: "SHA-256"
-                },
-                false,
-                ["encrypt"]
-            );
-
-            //#endregion
-
-            //#region Верификатор SRP
-
-            const srpAuthHashBytes = await this.keyDerivationService.deriveAuthHashForSrp(login, password, srpAuthenticationSalt, ctx.hashAlgorithmName);
-            const srpAuthHashBase64 = SecurityUtils.toBase64(srpAuthHashBytes);
-
-            const verifierBase64 = await this.srp.generateSrpVerifier(srpAuthHashBase64, ctx);
-
-            const dekForVerifier = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-            const encryptedVerifier = await this.crypto.encryptData(verifierBase64, dekForVerifier, profile.aesGcmOptions);
-
-            const encryptedKekForVerifier = await window.crypto.subtle.encrypt(
-                { name: "RSA-OAEP" },
-                rsaPublicKey,
-                dekForVerifier.buffer as ArrayBuffer
-            );
-
-            const encryptedKekForVerifierBase64 = SecurityUtils.toBase64(new Uint8Array(encryptedKekForVerifier));
-
-            //#endregion
-
-            //#region Генерация DEK
-
-            const { kek } = await this.keyDerivationService.deriveKeysFromPassword(login, password, dekKeyDerivationSalt);
-
-            const dek = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-            const encryptedDek = await this.crypto.encryptData(dek, kek, profile.aesGcmOptions);
-
-            //#endregion
-
-            //#region генерация ключей восстановления 
-
-            for (let index = 0; index < this.countRecoveryKays; index++) {
-                const rowKey = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-                const encryptedDek = await this.crypto.encryptData(dek, rowKey, profile.aesGcmOptions);
-                this.recoveryKeysDisplay.push(SecurityUtils.toBase64(rowKey));
-                this.recoveryAssets.push({encryptedDek: encryptedDek, rowKey: rowKey, version: cryptoVersion})
-            }
-
-            //#endregion
-
-            //#region Отправка данных на сервер
+            ArrayUtils.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
+            ArrayUtils.reset(this.recoveryAssets, recoveryAssets);
 
             const request: RegisterRequest = {
                 login: login,
                 userName: username,
                 encryptedVerifier: encryptedVerifier,
-                srpSalt: srpAuthenticationSaltBase64,
-                encryptedDek: encryptedDek,
-                dekSalt: dekKeyDerivationSaltBase64,
-                cryptoVersion: cryptoVersion,
+                srpSalt: base64SrpAuthSalt,
+                encryptedDek: encryptedDekBase64,
+                dekSalt: base64DekKeyDerivationSalt,
+                cryptoVersion: cryptoProfile.version,
                 srpVersion: srpGroup,
-                encryptedVerifierWrapKey: encryptedKekForVerifierBase64,
+                encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
                 asymmetricKeyId: "env_v1",
-                keyWrapVersion: cryptoVersion, 
+                keyWrapVersion: cryptoProfile.version, 
                 email: email,
                 idGender: null, 
                 idCountry: null,
@@ -161,8 +112,6 @@ export class RegisterComponent {
             };
             
             const registerResult = await firstValueFrom(this.register.register(request));
-
-            //#endregion
 
             if (registerResult.isFailure){
                 this.isLoading.set(false);

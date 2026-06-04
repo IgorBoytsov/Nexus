@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeysSet;
-using Nexus.UserManagement.Service.Application.Features.Users.Queries.RecoveryViaKeysInit;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeys;
+using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetRecoveryKeys;
 using Shared.Contracts;
 using Shared.Web.Extensions;
 
@@ -11,10 +11,10 @@ namespace Nexus.UserManagement.Service.Api.Controllers
     [Route("api/v1/users")]
     public class RecoveryKeysController(IMediator mediator) : Controller
     {
-        [HttpGet("{login}/recovery-keys/init")]
-        public async Task<IActionResult> InitRecoveryKeys([FromRoute] string login)
+        [HttpGet("{login}/recovery-keys")]
+        public async Task<IActionResult> GetRecoveryKeys([FromRoute] string login)
         {
-            var command = new RecoveryViaKeysInitQuery(login);
+            var command = new GetRecoveryKeysQuery(login);
 
             var result = await mediator.Send(command);
 
@@ -27,9 +27,9 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         }
 
        [HttpPost("{login}/recovery-keys")]
-        public async Task<IActionResult> SetRecoveryKeys([FromRoute] string login, [FromBody] RecoveryViaKeysSetRequest request)
+        public async Task<IActionResult> SetRecoveryKeys([FromRoute] string login, [FromBody] RecoveryViaKeysRequest request)
         {
-            var command = new RecoveryViaKeysSetCommand(
+            var command = new RecoveryViaKeysCommand(
                 request.Login, 
                 request.EncryptedVerifier, 
                 request.SrpSalt, 

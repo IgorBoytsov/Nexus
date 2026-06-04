@@ -7,7 +7,7 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {
     public partial class UserManagementService
     {
-        public async Task<Result> InitPasswordReset(string login)
+        public async Task<Result> ResetPasswordSendCode(string login)
         {
             try
             {
@@ -21,11 +21,11 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
             }
         }
 
-        public async Task<Result> ConfirmPasswordReset(string login, ConfirmCodeRequest request)
+        public async Task<Result> ResetPasswordConfirm(string login, ResetPasswordConfirmCodeRequest request)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync<ConfirmCodeRequest>($"api/v1/users/{login}/password/reset/confirm", request);
+                var response = await _httpClient.PostAsJsonAsync<ResetPasswordConfirmCodeRequest>($"api/v1/users/{login}/password/reset/confirm", request);
                                                                 
                 return await HandleResponse(response);
             }
@@ -35,7 +35,7 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
             }
         }
 
-        public async Task<Result> CompletePasswordReset(RecoveryPasswordRequest request)
+        public async Task<Result> ResetPasswordComplete(ResetPasswordCompleteRequest request)
         {
             try
             {
@@ -49,17 +49,17 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
             }
         }
 
-        public async Task<Result<ChangePasswordInitResponse>> InitPasswordChange(ChangePasswordInitRequest request)
+        public async Task<Result<GetChangePasswordDataResponse>> GetChangePasswordData(GetChangePasswordDataRequest request)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"api/v1/users/{request.UserId}/password/change/init?userId={request.UserId}");
+                var response = await _httpClient.GetAsync($"api/v1/users/{request.UserId}/password/change?userId={request.UserId}");
                                                                 
-                return await HandleResponse<ChangePasswordInitResponse>(response);
+                return await HandleResponse<GetChangePasswordDataResponse>(response);
             }
             catch (Exception ex)
             {
-                return Result<ChangePasswordInitResponse>.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+                return Result<GetChangePasswordDataResponse>.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
             }
         }
 

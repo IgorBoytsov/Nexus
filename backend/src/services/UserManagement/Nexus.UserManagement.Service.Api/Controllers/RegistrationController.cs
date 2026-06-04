@@ -8,7 +8,7 @@ using Shared.Web.Extensions;
 namespace Nexus.UserManagement.Service.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/user")]
+    [Route("api/v1/users")]
     public class RegistrationController(IMediator mediator) : Controller
     {
         [HttpPost]
@@ -30,7 +30,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
                 request.EncryptedDek, 
                 request.DekSalt, 
                 request.CryptoVersion, 
-                [.. request.RecoveryKeys.Select(rk => new Application.Features.Users.Commands.Register.RecoveryKeyCommandData(rk.EncryptedValue, rk.CryptoVersion))]);
+                [.. request.RecoveryKeys.Select(rk => new RecoveryKeyCommandData(rk.EncryptedValue, rk.CryptoVersion))]);
 
             var result = await mediator.Send(command);
 

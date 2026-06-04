@@ -11,8 +11,8 @@
     <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetUserByLoginAuth.sql" />
     <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetProfileInfo.sql" />
     <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetPublicEncryptionInfo.sql" />
-    <EmbeddedResource Include="Persistence\Repositories\Users\Sql\ChangePasswordInit.sql" />
-    <EmbeddedResource Include="Persistence\Repositories\Users\Sql\RecoveryViaKeysInit.sql" />
+    <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetChangePasswordData.sql" />
+    <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetRecoveryKeys.sql" />
     <EmbeddedResource Include="Persistence\Repositories\Users\Sql\ExistUserByLogin.sql" />
   </ItemGroup> 
 

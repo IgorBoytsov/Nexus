@@ -11,7 +11,7 @@ export class StepCodeApi{
     private http = inject(HttpClient);
 
     verifyConfirmCode(login: string, code: number): Observable<Result<Unit>>{
-        return this.http.post(`/recovery-password/confirm-code/${login}`, { code: code })
+        return this.http.post(`/password/reset/confirm-code/${login}`, { code: code })
         .pipe(
             map(() => Result.success(Unit)),
             catchError(error => of(ResultHttp.failure<Unit>(error)))

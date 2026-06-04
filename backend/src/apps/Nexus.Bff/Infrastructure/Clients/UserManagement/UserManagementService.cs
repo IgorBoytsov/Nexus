@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.UserManagement.v1;
 using Microsoft.Extensions.Options;
 
 namespace Nexus.Bff.Infrastructure.Clients.UserManagement
@@ -14,43 +13,43 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
         {
             if (!response.IsSuccessStatusCode)
             {
-                var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                var errors = await TryReadErrors(response);
                 return Result<T>.Failure(errors ?? [new Error(ErrorCode.Server, $"HTTP {response.StatusCode}")]);
             }
+
+            if (response.Content.Headers.ContentLength == 0)
+                return Result<T>.Success(default!);
 
             var content = await response.Content.ReadFromJsonAsync<T>(_jsonOptions);
             return Result<T>.Success(content!);
         }
-        
+
         protected async Task<Result> HandleResponse(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
             {
-                var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                var errors = await TryReadErrors(response);
                 return Result.Failure(errors ?? [new Error(ErrorCode.Server, $"HTTP {response.StatusCode}")]);
             }
+
             return Result.Success();
         }
 
-
-
-        public async Task<Result<PublicEncryptionInfoResponse?>> GetPublicEncryptionInfo(string login)
+        private async Task<Error[]?> TryReadErrors(HttpResponseMessage response)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"api/v1/users/{login}/crypto/public");
-                
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
-                    return Result<PublicEncryptionInfoResponse?>.Failure(errors!);
-                }
+                if (response.Content.Headers.ContentLength == 0)
+                    return null;
 
-                return Result<PublicEncryptionInfoResponse?>.Success(await response.Content.ReadFromJsonAsync<PublicEncryptionInfoResponse>());
+                if (response.Content.Headers.ContentType?.MediaType != "application/json")
+                    return null;
+
+                return await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
             }
-            catch (Exception ex)
+            catch
             {
-                return Result<PublicEncryptionInfoResponse?>.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+                return null;
             }
         }
     }

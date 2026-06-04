@@ -9,6 +9,6 @@ namespace Nexus.Bff.Features.Auth.Command.ResetPasswordSendCode
         private readonly IUserManagementService _userManagement = userManagement;
 
         public async Task<Result> Handle(ResetPasswordSendCodeCommand request, CancellationToken cancellationToken)
-            => await _userManagement.InitPasswordReset(request.Login);
+            => await _userManagement.ResetPasswordSendCode(request.Login);
     }
 }

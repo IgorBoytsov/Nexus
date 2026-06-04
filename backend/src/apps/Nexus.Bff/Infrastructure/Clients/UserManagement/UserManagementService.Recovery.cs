@@ -5,11 +5,11 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {
     public partial class UserManagementService
     {
-        public async Task<Result<RecoveryViaKeysPayloadResponse>> InitRecoveryKeys(RecoveryViaKeysGetPayloadRequest request)
+        public async Task<Result<RecoveryViaKeysPayloadResponse>> GetRecoveryKeys(RecoveryViaKeysGetPayloadRequest request)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"api/v1/users/{request.Login}/recovery-keys/init?login={request.Login}");
+                var response = await _httpClient.GetAsync($"api/v1/users/{request.Login}/recovery-keys?login={request.Login}");
                                                                 
                 return await HandleResponse<RecoveryViaKeysPayloadResponse>(response);
             }
@@ -19,7 +19,7 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
             }
         }
 
-        public async Task<Result> SetRecoveryKeys(RecoveryViaKeysSetRequest request)
+        public async Task<Result> RecoveryKeys(RecoveryViaKeysRequest request)
         {
             try
             {
