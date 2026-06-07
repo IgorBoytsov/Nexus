@@ -2,9 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Nexus.Bff.Services
 {
-    public record JwtExtractedData(string UserId, string Login);
+    public record JwtExtractedData(string UserId, string Login, DateTime ExpiredTime);
 
-    public sealed class JwtReadService
+    public sealed class JwtReadService : IJwtReadService
     {
         private static readonly JwtSecurityTokenHandler _handler = new();
 
@@ -14,11 +14,12 @@ namespace Nexus.Bff.Services
 
             var userId = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
             var login = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Name)?.Value;
+            var exp = DateTimeOffset.FromUnixTimeSeconds(long.Parse(jwt.Claims.First(c => c.Type == "exp").Value)).UtcDateTime;
 
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(login))
-                throw new InvalidOperationException("Access token is missing required claims (sub/name).");
+                throw new InvalidOperationException("В токене доступа отсутствуют необходимые поля (sub/name).");
 
-            return new JwtExtractedData(userId, login);
+            return new JwtExtractedData(userId, login, exp);
         }
     }
 }

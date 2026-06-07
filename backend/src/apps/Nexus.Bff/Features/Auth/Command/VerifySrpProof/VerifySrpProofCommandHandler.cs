@@ -2,14 +2,39 @@ using MediatR;
 using Nexus.Bff.Infrastructure.Clients;
 using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.Authentication.v1;
+using Shared.Contracts;
+using Shared.Contracts.Common;
+using Nexus.Bff.Services;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {
-    public sealed class VerifySrpProofCommandHandler(IAuthClient authClient) : IRequestHandler<VerifySrpProofCommand, Result<AuthResponse?>>
+    public sealed class VerifySrpProofCommandHandler(
+        IAuthClient authClient, 
+        IRedisCacheService cache,
+        IJwtReadService jwtReader) : IRequestHandler<VerifySrpProofCommand, Result<VerifierSrpProofDTO>>
     {   
         private readonly IAuthClient _authClient = authClient;
 
-        public async Task<Result<AuthResponse?>> Handle(VerifySrpProofCommand request, CancellationToken cancellationToken)
-            => await _authClient.VerifierSrpProof(new SrpVerifyRequest(request.Login, request.A, request.M1));
+        public async Task<Result<VerifierSrpProofDTO>> Handle(VerifySrpProofCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authClient.VerifierSrpProof(new SrpVerifyRequest(request.Login, request.A, request.M1));
+
+            if (result.IsFailure)
+                return Result<VerifierSrpProofDTO>.Failure(result.Errors);
+
+            AuthResponse authData = result.Value!;
+
+            var data = jwtReader.ExtractData(authData.AccessToken);
+            var sessionId = Guid.NewGuid().ToString();
+
+            var userSession = new UserSession(sessionId, authData.AccessToken, authData.RefreshToken, data.ExpiredTime, data.UserId);
+
+            var resultCache = await cache.SetJsonAsync(sessionId, userSession, TimeSpan.FromDays(30));
+
+            if (!resultCache)
+                return Result<VerifierSrpProofDTO>.Failure(new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера"));
+
+            return Result<VerifierSrpProofDTO>.Success(new VerifierSrpProofDTO(sessionId, data.UserId, data.Login, authData.M2!));
+        }
     }
 }

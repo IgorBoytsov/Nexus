@@ -15,6 +15,7 @@ import { StepEnterCodeComponent } from '../features/auth/recovery-password-keys/
 import { StepSetPasswordComponent } from '../features/auth/recovery-password-keys/components/set-password/set-password.component';
 import { recoveryStepGuard as recoveryKeysStepGuard } from '../features/auth/recovery-password-keys/guards/recovery-password-keys.guard';
 import { ChangePasswordComponent } from '../features/profile/change-password/change-password.component';
+import { guestGuard } from '../core/guards/guest.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -22,11 +23,12 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => AuthLayoutComponent,
     children:[
-      { path: 'login', loadComponent: () => LoginComponent },
-      { path: 'register', loadComponent: () => RegisterComponent },
+      { path: 'login', loadComponent: () => LoginComponent, canActivate: [guestGuard] },
+      { path: 'register', loadComponent: () => RegisterComponent, canActivate:[guestGuard]},
       {
         path: 'recovery/keys',
         component: RecoveryPasswordKeysComponent,
+        canActivate: [guestGuard],
         children: [
           { path: '', component: StepFindLoginComponent, canActivate: [recoveryKeysStepGuard] },
           { path: 'code', component: StepEnterCodeComponent, canActivate: [recoveryKeysStepGuard] },
@@ -37,6 +39,7 @@ export const routes: Routes = [
       { 
         path: 'reset', 
         loadComponent: () => ResetComponent, 
+        canActivate: [guestGuard],
         children: [
           { path: '', component: StepLoginComponent, canActivate: [recoveryStepGuard] },
           { path: 'code', component: StepCodeComponent, canActivate: [recoveryStepGuard] },

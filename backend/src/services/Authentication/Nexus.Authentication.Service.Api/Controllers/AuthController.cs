@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Nexus.Authentication.Service.Application.Features.Commands.LoginByToken;
 using Nexus.Authentication.Service.Application.Features.Commands.Refresh;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof;
@@ -38,20 +37,9 @@ namespace Nexus.Authentication.Service.Api.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
+        public async Task<IActionResult> Refresh([FromBody] Shared.Contracts.Authentication.Requests.RefreshTokensRequest request)
         {
-            var command = new RefreshTokenCommand(request.AccessToken, request.RefreshToken);
-            var result = await _mediator.Send(command);
-
-            return result.Match(
-                onSuccess: () => Ok(result.Value),
-                onFailure: errors => this.MapActionResult(errors));
-        }
-
-        [HttpPost("token-login")]
-        public async Task<IActionResult> TokenLogin([FromBody] TokenLoginRequest request)
-        {
-            var command = new TokenLoginCommand(request.RefreshToken);
+            var command = new RefreshTokenCommand(request.RefreshToken, request.AccessToken);
             var result = await _mediator.Send(command);
 
             return result.Match(

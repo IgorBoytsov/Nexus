@@ -1,7 +1,6 @@
+using System.Security.Claims;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Nexus.Bff.Services;
 using Shared.Contracts.UserManagement.Requests;
 using Shared.Web.Extensions;
 
@@ -14,14 +13,15 @@ namespace Nexus.Bff.Features.Profile.Command.ChangePassword
             app.MapPost("change-password", async (
                 HttpContext httpContext, 
                 [FromBody] ChangePasswordRequest request, 
-                [FromServices] IMediator mediator,
-                [FromServices] JwtReadService jwtReaderService) =>
+                [FromServices] IMediator mediator) =>
             {
-                var token = await httpContext.GetTokenAsync("access_token");
-                var tokenData = jwtReaderService.ExtractData(token!);
+                var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrWhiteSpace(userId))
+                    return Results.Unauthorized();
 
                 var command = new ChangePasswordCommand(
-                    Guid.Parse(tokenData.UserId),
+                    Guid.Parse(userId),
                     request.EncryptedVerifier, 
                     request.SrpSalt, 
                     request.SrpVersion, 
