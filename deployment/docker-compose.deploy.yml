@@ -45,6 +45,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - Urls__AuthServicesBase=http://nexus-auth-api:80/
       - Urls__UserManagementBase=http://nexus-user-management-api:80
+      - Redis__ConnectionString=
     restart: unless-stopped
     depends_on:
       - nexus-auth-api
