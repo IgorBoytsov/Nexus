@@ -1,8 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.DataProtection;
 using Nexus.Bff.Extensions;
 using Nexus.Bff.Infrastructure.Clients;
 using Nexus.Bff.Services;
@@ -11,6 +10,7 @@ using Shared.Contracts.Authentication.Requests;
 using Shared.Contracts.Common;
 using Shared.Validations.Extensions;
 using Shared.Web.Extensions;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +34,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+var redisConnectionString = builder.Configuration["Redis:ConnectionString"];
+var redis = ConnectionMultiplexer.Connect(redisConnectionString!);
+
+builder.Services.AddDataProtection()
+    .SetApplicationName("Crossdyne.SharedBff")
+    .PersistKeysToStackExchangeRedis(redis, "Crossdyne-DataProtection-Keys");
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -44,7 +51,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
         if (builder.Environment.IsDevelopment())
         {
-            options.Cookie.Domain = null;
+            options.Cookie.Domain = "127.0.0.1"; 
             options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; 
             options.Cookie.SameSite = SameSiteMode.Lax;
         }
