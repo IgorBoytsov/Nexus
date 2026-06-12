@@ -5,6 +5,7 @@ using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Contracts;
 using Shared.Contracts.Common;
 using Nexus.Bff.Services;
+using System.Security.Cryptography;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {
@@ -27,14 +28,18 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
             var data = jwtReader.ExtractData(authData.AccessToken);
             var sessionId = Guid.NewGuid().ToString();
 
-            var userSession = new UserSession(sessionId, authData.AccessToken, authData.RefreshToken, data.ExpiredTime, data.UserId);
+            var userSession = new UserSession(sessionId, authData.AccessToken, authData.RefreshToken, data.ExpiredTime, data.UserId, data.Login);
 
-            var resultCache = await cache.SetJsonAsync(sessionId, userSession, TimeSpan.FromDays(30));
+            Span<byte> tempAuthTokenBytes = stackalloc byte[32];
+            RandomNumberGenerator.Fill(tempAuthTokenBytes);
+            string tempAuthToken = Convert.ToBase64String(tempAuthTokenBytes).Replace("+", "-").Replace("/", "_").Replace("=", "");
+
+            var resultCache = await cache.SetJsonAsync($"srp:temp:{tempAuthToken}", userSession, TimeSpan.FromMinutes(2));
 
             if (!resultCache)
                 return Result<VerifierSrpProofDTO>.Failure(new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера"));
 
-            return Result<VerifierSrpProofDTO>.Success(new VerifierSrpProofDTO(sessionId, data.UserId, data.Login, authData.M2!));
+            return Result<VerifierSrpProofDTO>.Success(new VerifierSrpProofDTO(authData.M2!, tempAuthToken));
         }
     }
 }

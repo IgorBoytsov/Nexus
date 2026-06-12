@@ -72,7 +72,7 @@ export class LoginComponent {
         return;
       }
 
-      const { m2 } = verifierResult.value;
+      const { m2, tempAuthToken } = verifierResult.value;
 
       if (!m2){
         this.errorMessage.set("Ошибка аутентификации: M2 отсутствует в ответе сервера.");
@@ -83,6 +83,13 @@ export class LoginComponent {
 
       if (!isServerValid) {
         this.errorMessage.set("Ошибка аутентификации: Подлинность сервера не подтверждена!");
+        return;
+      }
+
+      const complete = await this.executeSafe(this.authApi.srpComplete({ tempAuthToken }));
+
+      if (complete.isFailure){
+        this.handleError(complete);
         return;
       }
 

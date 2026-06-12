@@ -1,7 +1,4 @@
-using System.Security.Claims;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Web.Extensions;
@@ -25,26 +22,11 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 
                 var verifierResponse = result.Value;
 
-                var claims = new List<Claim> 
-                { 
-                    new(ClaimTypes.NameIdentifier, verifierResponse.UserId),
-                    new(ClaimTypes.Name, verifierResponse.Login),
-                    new("SessionId", verifierResponse.SessionId) 
-                };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(claimsIdentity);
-
-                var authProperties = new AuthenticationProperties
+                return Results.Ok(new 
                 {
-                    IsPersistent = true, 
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30),
-                    AllowRefresh = true 
-                };
-
-                await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
-
-                return Results.Ok(new { M2 = result.Value!.M2 });
+                     M2 = verifierResponse.M2, 
+                     TempAuthToken = verifierResponse.TempAuthToken 
+                });
             });
         }
     }

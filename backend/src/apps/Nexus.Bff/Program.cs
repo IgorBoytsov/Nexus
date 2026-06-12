@@ -85,7 +85,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             }
 
             var cache = context.HttpContext.RequestServices.GetRequiredService<IRedisCacheService>();
-            var session = await cache.GetJsonAsync<UserSession>(sessionId);
+            var session = await cache.GetJsonAsync<UserSession>($"session:{sessionId}");
            
             if (session == null)
             {
@@ -108,11 +108,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                     session.RefreshToken = refreshResult.Value.RefreshToken;
                     session.AccessTokenExpiresAt = jwtData.ExpiredTime;
 
-                    await cache.SetJsonAsync(sessionId, session, TimeSpan.FromDays(30));
+                    await cache.SetJsonAsync($"session:{sessionId}", session, TimeSpan.FromDays(30));
                 }
                 else
                 {
-                    var updatedSession = await cache.GetJsonAsync<UserSession>(sessionId);
+                    var updatedSession = await cache.GetJsonAsync<UserSession>($"session:{sessionId}");
 
                     if (updatedSession != null && updatedSession.AccessTokenExpiresAt > DateTime.UtcNow.AddMinutes(1))
                     {
@@ -120,7 +120,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                     }
                     else
                     {
-                        await cache.RemoveAsync(sessionId);
+                        await cache.RemoveAsync($"session:{sessionId}");
                         context.RejectPrincipal();
                         return;
                     }
@@ -128,7 +128,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             }
 
             context.HttpContext.Items["AccessToken"] = session.AccessToken;
-            context.ShouldRenew = true;
+            // context.ShouldRenew = true;
         };
     });
 

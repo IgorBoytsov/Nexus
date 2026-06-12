@@ -7,6 +7,7 @@ import { SrpChallengeResponse } from '../../../contracts/responses/srp/srp-chall
 import { AuthResponse } from '../../../contracts/responses/auth/auth.response'
 import { Result } from '@crossdyne/toolkit';
 import { ResultHttp } from '../../../core/result-helper/result-http';
+import { CompleteSrpRequest } from '../../../contracts/requests/complete-srp.request';
 
 @Injectable({
     providedIn: 'root'
@@ -27,6 +28,14 @@ export class AuthApi {
         .pipe(
             map(response => ResultHttp.success<AuthResponse>(response)),
             catchError((error: HttpErrorResponse) => of(ResultHttp.failure<AuthResponse>(error)))
+        );
+    }
+
+    srpComplete(data: CompleteSrpRequest): Observable<Result<any>> {
+        return this.http.post(`/srp/complete`, data, { withCredentials: true })
+        .pipe(
+            map(response => ResultHttp.success(response)),
+            catchError((error: HttpErrorResponse) => of(ResultHttp.failure(error)))
         );
     }
 }

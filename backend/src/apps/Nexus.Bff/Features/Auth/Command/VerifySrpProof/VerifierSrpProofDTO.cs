@@ -1,4 +1,4 @@
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {
-    public sealed record VerifierSrpProofDTO(string SessionId, string UserId, string Login, string M2);
+    public sealed record VerifierSrpProofDTO(string M2, string TempAuthToken);
 }
