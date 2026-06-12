@@ -35,7 +35,14 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(claimsIdentity);
 
-                await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true, 
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30),
+                    AllowRefresh = true 
+                };
+
+                await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
 
                 return Results.Ok(new { M2 = result.Value!.M2 });
             });
