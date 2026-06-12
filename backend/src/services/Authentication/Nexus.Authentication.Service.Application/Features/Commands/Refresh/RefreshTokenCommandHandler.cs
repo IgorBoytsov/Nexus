@@ -46,8 +46,6 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
                 }
             }
 
-            storageToken.MarkAsUsed();
-
             var userData = await userManagementServiceClient.GetUserByIdAsync(storageToken.UserId);
 
             if (userData == null)
@@ -66,6 +64,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
                 isRevoked: false);
 
             await accessDataRepository.AddAsync(newAccessData, cancellationToken);
+            accessDataRepository.Remove(storageToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<AuthResponse>.Success(new AuthResponse(newAccessToken, newRefreshToken));
