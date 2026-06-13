@@ -1,58 +1,25 @@
 using System.Reflection;
-using System.Text.Json;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Nexus.Bff.Extensions;
 using Shared.Validations.Extensions;
-using Shared.Web.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var assembly = Assembly.GetExecutingAssembly(); 
+var executingAssembly = Assembly.GetExecutingAssembly(); 
+var configuration = builder.Configuration;
+var environment = builder.Environment; 
 
-builder.Services.AddOpenApi();
-
-builder.Services.Configure<JsonSerializerOptions>(opt => opt.AddCrossdyneDefaults());
-
-builder.Services.AddAuthorization();
-builder.Services.AddServices().AddHttpClients(builder.Configuration).AddValidations(assembly);
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowLocalFrontend", policy =>
-    {
-        policy.WithOrigins("http://127.0.0.1:4200", "https://account.crossdyne.com")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
-    });
-});
-
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(options =>
-        {
-            options.Cookie.Name = "Crossdyne";
-            options.Cookie.Domain = null;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; 
-            options.Cookie.SameSite = SameSiteMode.Lax;
-            options.Cookie.HttpOnly = true;
-            options.ExpireTimeSpan = TimeSpan.FromDays(7);
-        });
-}
-else
-{
-    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(options =>
-        {
-            options.Cookie.Name = "Crossdyne";
-            options.Cookie.Domain = ".crossdyne.com"; 
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            options.Cookie.SameSite = SameSiteMode.Strict;
-            options.Cookie.HttpOnly = true;
-            options.ExpireTimeSpan = TimeSpan.FromDays(7);
-        });
-}
+builder.Services
+    //Default
+    .AddOpenApi()
+    .AddAuthorization()
+    // Custom
+    .ConfigureOptions()
+    .AddServices(configuration)
+    .AddHttpClients(configuration)
+    .AddValidations(executingAssembly)
+    .UseCors()
+    .AddSharedCryptoKeyForDecryptCookie(configuration)
+    .AddCookie(environment);
 
 var app = builder.Build();
 
@@ -66,5 +33,5 @@ app.UseRouting();
 app.UseCors("AllowLocalFrontend");
 app.UseAuthentication(); 
 app.UseAuthorization();  
-app.MapEndpoints(Assembly.GetExecutingAssembly());
+app.MapEndpoints(executingAssembly);
 app.Run();

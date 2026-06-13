@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.v1;
+using Shared.Contracts.Authentication.Responses;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
 {
-    public record RefreshTokenCommand(string AccessToken, string RefreshToken): IRequest<Result<AuthResponse>>;
+    public sealed record RefreshTokenCommand(string RefreshToken, string? AccessToken = null) : IRequest<Result<AuthResponse>>;
 }

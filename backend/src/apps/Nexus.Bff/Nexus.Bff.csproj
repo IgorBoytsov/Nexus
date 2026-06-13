@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Rebout.Nexus.Contracts" />
     <PackageReference Include="Crossdyne.Toolkit" />
@@ -20,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\shared\contracts\Shared.Contracts\Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
+    <ProjectReference Include="..\..\shared\infrastructure\Shared.Redis\Shared.Redis.csproj" />
     <ProjectReference Include="..\..\shared\validations\Shared.Validations\Shared.Validations.csproj" />
     <ProjectReference Include="..\..\shared\web\Shared.Web\Shared.Web.csproj" />
   </ItemGroup>

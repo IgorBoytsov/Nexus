@@ -1,7 +1,6 @@
+using System.Security.Claims;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Nexus.Bff.Services;
 using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Profile.Query.Info
@@ -12,13 +11,15 @@ namespace Nexus.Bff.Features.Profile.Query.Info
         {
             app.MapGet("/profile", async (
                 HttpContext httpContext, 
-                [FromServices] JwtReadService jwtReadService, 
                 [FromServices] IMediator mediator, 
                 CancellationToken ct = default) =>
             {
-                var token = await httpContext.GetTokenAsync("access_token");
-                var tokenData = jwtReadService.ExtractData(token!);
-                var result = await mediator.Send(new GetProfileInfoQuery(tokenData.UserId), ct);
+                var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return Results.Unauthorized(); 
+
+                var result = await mediator.Send(new GetProfileInfoQuery(userId!), ct);
 
                 if(result.IsFailure)
                     return result.Errors.MapToMinimalApiResult();

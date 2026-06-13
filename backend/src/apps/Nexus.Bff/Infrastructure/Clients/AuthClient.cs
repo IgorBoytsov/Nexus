@@ -51,6 +51,26 @@ namespace Nexus.Bff.Infrastructure.Clients
             }
         }
 
+        public async Task<Result<Shared.Contracts.Authentication.Responses.AuthResponse>> RefreshTokens(Shared.Contracts.Authentication.Requests.RefreshTokensRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("api/auth/refresh", request, options: _jsonOptions);
+                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result<Shared.Contracts.Authentication.Responses.AuthResponse>.Failure(errors!)!;
+                }
+
+                return Result<Shared.Contracts.Authentication.Responses.AuthResponse?>.Success(await response.Content.ReadFromJsonAsync<Shared.Contracts.Authentication.Responses.AuthResponse>())!;
+            }
+            catch (Exception ex)
+            {
+                return Result<Shared.Contracts.Authentication.Responses.AuthResponse?>.Failure(new Error(AppErrors.Api, $"Ошибка обновление токенов: {ex.Message}"))!;
+            }
+        }
+
         public async Task<Result<string>> GetPublicKey()
         {
             var response = await _httpClient.GetAsync("api/auth-config/public-key");

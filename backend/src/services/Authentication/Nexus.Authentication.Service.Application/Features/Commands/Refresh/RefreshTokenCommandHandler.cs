@@ -4,14 +4,13 @@ using Microsoft.IdentityModel.Tokens;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.v1;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Nexus.Authentication.Service.Application.Interfaces.Repositories;
 using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
+using Shared.Contracts.Authentication.Responses;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
 {
@@ -24,27 +23,48 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
     {
         public async Task<Result<AuthResponse>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            var principal = GetPrincipalFromExpiredToken(request.AccessToken);
-
-            if (!Guid.TryParse(principal?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value, out var userIdFromJwt))
-                return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "Не валидный токен."));
-            
             var maybeStorageToken = await accessDataRepository.GetByAsync(rt => rt.RefreshToken == request.RefreshToken, cancellationToken);
 
-            var storageToken = maybeStorageToken.Value;
+            if (maybeStorageToken.IsNone)
+                return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "RefreshToken не найден."));
 
-            if (storageToken == null || storageToken.UserId != userIdFromJwt || storageToken.IsUsed || storageToken.IsRevoked || DateTime.UtcNow > storageToken.ExpiryDate)
-                return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "Не валидный Refresh токен."));
+            var storageToken = maybeStorageToken.Value; 
 
-            storageToken.MarkAsUsed();
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+            if (storageToken == null || storageToken.IsUsed || storageToken.IsRevoked || DateTime.UtcNow > storageToken.ExpiryDate)
+                return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "Недействительный или просроченный Refresh токен."));
+                
 
-            var userData = await userManagementServiceClient.GetUserByIdAsync(storageToken.UserId); 
-            var newAccessToken = jwtTokenGenerator.GenerateAccessToken(userData!);
+            if (!string.IsNullOrWhiteSpace(request.AccessToken))
+            {
+                var principal = GetPrincipalFromExpiredToken(request.AccessToken);
+                
+                if (principal?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value is not string userIdFromJwt ||
+                    !Guid.TryParse(userIdFromJwt, out var userIdGuid) ||
+                    userIdGuid != storageToken.UserId)
+                {
+                    return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "AccessToken не соответствует Refresh токену."));
+                }
+            }
+
+            var userData = await userManagementServiceClient.GetUserByIdAsync(storageToken.UserId);
+
+            if (userData == null)
+                return Result<AuthResponse>.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден."));
+
+            var newAccessToken = jwtTokenGenerator.GenerateAccessToken(userData);
             var newRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
 
-            var newAccessData = AccessData.Create(Guid.Parse(userData!.Id), newRefreshToken, newAccessToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(30), false, false);
+            var newAccessData = AccessData.Create(
+                userId: Guid.Parse(userData.Id),
+                refreshToken: newRefreshToken,
+                accessToken: newAccessToken, 
+                creationDate: DateTime.UtcNow,
+                expiryDate: DateTime.UtcNow.AddDays(30),
+                isUsed: false,
+                isRevoked: false);
+
             await accessDataRepository.AddAsync(newAccessData, cancellationToken);
+            accessDataRepository.Remove(storageToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<AuthResponse>.Success(new AuthResponse(newAccessToken, newRefreshToken));
@@ -67,24 +87,16 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
             {
                 var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
 
-                if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                if (securityToken is not JwtSecurityToken jwtSecurityToken || 
+                    !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    Debug.WriteLine("ОШИБКА ВАЛИДАЦИИ: Токен не является JwtSecurityToken или алгоритм не HmacSha256.");
                     return null;
                 }
 
                 return principal;
             }
-            catch (Exception ex)
+            catch
             {
-                Debug.WriteLine("==========================================================");
-                Debug.WriteLine("ОШИБКА ВАЛИДАЦИИ ТОКЕНА:");
-                Debug.WriteLine($"ТИП ОШИБКИ: {ex.GetType().Name}");
-                Debug.WriteLine($"СООБЩЕНИЕ: {ex.Message}");
-                Debug.WriteLine("ПОЛНЫЙ СТЕК ОШИБКИ:");
-                Debug.WriteLine(ex.ToString());
-                Debug.WriteLine("==========================================================");
-
                 return null;
             }
         }

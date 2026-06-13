@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace Nexus.Bff.Extensions
 {
-    public static class EndpointRegistrationExtensions
+    public static class EndpointRegistrationWebApplicationExtensions
     {
         public static void MapEndpoints(this IEndpointRouteBuilder app, Assembly assembly)
         {

@@ -1,12 +1,13 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SrpClientService } from '@crossdyne/security'
 import { AuthApi } from './auth.api';
 import { firstValueFrom, Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Result } from '@crossdyne/toolkit';
 import { CryptoConfigurationService } from '../../../core/services/crypto-configuration.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,7 @@ import { CryptoConfigurationService } from '../../../core/services/crypto-config
 export class LoginComponent {
   private readonly fb = inject(FormBuilder); 
   private readonly router = inject(Router); 
+   private readonly route = inject(ActivatedRoute);
   private readonly authApi = inject(AuthApi);
   private readonly destroyRef = inject(DestroyRef);
   private cryptoConfig = inject(CryptoConfigurationService);
@@ -28,6 +30,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+  returnUtl: string = '/';
 
   readonly minLoginLength = 3;
 
@@ -36,6 +39,8 @@ export class LoginComponent {
       login: ['', [Validators.required, Validators.minLength(this.minLoginLength)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
+
+    this.returnUtl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   async onSubmit(): Promise<void> {
@@ -67,7 +72,7 @@ export class LoginComponent {
         return;
       }
 
-      const { m2 } = verifierResult.value;
+      const { m2, tempAuthToken } = verifierResult.value;
 
       if (!m2){
         this.errorMessage.set("Ошибка аутентификации: M2 отсутствует в ответе сервера.");
@@ -81,14 +86,46 @@ export class LoginComponent {
         return;
       }
 
-      console.log("Успешная аутентификация! Сервер подтвержден.");
+      const complete = await this.executeSafe(this.authApi.srpComplete({ tempAuthToken }));
 
-      this.router.navigate(['/user/profile'])
+      if (complete.isFailure){
+        this.handleError(complete);
+        return;
+      }
+
+      this.redirect();
+
     } catch (error) {
       console.error('Неизвестная ошибка:', error);
       this.errorMessage.set('Произошла непредвиденная ошибка.'); 
     } finally {
       this.isLoading.set(false);
+    }
+  }
+
+  private redirect(): void {
+    if (this.isValidReturnUrl(this.returnUtl)) {
+      window.location.href = this.returnUtl;
+    } else {
+      this.router.navigate(['/user/profile']);
+    }
+  }
+
+  private isValidReturnUrl(url: string): boolean {
+    try {
+      const parsedUrl = new URL(url);
+
+      if (environment.production) {
+        return parsedUrl.hostname.endsWith('.crossdyne.com')|| parsedUrl.hostname === 'crossdyne.com';
+      }
+
+      if (parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1') {
+        return true;
+      }
+
+      return parsedUrl.hostname.endsWith('.crossdyne.com') || parsedUrl.hostname === 'crossdyne.com';
+    } catch {
+      return false;
     }
   }
 
