@@ -25,7 +25,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             if (!Guid.TryParse(userIdString, out var userId))
                 return BadRequest("Не верный User ID формат.");
 
-            var result = await mediator.Send(new GetUserByIdQuery(Guid.Parse("95eeb97e-f172-44b3-a117-ce673cab3e38")));
+            var result = await mediator.Send(new GetUserByIdQuery(Guid.Parse(userIdString)));
 
             return Ok(result);
         }
