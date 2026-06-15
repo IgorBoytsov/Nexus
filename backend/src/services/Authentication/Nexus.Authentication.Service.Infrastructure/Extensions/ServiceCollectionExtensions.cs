@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
@@ -11,9 +11,9 @@ using Nexus.Authentication.Service.Infrastructure.Persistence.Contexts;
 using Nexus.Authentication.Service.Infrastructure.Persistence.Repositories.AccessDatas;
 using Shared.Redis;
 
-namespace Nexus.Authentication.Service.Infrastructure.Ioc
+namespace Nexus.Authentication.Service.Infrastructure.Extensions
 {
-    public static class InfrastructureDI
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {

@@ -1,8 +1,7 @@
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Nexus.UserManagement.Service.Application.Ioc;
-using Nexus.UserManagement.Service.Infrastructure.Ioc;
+using Nexus.UserManagement.Service.Application.Extension;
+using Nexus.UserManagement.Service.Infrastructure.Extension;
 using Shared.Web.Extensions;
 using System.Text;
 
