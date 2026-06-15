@@ -1,4 +1,5 @@
-﻿using Crossdyne.Security.Abstractions;
+using System.Reflection;
+using Crossdyne.Security.Abstractions;
 using Crossdyne.Security.Cryptography;
 using Crossdyne.Security.Srp.Server;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,11 +8,10 @@ using Nexus.Authentication.Service.Application.Services;
 using Shared.Security.Hasher;
 using Shared.Security.Verifiers;
 using Shared.Validations.Extensions;
-using System.Reflection;
 
-namespace Nexus.Authentication.Service.Application.Ioc
+namespace Nexus.Authentication.Service.Application.Extensions
 {
-    public static class ApplicationDI
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {

@@ -1,7 +1,7 @@
-using Nexus.Authentication.Service.Infrastructure.Ioc;
 using System.IdentityModel.Tokens.Jwt;
-using Nexus.Authentication.Service.Application.Ioc;
 using System.Text.Json;
+using Nexus.Authentication.Service.Application.Extensions;
+using Nexus.Authentication.Service.Infrastructure.Extensions;
 using Shared.Web.Extensions;
 
 namespace Nexus.Authentication.Service.Api
@@ -31,9 +31,7 @@ namespace Nexus.Authentication.Service.Api
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();

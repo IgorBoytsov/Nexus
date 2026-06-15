@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using Shared.Security.Hasher;
 using Shared.Validations.Extensions;
-using System.Reflection;
 
-namespace Nexus.UserManagement.Service.Application.Ioc
+namespace Nexus.UserManagement.Service.Application.Extension
 {
-    public static class ApplicationDI
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {

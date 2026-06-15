@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +16,9 @@ using Npgsql;
 using Shared.Dapper.TypeHandlers;
 using Shared.Redis;
 
-namespace Nexus.UserManagement.Service.Infrastructure.Ioc
+namespace Nexus.UserManagement.Service.Infrastructure.Extension
 {
-    public static class InfrastructureDI
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
@@ -26,9 +26,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Ioc
 
             services.AddCashService(configuration);
             services.AddDbContext<UserManagementContext>(option => option.UseNpgsql(connectionString));
-
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
             services.AddSingleton<IDbConnection>(sp => new NpgsqlConnection(connectionString));
 
             #region DapperHandler
