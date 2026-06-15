@@ -16,6 +16,7 @@ services:
       - Crypto__RsaPrivateKey=
       - Crypto__RsaPublicKey=
       - Redis__ConnectionString=
+      - TokenCleanup__IntervalHours=
     restart: unless-stopped
     networks:
       - nexus-network
