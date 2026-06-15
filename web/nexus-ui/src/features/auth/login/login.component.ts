@@ -40,7 +40,9 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
 
-    this.returnUtl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.route.queryParams.subscribe(params => {
+      this.returnUtl = params['returnUrl'] || '/';
+    });
   }
 
   async onSubmit(): Promise<void> {
@@ -104,26 +106,36 @@ export class LoginComponent {
   }
 
   private redirect(): void {
+    if (!this.returnUtl || this.returnUtl === '/') {
+      this.router.navigate(['/user/profile']);
+      return;
+    }
+
     if (this.isValidReturnUrl(this.returnUtl)) {
-      window.location.href = this.returnUtl;
+      if (this.returnUtl.startsWith('http://') || this.returnUtl.startsWith('https://')) {
+        window.location.href = this.returnUtl;
+      } else {
+        this.router.navigateByUrl(this.returnUtl);
+      }
     } else {
       this.router.navigate(['/user/profile']);
     }
   }
 
   private isValidReturnUrl(url: string): boolean {
+    if (!url) return false;
+    
+    if (url.startsWith('/')) {
+      return true;
+    }
+    
     try {
       const parsedUrl = new URL(url);
-
       if (environment.production) {
-        return parsedUrl.hostname.endsWith('.crossdyne.com')|| parsedUrl.hostname === 'crossdyne.com';
+        return parsedUrl.hostname.endsWith('.crossdyne.com') || parsedUrl.hostname === 'crossdyne.com';
       }
-
-      if (parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1') {
-        return true;
-      }
-
-      return parsedUrl.hostname.endsWith('.crossdyne.com') || parsedUrl.hostname === 'crossdyne.com';
+      return parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1' ||
+            parsedUrl.hostname.endsWith('.crossdyne.com') || parsedUrl.hostname === 'crossdyne.com';
     } catch {
       return false;
     }
