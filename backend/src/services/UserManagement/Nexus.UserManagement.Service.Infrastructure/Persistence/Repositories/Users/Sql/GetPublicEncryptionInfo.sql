@@ -1,5 +1,5 @@
 SELECT
-    ua.srp_salt as ClientSalt,
+    d.salt as ClientSalt,
     d.encrypted_value as EncryptedDek
 FROM users u 
 JOIN deks d ON d.user_id = u.id
