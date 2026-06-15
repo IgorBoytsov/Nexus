@@ -18,7 +18,7 @@ namespace Nexus.Bff.Extensions
 
             services.AddDataProtection()
                 .SetApplicationName("Crossdyne.SharedBff")
-                .PersistKeysToStackExchangeRedis(redis, "Crossdyne-DataProtection-Keys");
+                .PersistKeysToStackExchangeRedis(redis, RedisKeyExtensions.DataProtectionKeys());
 
             return services;
         }
@@ -77,6 +77,7 @@ namespace Nexus.Bff.Extensions
                 options.Events.OnValidatePrincipal = async context =>
                 {
                     var sessionId = context.Principal?.FindFirst("SessionId")?.Value;
+                    var cacheSessionKey = RedisKeyExtensions.SessionKey(sessionId!);
 
                     if (string.IsNullOrWhiteSpace(sessionId))
                     {
@@ -85,7 +86,7 @@ namespace Nexus.Bff.Extensions
                     }
 
                     var cache = context.HttpContext.RequestServices.GetRequiredService<IRedisCacheService>();
-                    var session = await cache.GetJsonAsync<UserSession>($"session:{sessionId}");
+                    var session = await cache.GetJsonAsync<UserSession>(cacheSessionKey);
                 
                     if (session == null)
                     {
@@ -108,11 +109,11 @@ namespace Nexus.Bff.Extensions
                             session.RefreshToken = refreshResult.Value.RefreshToken;
                             session.AccessTokenExpiresAt = jwtData.ExpiredTime;
 
-                            await cache.SetJsonAsync($"session:{sessionId}", session, TimeSpan.FromDays(30));
+                            await cache.SetJsonAsync(cacheSessionKey, session, TimeSpan.FromDays(30));
                         }
                         else
                         {
-                            var updatedSession = await cache.GetJsonAsync<UserSession>($"session:{sessionId}");
+                            var updatedSession = await cache.GetJsonAsync<UserSession>(cacheSessionKey);
 
                             if (updatedSession != null && updatedSession.AccessTokenExpiresAt > DateTime.UtcNow.AddMinutes(1))
                             {
@@ -120,7 +121,7 @@ namespace Nexus.Bff.Extensions
                             }
                             else
                             {
-                                await cache.RemoveAsync($"session:{sessionId}");
+                                await cache.RemoveAsync(cacheSessionKey);
                                 context.RejectPrincipal();
                                 return;
                             }
