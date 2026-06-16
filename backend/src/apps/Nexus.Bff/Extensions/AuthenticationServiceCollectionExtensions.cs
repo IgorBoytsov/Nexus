@@ -155,17 +155,6 @@ namespace Nexus.Bff.Extensions
                                 await cache.RemoveAsync(cacheSessionKey);
                                 context.RejectPrincipal();
                                 return;
-                                // var updatedSession = await cache.GetJsonAsync<UserSession>(cacheSessionKey);
-                                // if (updatedSession != null && updatedSession.AccessTokenExpiresAt > DateTime.UtcNow.AddMinutes(1))
-                                // {
-                                //     session = updatedSession;
-                                // }
-                                // else
-                                // {
-                                //     await cache.RemoveAsync(cacheSessionKey);
-                                //     context.RejectPrincipal();
-                                //     return;
-                                // }
                             }
                         }
                     }
