@@ -17,6 +17,7 @@ builder.Services
     .AddServices(configuration)
     .AddHttpClients(configuration)
     .AddValidations(executingAssembly)
+    .AddDistributedLock()
     .UseCors()
     .AddSharedCryptoKeyForDecryptCookie(configuration)
     .AddCookie(environment);
