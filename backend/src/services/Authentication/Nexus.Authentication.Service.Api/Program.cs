@@ -20,8 +20,8 @@ namespace Nexus.Authentication.Service.Api
             
             builder.Services.AddOpenApi();
 
-            builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplication(builder.Configuration);
 
             var app = builder.Build();
 

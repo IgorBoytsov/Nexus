@@ -17,6 +17,7 @@
     <PackageReference Include="Rebout.Nexus.Contracts" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="DistributedLock.Redis" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,6 +10,7 @@ using Crossdyne.Security.Configuration;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Nexus.Authentication.Service.Application.Interfaces.Repositories;
 using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
+using Nexus.Authentication.Service.Application.Extensions;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {
@@ -30,8 +31,9 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
                 return Result<AuthResponse>.Failure(new Error(AppErrors.Validation, "Неверные параметры аутентификации."));
 
             string normalizedLogin = request.Login.Trim().ToLowerInvariant();  
+            string srpSessionKey = RedisKeyExtensions.SrpSession(normalizedLogin);
 
-            var session = await redisCacheService.GetJsonAsync<SrpSessionState>($"srp_{normalizedLogin}");
+            var session = await redisCacheService.GetJsonAsync<SrpSessionState>(srpSessionKey);
 
             if (session is null)
                 return Result<AuthResponse>.Failure(new Error(AppErrors.SessionExpired, "Сессия аутентификации истекла или недействительна. Повторите вход."));
@@ -51,7 +53,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             await accessDataRepository.AddAsync(accessData, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await redisCacheService.RemoveAsync($"srp_{normalizedLogin}");
+            await redisCacheService.RemoveAsync(srpSessionKey);
             return Result<AuthResponse>.Success(new AuthResponse(accessToken, refreshToken, M2_server));
         }
     }

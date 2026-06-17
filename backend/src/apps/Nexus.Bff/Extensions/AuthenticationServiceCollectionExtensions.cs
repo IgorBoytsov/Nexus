@@ -1,5 +1,9 @@
+using Medallion.Threading;
+using Medallion.Threading.Redis;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.DataProtection.StackExchangeRedis;
 using Nexus.Bff.Infrastructure.Clients;
 using Nexus.Bff.Services;
 using Shared.Contracts;
@@ -13,12 +17,25 @@ namespace Nexus.Bff.Extensions
     {
         public static IServiceCollection AddSharedCryptoKeyForDecryptCookie(this IServiceCollection services, IConfiguration configuration)
         {
-            var redisConnectionString = configuration["Redis:ConnectionString"];
-            var redis = ConnectionMultiplexer.Connect(redisConnectionString!);
+            services.AddDataProtection().SetApplicationName("Crossdyne.SharedBff");
 
-            services.AddDataProtection()
-                .SetApplicationName("Crossdyne.SharedBff")
-                .PersistKeysToStackExchangeRedis(redis, "Crossdyne-DataProtection-Keys");
+            services.AddOptions<KeyManagementOptions>().Configure<IServiceProvider>((options, sp) =>
+            {
+                var redis = sp.GetRequiredService<IConnectionMultiplexer>();
+
+                options.XmlRepository = new RedisXmlRepository(() => redis.GetDatabase(), RedisKeyExtensions.DataProtectionKeys());
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection AddDistributedLock(this IServiceCollection services)
+        {
+            services.AddSingleton(sp =>
+            {
+                var multiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
+                return new RedisDistributedSynchronizationProvider(multiplexer.GetDatabase());
+            });
 
             return services;
         }
@@ -84,9 +101,11 @@ namespace Nexus.Bff.Extensions
                         return;
                     }
 
+                    var cacheSessionKey = RedisKeyExtensions.SessionKey(sessionId!);
                     var cache = context.HttpContext.RequestServices.GetRequiredService<IRedisCacheService>();
-                    var session = await cache.GetJsonAsync<UserSession>($"session:{sessionId}");
-                
+                    
+                    var session = await cache.GetJsonAsync<UserSession>(cacheSessionKey);
+
                     if (session == null)
                     {
                         context.RejectPrincipal();
@@ -95,38 +114,51 @@ namespace Nexus.Bff.Extensions
 
                     if (session.AccessTokenExpiresAt <= DateTime.UtcNow.AddMinutes(1))
                     {
-                        var authClient = context.HttpContext.RequestServices.GetRequiredService<IAuthClient>();
+                        var lockProvider = context.HttpContext.RequestServices.GetRequiredService<RedisDistributedSynchronizationProvider>();
+                        var lockKey = RedisKeyExtensions.DistributedLock(sessionId);
 
-                        var refreshResult = await authClient.RefreshTokens(new RefreshTokensRequest(session.RefreshToken, session.AccessToken));
+                        await using var handle = (await lockProvider.TryAcquireLockAsync(lockKey, timeout: TimeSpan.FromSeconds(5)));
 
-                        if (refreshResult.IsSuccess)
+                        if (handle == null)
                         {
-                            var jwtReader = context.HttpContext.RequestServices.GetRequiredService<IJwtReadService>();
-                            var jwtData = jwtReader.ExtractData(refreshResult.Value.AccessToken);
-
-                            session.AccessToken = refreshResult.Value.AccessToken;
-                            session.RefreshToken = refreshResult.Value.RefreshToken;
-                            session.AccessTokenExpiresAt = jwtData.ExpiredTime;
-
-                            await cache.SetJsonAsync($"session:{sessionId}", session, TimeSpan.FromDays(30));
+                            context.RejectPrincipal();
+                            return;
                         }
-                        else
-                        {
-                            var updatedSession = await cache.GetJsonAsync<UserSession>($"session:{sessionId}");
 
-                            if (updatedSession != null && updatedSession.AccessTokenExpiresAt > DateTime.UtcNow.AddMinutes(1))
+                        session = await cache.GetJsonAsync<UserSession>(cacheSessionKey);
+
+                        if (session == null)
+                        {
+                            context.RejectPrincipal();
+                            return;
+                        }
+
+                        if (session.AccessTokenExpiresAt <= DateTime.UtcNow.AddMinutes(1))
+                        {
+                            var authClient = context.HttpContext.RequestServices.GetRequiredService<IAuthClient>();
+                            var refreshResult = await authClient.RefreshTokens(new RefreshTokensRequest(session.RefreshToken, session.AccessToken));
+
+                            
+                            if (refreshResult.IsSuccess)
                             {
-                                session = updatedSession;
+                                var jwtReader = context.HttpContext.RequestServices.GetRequiredService<IJwtReadService>();
+                                var jwtData = jwtReader.ExtractData(refreshResult.Value.AccessToken);
+
+                                session.AccessToken = refreshResult.Value.AccessToken;
+                                session.RefreshToken = refreshResult.Value.RefreshToken;
+                                session.AccessTokenExpiresAt = jwtData.ExpiredTime;
+
+                                await cache.SetJsonAsync(cacheSessionKey, session, TimeSpan.FromDays(30));
                             }
                             else
                             {
-                                await cache.RemoveAsync($"session:{sessionId}");
+                                await cache.RemoveAsync(cacheSessionKey);
                                 context.RejectPrincipal();
                                 return;
                             }
                         }
                     }
-
+  
                     context.HttpContext.Items["AccessToken"] = session.AccessToken;
                 };
             });

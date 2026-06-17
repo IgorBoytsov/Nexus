@@ -6,6 +6,7 @@ using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Contracts;
 using Crossdyne.Security.Configuration;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
+using Nexus.Authentication.Service.Application.Extensions;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {
@@ -54,7 +55,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
                 sessionState.PublicKeyB
             );
 
-            await _redisCacheService.SetJsonAsync($"srp_{normalizedLogin}", session, TimeSpan.FromMinutes(2));
+            await _redisCacheService.SetJsonAsync(RedisKeyExtensions.SrpSession(normalizedLogin), session, TimeSpan.FromMinutes(2));
 
             return Result<SrpChallengeResponse>.Success(new SrpChallengeResponse(userData.ClientSalt, sessionState.PublicKeyB));
         }

@@ -11,6 +11,9 @@ using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Nexus.Authentication.Service.Application.Interfaces.Repositories;
 using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
 using Shared.Contracts.Authentication.Responses;
+using Medallion.Threading.Redis;
+using Nexus.Authentication.Service.Application.Extensions;
+using Medallion.Threading;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
 {
@@ -19,55 +22,61 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
         IAccessDataRepository accessDataRepository,
         IJwtTokenGenerator jwtTokenGenerator,
         IConfiguration configuration,
-        IUserManagementServiceClient userManagementServiceClient) : IRequestHandler<RefreshTokenCommand, Result<AuthResponse>>
+        IUserManagementServiceClient userManagementServiceClient,
+        RedisDistributedSynchronizationProvider lockProvider) : IRequestHandler<RefreshTokenCommand, Result<AuthResponse>>
     {
         public async Task<Result<AuthResponse>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            var maybeStorageToken = await accessDataRepository.GetByAsync(rt => rt.RefreshToken == request.RefreshToken, cancellationToken);
+            var lockKey = RedisKeyExtensions.DistributedLock(request.RefreshToken);
 
-            if (maybeStorageToken.IsNone)
-                return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "RefreshToken не найден."));
-
-            var storageToken = maybeStorageToken.Value; 
-
-            if (storageToken == null || storageToken.IsUsed || storageToken.IsRevoked || DateTime.UtcNow > storageToken.ExpiryDate)
-                return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "Недействительный или просроченный Refresh токен."));
-                
-
-            if (!string.IsNullOrWhiteSpace(request.AccessToken))
+            await using (await lockProvider.AcquireLockAsync(lockKey, timeout: TimeSpan.FromSeconds(5), cancellationToken))
             {
-                var principal = GetPrincipalFromExpiredToken(request.AccessToken);
-                
-                if (principal?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value is not string userIdFromJwt ||
-                    !Guid.TryParse(userIdFromJwt, out var userIdGuid) ||
-                    userIdGuid != storageToken.UserId)
+                var maybeStorageToken = await accessDataRepository.GetByAsync(rt => rt.RefreshToken == request.RefreshToken, cancellationToken);
+
+                if (maybeStorageToken.IsNone)
+                    return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "RefreshToken не найден."));
+
+                var storageToken = maybeStorageToken.Value; 
+
+                if (storageToken == null || storageToken.IsUsed || storageToken.IsRevoked || DateTime.UtcNow > storageToken.ExpiryDate)
+                    return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "Недействительный или просроченный Refresh токен."));
+
+
+                if (!string.IsNullOrWhiteSpace(request.AccessToken))
                 {
-                    return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "AccessToken не соответствует Refresh токену."));
+                    var principal = GetPrincipalFromExpiredToken(request.AccessToken);
+
+                    if (principal?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value is not string userIdFromJwt ||
+                        !Guid.TryParse(userIdFromJwt, out var userIdGuid) ||
+                        userIdGuid != storageToken.UserId)
+                    {
+                        return Result<AuthResponse>.Failure(new Error(ErrorCode.Unauthorized, "AccessToken не соответствует Refresh токену."));
+                    }
                 }
+
+                var userData = await userManagementServiceClient.GetUserByIdAsync(storageToken.UserId);
+
+                if (userData == null)
+                    return Result<AuthResponse>.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден."));
+
+                var newAccessToken = jwtTokenGenerator.GenerateAccessToken(userData);
+                var newRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
+
+                var newAccessData = AccessData.Create(
+                    userId: Guid.Parse(userData.Id),
+                    refreshToken: newRefreshToken,
+                    accessToken: newAccessToken, 
+                    creationDate: DateTime.UtcNow,
+                    expiryDate: DateTime.UtcNow.AddDays(30),
+                    isUsed: false,
+                    isRevoked: false);
+
+                await accessDataRepository.AddAsync(newAccessData, cancellationToken);
+                accessDataRepository.Remove(storageToken);
+                await unitOfWork.SaveChangesAsync(cancellationToken);
+
+                return Result<AuthResponse>.Success(new AuthResponse(newAccessToken, newRefreshToken)); 
             }
-
-            var userData = await userManagementServiceClient.GetUserByIdAsync(storageToken.UserId);
-
-            if (userData == null)
-                return Result<AuthResponse>.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден."));
-
-            var newAccessToken = jwtTokenGenerator.GenerateAccessToken(userData);
-            var newRefreshToken = jwtTokenGenerator.GenerateRefreshToken();
-
-            var newAccessData = AccessData.Create(
-                userId: Guid.Parse(userData.Id),
-                refreshToken: newRefreshToken,
-                accessToken: newAccessToken, 
-                creationDate: DateTime.UtcNow,
-                expiryDate: DateTime.UtcNow.AddDays(30),
-                isUsed: false,
-                isRevoked: false);
-
-            await accessDataRepository.AddAsync(newAccessData, cancellationToken);
-            accessDataRepository.Remove(storageToken);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-
-            return Result<AuthResponse>.Success(new AuthResponse(newAccessToken, newRefreshToken));
         }
 
         private ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)

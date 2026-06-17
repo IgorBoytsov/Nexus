@@ -14,7 +14,7 @@ export const authErrorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         router.navigate(['/login'], { 
-          queryParams: { returnUrl: req.url } 
+          queryParams: { returnUrl: router.url } 
         });
       }
       
