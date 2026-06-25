@@ -3,10 +3,10 @@ using Crossdyne.Security.Abstractions;
 using Crossdyne.Toolkit.Results;
 using Shared.Security.Verifiers;
 using Rebout.Nexus.Contracts.Authentication.v1;
-using Shared.Contracts;
 using Crossdyne.Security.Configuration;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Nexus.Authentication.Service.Application.Extensions;
+using Shared.Contracts.Interfaces;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {

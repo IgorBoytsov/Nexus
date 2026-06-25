@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.DataProtection.StackExchangeRedis;
 using Nexus.Bff.Infrastructure.Clients;
 using Nexus.Bff.Services;
-using Shared.Contracts;
 using Shared.Contracts.Authentication.Requests;
 using Shared.Contracts.Common;
+using Shared.Contracts.Interfaces;
 using StackExchange.Redis;
 
 namespace Nexus.Bff.Extensions

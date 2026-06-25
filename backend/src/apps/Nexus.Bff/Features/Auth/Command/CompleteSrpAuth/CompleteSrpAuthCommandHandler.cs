@@ -1,9 +1,9 @@
 using Crossdyne.Toolkit.Results;
 using MediatR;
 using Nexus.Bff.Extensions;
-using Shared.Contracts;
 using Shared.Contracts.Authentication.Responses;
 using Shared.Contracts.Common;
+using Shared.Contracts.Interfaces;
 
 namespace Nexus.Bff.Features.Auth.Command.CompleteSrpAuth
 {

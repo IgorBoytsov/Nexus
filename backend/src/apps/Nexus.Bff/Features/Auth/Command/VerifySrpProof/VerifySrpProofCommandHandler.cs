@@ -2,11 +2,11 @@ using MediatR;
 using Nexus.Bff.Infrastructure.Clients;
 using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.Authentication.v1;
-using Shared.Contracts;
 using Shared.Contracts.Common;
 using Nexus.Bff.Services;
 using System.Security.Cryptography;
 using Nexus.Bff.Extensions;
+using Shared.Contracts.Interfaces;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {
