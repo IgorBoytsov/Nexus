@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.DataProtection.StackExchangeRedis;
 using Nexus.Bff.Infrastructure.Clients;
 using Nexus.Bff.Services;
 using Shared.Contracts.Authentication.Requests;
+using Shared.Contracts.Cache.Interfaces;
 using Shared.Contracts.Common;
-using Shared.Contracts.Interfaces;
 using StackExchange.Redis;
 
 namespace Nexus.Bff.Extensions

@@ -1,7 +1,7 @@
 using MediatR;
 using Crossdyne.Toolkit.Results;
 using Shared.Kernel.Errors;
-using Shared.Contracts.Interfaces;
+using Shared.Contracts.Cache.Interfaces;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordConfirmCode
 {

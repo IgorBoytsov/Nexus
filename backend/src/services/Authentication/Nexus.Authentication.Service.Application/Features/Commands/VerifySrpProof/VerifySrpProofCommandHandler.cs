@@ -10,7 +10,7 @@ using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Nexus.Authentication.Service.Application.Interfaces.Repositories;
 using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
 using Nexus.Authentication.Service.Application.Extensions;
-using Shared.Contracts.Interfaces;
+using Shared.Contracts.Cache.Interfaces;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {

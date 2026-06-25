@@ -1,12 +1,12 @@
 ﻿using MediatR;
 using Crossdyne.Security.Abstractions;
 using Crossdyne.Toolkit.Results;
-using Shared.Security.Verifiers;
 using Rebout.Nexus.Contracts.Authentication.v1;
 using Crossdyne.Security.Configuration;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Nexus.Authentication.Service.Application.Extensions;
-using Shared.Contracts.Interfaces;
+using Shared.Contracts.Security.Interfaces;
+using Shared.Contracts.Cache.Interfaces;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {
@@ -15,13 +15,13 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
         IRedisCacheService redisCacheService,
         ISrpServer srpServer,
         ICryptoServices cryptoServices,
-        IVerifierProtector verifierProtector) : IRequestHandler<GetSrpChallengeCommand, Result<SrpChallengeResponse>>
+        IDataProtector verifierProtector) : IRequestHandler<GetSrpChallengeCommand, Result<SrpChallengeResponse>>
     {
         private readonly IUserManagementServiceClient _userManagementClient = userManagementClient;
         private readonly IRedisCacheService _redisCacheService = redisCacheService;
         private readonly ISrpServer _srpServer = srpServer;
         private readonly ICryptoServices _cryptoServices = cryptoServices;
-        private readonly IVerifierProtector _verifierProtector = verifierProtector;
+        private readonly IDataProtector _verifierProtector = verifierProtector;
 
         public async Task<Result<SrpChallengeResponse>> Handle(GetSrpChallengeCommand request, CancellationToken cancellationToken)
         {

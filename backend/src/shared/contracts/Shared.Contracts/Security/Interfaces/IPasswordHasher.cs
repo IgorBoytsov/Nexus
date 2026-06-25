@@ -1,4 +1,6 @@
-﻿namespace Shared.Security.Hasher
+﻿using Shared.Contracts.Security.Models;
+
+namespace Shared.Contracts.Security.Interfaces
 {
     public interface IPasswordHasher
     {

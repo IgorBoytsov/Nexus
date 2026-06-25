@@ -3,7 +3,7 @@ using Crossdyne.Toolkit.Results;
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
 using Crossdyne.Toolkit.Primitives;
 using Nexus.UserManagement.Service.Domain.Models;
-using Shared.Contracts.Interfaces;
+using Shared.Contracts.Cache.Interfaces;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordSendCode
 {

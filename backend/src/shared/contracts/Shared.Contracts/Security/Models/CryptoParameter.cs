@@ -1,4 +1,4 @@
-﻿namespace Shared.Security.Hasher
+﻿namespace Shared.Contracts.Security.Models
 {
     public sealed record class CryptoParameter
     {

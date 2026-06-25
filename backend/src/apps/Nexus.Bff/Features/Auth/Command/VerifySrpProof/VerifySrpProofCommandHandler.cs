@@ -6,7 +6,7 @@ using Shared.Contracts.Common;
 using Nexus.Bff.Services;
 using System.Security.Cryptography;
 using Nexus.Bff.Extensions;
-using Shared.Contracts.Interfaces;
+using Shared.Contracts.Cache.Interfaces;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {

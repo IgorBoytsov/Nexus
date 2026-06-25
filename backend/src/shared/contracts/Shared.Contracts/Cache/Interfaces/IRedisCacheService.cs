@@ -1,4 +1,4 @@
-﻿namespace Shared.Contracts.Interfaces
+﻿namespace Shared.Contracts.Cache.Interfaces
 {
     public interface IRedisCacheService
     {
