@@ -1,13 +1,13 @@
 using FluentValidation;
 using Shared.Contracts.Validation.Abstractions;
 
-namespace Shared.Validations.Common.Validators
+namespace Shared.Validations.Validators
 {
-    public sealed class StringUserIdValidator : AbstractValidator<IHasStringUserId>
+    public sealed class GuidUserIdValidator : AbstractValidator<IHasGuidUserId>
     {
-        public static StringUserIdValidator Create() => new();
+        public static GuidUserIdValidator Create() => new();
 
-        public StringUserIdValidator()
+        public GuidUserIdValidator()
         {
             RuleFor(x => x.UserId)
             .NotEmpty().WithMessage("Идентификатор пользователя обязателен.");

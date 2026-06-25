@@ -1,7 +1,7 @@
 using FluentValidation;
 using Shared.Contracts.Validation.Abstractions;
 
-namespace Shared.Validations.Common.Validators
+namespace Shared.Validations.Validators
 {
     public sealed class UserNameValidator : AbstractValidator<IHasUserName>
     {
