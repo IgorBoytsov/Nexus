@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Crossdyne.Toolkit.Results;
-using Shared.Validations.Common.Abstractions;
+using Shared.Contracts.Validation.Abstractions;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Register
 {

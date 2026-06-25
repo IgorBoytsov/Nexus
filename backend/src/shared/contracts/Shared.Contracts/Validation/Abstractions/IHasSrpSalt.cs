@@ -1,4 +1,4 @@
-namespace Shared.Validations.Common.Abstractions
+namespace Shared.Contracts.Validation.Abstractions
 {
     public interface IHasSrpSalt
     {

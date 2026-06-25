@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Crossdyne.Toolkit.Results;
 using Rebout.Nexus.Contracts.Authentication.v1;
-using Shared.Validations.Common.Abstractions;
+using Shared.Contracts.Validation.Abstractions;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {

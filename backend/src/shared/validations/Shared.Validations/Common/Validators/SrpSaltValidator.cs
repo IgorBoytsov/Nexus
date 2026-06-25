@@ -1,5 +1,5 @@
 using FluentValidation;
-using Shared.Validations.Common.Abstractions;
+using Shared.Contracts.Validation.Abstractions;
 
 namespace Shared.Validations.Common.Validators
 {
