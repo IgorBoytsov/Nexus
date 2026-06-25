@@ -2,7 +2,7 @@ import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { RegisterApi } from "./register.api";
-import { RegisterRequest } from '../../../contracts/requests/register-user.request'
+import { RegisterRequest } from './models/register-user.request'
 import { CryptoService, CryptoVersion } from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";

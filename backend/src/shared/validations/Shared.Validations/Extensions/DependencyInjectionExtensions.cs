@@ -2,7 +2,7 @@ using System.Reflection;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Validations.Common.Behaviors;
+using Shared.Validations.Behaviors;
 
 namespace Shared.Validations.Extensions
 {

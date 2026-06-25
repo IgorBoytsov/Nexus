@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, map, Observable, of } from "rxjs";
-import { GetChangePasswordDataResponse } from "../../../contracts/responses/auth/get-change-password-data.response";
-import { ChangePasswordRequest } from "../../../contracts/requests/change-password.request";
+import { GetChangePasswordDataResponse } from "./models/get-change-password-data.response";
+import { ChangePasswordRequest } from "./models/change-password.request";
 import { Result, Unit } from "@crossdyne/toolkit";
 import { ResultHttp } from "../../../core/result-helper/result-http";
 

@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.Register;
-using Shared.Contracts;
+using Shared.Contracts.UserManagement.Requests;
 using Shared.Web.Extensions;
 
 namespace Nexus.UserManagement.Service.Api.Controllers

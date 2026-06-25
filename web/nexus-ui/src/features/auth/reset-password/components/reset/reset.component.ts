@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { RecoveryStateService } from "../../services/reset-password-state.service";
 import { CryptoService, CryptoVersion} from "@crossdyne/security";
 import { firstValueFrom } from "rxjs";
-import { ResetPasswordCompleteRequest } from "../../../../../contracts/requests/reset-password-complete.request";
+import { ResetPasswordCompleteRequest } from "./models/reset-password-complete.request";
 import { StepResetApi } from "./reset.api";
 import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
 import { CryptoConstants } from "../../../../../core/constants/security.constants";

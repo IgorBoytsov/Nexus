@@ -7,8 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Authentication.Service.Application.Secure;
 using Nexus.Authentication.Service.Application.Services;
+using Shared.Contracts.Security.Interfaces;
 using Shared.Security.Hasher;
-using Shared.Security.Verifiers;
 using Shared.Validations.Extensions;
 using StackExchange.Redis;
 
@@ -22,7 +22,7 @@ namespace Nexus.Authentication.Service.Application.Extensions
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-            services.AddSingleton<IVerifierProtector, RsaDecryptor>();
+            services.AddSingleton<IDataProtector, RsaDecryptor>();
             services.AddTransient<ISrpServer, SrpServerService>();
             services.AddSingleton<ICryptoServices, CryptoService>();
 

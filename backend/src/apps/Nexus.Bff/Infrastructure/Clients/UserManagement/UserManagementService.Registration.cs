@@ -1,11 +1,12 @@
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.UserManagement.v1;
+using Shared.Contracts.UserManagement.Requests;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {
     public partial class UserManagementService
     {
-        public async Task<Result> Register(Shared.Contracts.RegisterUserRequest request)
+        public async Task<Result> Register(RegisterUserRequest request)
         {
             try
             {

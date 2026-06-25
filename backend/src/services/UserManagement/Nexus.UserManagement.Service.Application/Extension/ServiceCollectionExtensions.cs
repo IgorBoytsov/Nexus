@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Contracts.Security.Interfaces;
 using Shared.Security.Hasher;
 using Shared.Validations.Extensions;
 

@@ -1,4 +1,6 @@
 ﻿using Konscious.Security.Cryptography;
+using Shared.Contracts.Security.Interfaces;
+using Shared.Contracts.Security.Models;
 using System.Security.Cryptography;
 using System.Text;
 

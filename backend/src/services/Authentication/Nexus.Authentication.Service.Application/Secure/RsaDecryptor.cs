@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Shared.Security.Verifiers;
+using Shared.Contracts.Security.Interfaces;
 using System.Security.Cryptography;
 
 namespace Nexus.Authentication.Service.Application.Secure
 {
-    public sealed class RsaDecryptor(IConfiguration configuration) : IVerifierProtector
+    public sealed class RsaDecryptor(IConfiguration configuration) : IDataProtector
     {
         private readonly string _privateKeyBase64 = configuration["Crypto:RsaPrivateKey"]!;
 

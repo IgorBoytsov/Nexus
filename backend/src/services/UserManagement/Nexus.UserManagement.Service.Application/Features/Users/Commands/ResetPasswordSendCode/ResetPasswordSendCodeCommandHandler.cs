@@ -1,9 +1,9 @@
 using MediatR;
 using Crossdyne.Toolkit.Results;
-using Shared.Contracts;
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
 using Crossdyne.Toolkit.Primitives;
 using Nexus.UserManagement.Service.Domain.Models;
+using Shared.Contracts.Cache.Interfaces;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordSendCode
 {

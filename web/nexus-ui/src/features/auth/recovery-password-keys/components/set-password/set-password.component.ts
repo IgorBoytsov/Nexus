@@ -5,7 +5,7 @@ import { RecoveryStateService } from "../../services/recovery-password-keys-stat
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { CryptoService, CryptoVersion } from "@crossdyne/security";
-import { RecoveryViaKeysSetRequest } from "../../../../../contracts/requests/recovery-via-keys-set.request";
+import { RecoveryViaKeysSetRequest } from "./models/recovery-via-keys-set.request";
 import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
 import { CryptoConstants } from "../../../../../core/constants/security.constants";
 import { RecoveryKeyService } from "../../../../../core/services/recovery-key.service";

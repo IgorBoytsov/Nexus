@@ -2,7 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeys;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetRecoveryKeys;
-using Shared.Contracts;
+using Shared.Contracts.UserManagement.Requests;
+using Shared.Contracts.UserManagement.Responses;
 using Shared.Web.Extensions;
 
 namespace Nexus.UserManagement.Service.Api.Controllers

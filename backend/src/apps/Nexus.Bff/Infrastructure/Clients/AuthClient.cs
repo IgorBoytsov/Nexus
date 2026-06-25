@@ -1,7 +1,8 @@
 using System.Text.Json;
 using Crossdyne.Toolkit.Results;
 using Microsoft.Extensions.Options;
-using Rebout.Nexus.Contracts.Authentication.v1;
+using Shared.Contracts.Authentication.Requests;
+using Shared.Contracts.Authentication.Responses;
 using Shared.Kernel.Errors;
 
 namespace Nexus.Bff.Infrastructure.Clients

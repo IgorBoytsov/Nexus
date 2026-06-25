@@ -1,5 +1,5 @@
 using FluentValidation;
-using Shared.Validations.Common.Validators;
+using Shared.Validations.Validators;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetRecoveryKeys
 {

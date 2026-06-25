@@ -5,7 +5,6 @@ using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPass
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordConfirmCode;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordSendCode;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetChangePasswordData;
-using Shared.Contracts;
 using Shared.Contracts.UserManagement.Requests;
 using Shared.Web.Extensions;
 
@@ -28,9 +27,9 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         }
 
         [HttpPost("{login}/password/reset/confirm")]
-        public async Task<IActionResult> ConfirmPasswordReset([FromRoute] string login, [FromBody] ResetPasswordConfirmCodeRequest request)
+        public async Task<IActionResult> ConfirmPasswordReset([FromRoute] string login, [FromBody] string code)
         {
-            var command = new ResetPasswordConfirmCodeCommand(login, request.Code);
+            var command = new ResetPasswordConfirmCodeCommand(login, code);
             var result = await mediator.Send(command);
 
             if (result.IsFailure)

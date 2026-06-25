@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { CryptoService, CryptoVersion} from "@crossdyne/security";
-import { ChangePasswordRequest } from "../../../contracts/requests/change-password.request";
+import { ChangePasswordRequest } from "./models/change-password.request";
 import { HttpErrorResponse } from "@angular/common/http";
 import { RsaService } from "../../../core/services/rsa.service";
 import { SrpVerifierService } from "../../../core/services/srp-verifier.service";

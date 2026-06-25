@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Contracts;
+using Shared.Contracts.UserManagement.Requests;
 using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeys

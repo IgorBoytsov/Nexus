@@ -1,7 +1,7 @@
 using Crossdyne.Toolkit.Results;
 using MediatR;
 using Nexus.Bff.Infrastructure.Clients.UserManagement;
-using Shared.Contracts;
+using Shared.Contracts.UserManagement.Requests;
 
 namespace Nexus.Bff.Features.Auth.Command.RecoveryViaKeys
 {

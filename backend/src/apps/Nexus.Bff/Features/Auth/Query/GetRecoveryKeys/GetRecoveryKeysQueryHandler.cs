@@ -1,7 +1,7 @@
 using Crossdyne.Toolkit.Results;
 using MediatR;
 using Nexus.Bff.Infrastructure.Clients.UserManagement;
-using Shared.Contracts;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.Bff.Features.Auth.Query.GetRecoveryKeys
 {
@@ -10,6 +10,6 @@ namespace Nexus.Bff.Features.Auth.Query.GetRecoveryKeys
         private readonly IUserManagementService _userManagementService = userManagementService;
 
         public async Task<Result<RecoveryViaKeysPayloadResponse>> Handle(GetRecoveryKeysQuery request, CancellationToken cancellationToken)
-            => await _userManagementService.GetRecoveryKeys(new RecoveryViaKeysGetPayloadRequest(request.Login));
+            => await _userManagementService.GetRecoveryKeys(request.Login);
     }
 }

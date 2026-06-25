@@ -14,7 +14,6 @@
     <PackageReference Include="Crossdyne.Security.Cryptography" />
     <PackageReference Include="Crossdyne.Toolkit" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
-    <PackageReference Include="Rebout.Nexus.Contracts" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="DistributedLock.Redis" />

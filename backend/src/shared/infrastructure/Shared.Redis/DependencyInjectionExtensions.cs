@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Contracts;
+using Shared.Contracts.Cache.Interfaces;
 using StackExchange.Redis;
 
 namespace Shared.Redis
