@@ -1,6 +1,5 @@
 using Crossdyne.Toolkit.Results;
 using Nexus.Bff.Features.Profile.Query.Info;
-using Shared.Contracts;
 
 namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {
@@ -20,11 +19,11 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
             }
         }
 
-        public async Task<Result> ExistUserByLogin(ExistUserBuLoginRequest request)
+        public async Task<Result> ExistUserByLogin(string login)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"api/v1/users/{request.Login}/exists?login={request.Login}");
+                var response = await _httpClient.GetAsync($"api/v1/users/{login}/exists?login={login}");
                                                                 
                 return await HandleResponse(response);
             }

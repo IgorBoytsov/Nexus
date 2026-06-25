@@ -5,7 +5,7 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {
     public partial class UserManagementService
     {
-        public async Task<Result> Register(Shared.Contracts.RegisterUserRequest request)
+        public async Task<Result> Register(Shared.Contracts.UserManagement.Requests.RegisterUserRequest request)
         {
             try
             {

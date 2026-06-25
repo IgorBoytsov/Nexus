@@ -1,5 +1,4 @@
 using Crossdyne.Toolkit.Results;
-using Shared.Contracts;
 using Shared.Contracts.UserManagement.Requests;
 using Shared.Contracts.UserManagement.Responses;
 

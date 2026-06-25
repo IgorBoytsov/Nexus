@@ -1,4 +1,4 @@
-namespace Shared.Contracts
+namespace Shared.Contracts.UserManagement.Requests
 {
     public record RegisterUserRequest(
         // Общая информация об аккаунте

@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using Shared.Contracts;
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById
 {

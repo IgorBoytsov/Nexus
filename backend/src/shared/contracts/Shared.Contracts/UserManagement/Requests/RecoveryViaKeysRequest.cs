@@ -1,4 +1,4 @@
-namespace Shared.Contracts
+namespace Shared.Contracts.UserManagement.Requests
 {
     public sealed record RecoveryViaKeysRequest(
         string Login,

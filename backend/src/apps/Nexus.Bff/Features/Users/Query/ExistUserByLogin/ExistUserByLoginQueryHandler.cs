@@ -10,6 +10,6 @@ namespace Nexus.Bff.Features.Users.Query.ExistUserByLogin
         private readonly IUserManagementService _userManagementService = userManagementService;
 
         public async Task<Result> Handle(ExistUserByLoginQuery request, CancellationToken cancellationToken)
-            => await _userManagementService.ExistUserByLogin(new ExistUserBuLoginRequest(request.Login));
+            => await _userManagementService.ExistUserByLogin(request.Login);
     }
 }

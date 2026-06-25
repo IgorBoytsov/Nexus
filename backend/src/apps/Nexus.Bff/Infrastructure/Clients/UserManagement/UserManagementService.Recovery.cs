@@ -1,15 +1,16 @@
 using Crossdyne.Toolkit.Results;
-using Shared.Contracts;
+using Shared.Contracts.UserManagement.Requests;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {
     public partial class UserManagementService
     {
-        public async Task<Result<RecoveryViaKeysPayloadResponse>> GetRecoveryKeys(RecoveryViaKeysGetPayloadRequest request)
+        public async Task<Result<RecoveryViaKeysPayloadResponse>> GetRecoveryKeys(string login)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"api/v1/users/{request.Login}/recovery-keys?login={request.Login}");
+                var response = await _httpClient.GetAsync($"api/v1/users/{login}/recovery-keys?login={login}");
                                                                 
                 return await HandleResponse<RecoveryViaKeysPayloadResponse>(response);
             }

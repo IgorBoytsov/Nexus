@@ -5,7 +5,6 @@ using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPass
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordConfirmCode;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordSendCode;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetChangePasswordData;
-using Shared.Contracts;
 using Shared.Contracts.UserManagement.Requests;
 using Shared.Web.Extensions;
 

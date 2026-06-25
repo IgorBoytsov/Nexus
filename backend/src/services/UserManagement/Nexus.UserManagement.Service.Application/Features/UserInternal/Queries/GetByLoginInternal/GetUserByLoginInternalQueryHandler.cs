@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Crossdyne.Toolkit.Results;
-using Shared.Contracts;
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.UserManagement.Service.Application.Features.UserInternal.Queries.GetByLoginInternal
 {

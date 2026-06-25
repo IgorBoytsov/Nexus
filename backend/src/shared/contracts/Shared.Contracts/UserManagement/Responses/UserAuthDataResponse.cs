@@ -1,4 +1,4 @@
-namespace Shared.Contracts
+namespace Shared.Contracts.UserManagement.Responses
 {
     public record UserAuthDataResponse(
         string Id, 
