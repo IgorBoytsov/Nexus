@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nexus.Authentication.Service.Application.Features.Commands.Refresh;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof;
-using Rebout.Nexus.Contracts.Authentication.v1;
+using Shared.Contracts.Authentication.Requests;
 using Shared.Web.Extensions;
 
 namespace Nexus.Authentication.Service.Api.Controllers

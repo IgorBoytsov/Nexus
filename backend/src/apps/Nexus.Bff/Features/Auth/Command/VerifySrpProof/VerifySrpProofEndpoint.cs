@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Rebout.Nexus.Contracts.Authentication.v1;
+using Shared.Contracts.Authentication.Requests;
 using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof

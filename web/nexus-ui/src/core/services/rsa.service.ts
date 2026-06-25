@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
-import { CryptoApi } from "../clients/crypto.api";
+import { CryptoApi } from "../../entities/crypto/api/crypto.api";
 import { SecurityUtils } from "@crossdyne/security";
 
 @Injectable({

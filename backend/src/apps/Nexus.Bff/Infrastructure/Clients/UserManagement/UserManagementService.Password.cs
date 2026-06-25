@@ -20,11 +20,11 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
             }
         }
 
-        public async Task<Result> ResetPasswordConfirm(string login, ResetPasswordConfirmCodeRequest request)
+        public async Task<Result> ResetPasswordConfirm(string login, string code)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync<ResetPasswordConfirmCodeRequest>($"api/v1/users/{login}/password/reset/confirm", request);
+                var response = await _httpClient.PostAsJsonAsync($"api/v1/users/{login}/password/reset/confirm", code);
                                                                 
                 return await HandleResponse(response);
             }

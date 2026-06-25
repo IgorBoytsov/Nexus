@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, map, Observable, of } from "rxjs";
-import { RegisterRequest } from "../../../contracts/requests/register-user.request";
+import { RegisterRequest } from "./models/register-user.request";
 import { Result, Unit, UnitResult } from "@crossdyne/toolkit";
 import { ResultHttp } from "../../../core/result-helper/result-http";
 

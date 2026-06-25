@@ -37,7 +37,7 @@ export class StepFindLoginComponent {
                 
                 const { login } = this.stepLoginForm.value;
                 
-                const result = await firstValueFrom(this.http.existLogin({login: login}));
+                const result = await firstValueFrom(this.http.existLogin(login));
 
                 if (result.isFailure){
                     this.errorMessage.set(result.stringMessage);

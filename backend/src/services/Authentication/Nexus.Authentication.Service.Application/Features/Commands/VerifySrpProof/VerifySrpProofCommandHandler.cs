@@ -3,7 +3,6 @@ using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Crossdyne.Security.Abstractions;
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.v1;
 using Shared.Kernel.Errors;
 using Crossdyne.Security.Configuration;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
@@ -11,6 +10,7 @@ using Nexus.Authentication.Service.Application.Interfaces.Repositories;
 using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
 using Nexus.Authentication.Service.Application.Extensions;
 using Shared.Contracts.Cache.Interfaces;
+using Shared.Contracts.Authentication.Responses;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {

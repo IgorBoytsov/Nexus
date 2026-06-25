@@ -1,13 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
-import { SrpChallengeRequest } from '../../../contracts/requests/srp-challenge.request'
-import { SrpVerifyRequest } from '../../../contracts/requests/srp-verify.request'
-import { SrpChallengeResponse } from '../../../contracts/responses/srp/srp-challenge.response'
-import { AuthResponse } from '../../../contracts/responses/auth/auth.response'
+import { SrpChallengeRequest } from './models/srp-challenge.request'
+import { SrpVerifyRequest } from './models/srp-verify.request'
 import { Result } from '@crossdyne/toolkit';
 import { ResultHttp } from '../../../core/result-helper/result-http';
-import { CompleteSrpRequest } from '../../../contracts/requests/complete-srp.request';
+import { CompleteSrpRequest } from './models/complete-srp.request';
+import { SrpChallengeResponse } from './models/srp-challenge.response';
+import { AuthResponse } from './models/auth.response';
 
 @Injectable({
     providedIn: 'root'

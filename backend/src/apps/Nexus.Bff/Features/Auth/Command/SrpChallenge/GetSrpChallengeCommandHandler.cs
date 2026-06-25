@@ -1,7 +1,8 @@
 using MediatR;
 using Nexus.Bff.Infrastructure.Clients;
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.Authentication.v1;
+using Shared.Contracts.Authentication.Responses;
+using Shared.Contracts.Authentication.Requests;
 
 namespace Nexus.Bff.Features.Auth.Command.SrpChallenge
 {

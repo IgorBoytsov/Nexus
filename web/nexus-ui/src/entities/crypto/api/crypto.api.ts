@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { PublicKeyResponse } from "../../contracts/responses/users/public-key-response";
+import { PublicKeyResponse } from "./responses/public-key-response";
 import { HttpClient } from "@angular/common/http";
 
 @Injectable({

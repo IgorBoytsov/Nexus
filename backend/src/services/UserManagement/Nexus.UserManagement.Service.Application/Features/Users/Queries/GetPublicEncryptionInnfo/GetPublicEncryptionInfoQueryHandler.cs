@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.UserManagement.v1;
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetPublicEncryptionInnfo
 {

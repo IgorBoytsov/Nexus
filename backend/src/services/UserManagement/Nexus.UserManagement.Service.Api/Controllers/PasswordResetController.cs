@@ -27,9 +27,9 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         }
 
         [HttpPost("{login}/password/reset/confirm")]
-        public async Task<IActionResult> ConfirmPasswordReset([FromRoute] string login, [FromBody] ResetPasswordConfirmCodeRequest request)
+        public async Task<IActionResult> ConfirmPasswordReset([FromRoute] string login, [FromBody] string code)
         {
-            var command = new ResetPasswordConfirmCodeCommand(login, request.Code);
+            var command = new ResetPasswordConfirmCodeCommand(login, code);
             var result = await mediator.Send(command);
 
             if (result.IsFailure)

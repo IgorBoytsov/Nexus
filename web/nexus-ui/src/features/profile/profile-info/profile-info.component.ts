@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from "@angular/core";
 import { ProfileInfoApi } from "./profile-info.api";
 import { FormBuilder } from "@angular/forms";
-import { firstValueFrom } from "rxjs";
 import { CommonModule } from "@angular/common";
 
 @Component({

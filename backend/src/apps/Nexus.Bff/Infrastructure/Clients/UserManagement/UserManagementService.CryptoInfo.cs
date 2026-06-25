@@ -1,5 +1,5 @@
 using Crossdyne.Toolkit.Results;
-using Rebout.Nexus.Contracts.UserManagement.v1;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {

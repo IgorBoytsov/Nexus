@@ -42,7 +42,7 @@ export class StepEnterCodeComponent {
                 const codeBytes = SecurityUtils.fromBase64(code.trim());
 
                 const loginState = this.state.login;
-                const result = await firstValueFrom(this.http.getRecoveryKeys({ login: loginState! }));
+                const result = await firstValueFrom(this.http.getRecoveryKeys(loginState!));
 
                 if (result.isFailure) {
                     this.isLoading.set(false);
