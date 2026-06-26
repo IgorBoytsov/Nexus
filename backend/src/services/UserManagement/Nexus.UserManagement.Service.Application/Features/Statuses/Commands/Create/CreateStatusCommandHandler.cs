@@ -12,20 +12,13 @@ namespace Nexus.UserManagement.Service.Application.Features.Statuses.Commands.Cr
     {
         public async Task<Result<Guid>> Handle(CreateStatusCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                Status status = Status.Create(request.Name);
+            Status status = Status.Create(request.Name);
 
-                await statusRepository.AddAsync(status, cancellationToken);
+            await statusRepository.AddAsync(status, cancellationToken);
 
-                await unitOfWork.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result<Guid>.Success(status.Id);
-            }
-            catch (Exception)
-            {
-                return Result<Guid>.Failure(new Error(ErrorCode.Create, "Ошибка на стороне сервера"));
-            }
+            return status.Id;
         }
     }
 }

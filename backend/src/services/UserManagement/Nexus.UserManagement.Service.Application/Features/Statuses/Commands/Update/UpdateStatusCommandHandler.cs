@@ -14,25 +14,18 @@ namespace Nexus.UserManagement.Service.Application.Features.Statuses.Commands.Up
     {
         public async Task<Result> Handle(UpdateStatusCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                Maybe<Status> maybeStatus = await statusRepository.GetByAsync(r => r.Id == request.Id, cancellationToken);
+            Maybe<Status> maybeStatus = await statusRepository.GetByAsync(r => r.Id == request.Id, cancellationToken);
 
-                if (maybeStatus.IsNone)
-                    return Result.Failure(new Error(ErrorCode.Update, "Такой записи не существует."));
+            if (maybeStatus.IsNone)
+                return Result.Failure(new Error(ErrorCode.Update, "Такой записи не существует."));
 
-                Status status = maybeStatus.Value;
+            Status status = maybeStatus.Value;
 
-                status.UpdateName(StatusName.Create(request.Name));
+            status.UpdateName(StatusName.Create(request.Name));
 
-                await unitOfWork.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result.Success();
-            }
-            catch (Exception)
-            {
-                return Result.Failure(new Error(ErrorCode.Update, "Ошибка на стороне сервера"));
-            }
+            return Result.Success();
         }
     }
 }

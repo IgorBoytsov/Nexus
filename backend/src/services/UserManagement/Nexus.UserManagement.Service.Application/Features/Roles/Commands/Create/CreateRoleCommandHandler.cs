@@ -12,20 +12,13 @@ namespace Nexus.UserManagement.Service.Application.Features.Roles.Commands.Creat
     {
         public async Task<Result<Guid>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var role = Role.Create(request.Name);
+            var role = Role.Create(request.Name);
 
-                await roleRepository.AddAsync(role, cancellationToken);
+            await roleRepository.AddAsync(role, cancellationToken);
 
-                await unitOfWork.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result<Guid>.Success(role.Id);
-            }
-            catch (Exception)
-            {
-                return Result<Guid>.Failure(new Error(ErrorCode.Create, "Ошибка на стороне сервера"));
-            }
+            return role.Id.Value;
         }
     }
 }

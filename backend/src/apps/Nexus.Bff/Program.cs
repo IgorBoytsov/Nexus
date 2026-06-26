@@ -1,5 +1,7 @@
 using System.Reflection;
 using Nexus.Bff.Extensions;
+using Serilog;
+using Shared.Logging;
 using Shared.Validations.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 var executingAssembly = Assembly.GetExecutingAssembly(); 
 var configuration = builder.Configuration;
 var environment = builder.Environment; 
+var host = builder.Host;
+
+builder.Logging.ClearProviders();
+builder.Host.AddSerilogLogger(); 
 
 builder.Services
     //Default
@@ -31,6 +37,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseSerilogRequestLogging();
 app.UseCors("AllowLocalFrontend");
 app.UseAuthentication(); 
 app.UseAuthorization();  

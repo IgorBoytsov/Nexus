@@ -13,25 +13,18 @@ namespace Nexus.UserManagement.Service.Application.Features.Genders.Commands.Del
     {
         public async Task<Result> Handle(DeleteGenderCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                Maybe<Gender> maybeGender = await genderRepository.GetByAsync(g => g.Id == request.Id, cancellationToken);
+            Maybe<Gender> maybeGender = await genderRepository.GetByAsync(g => g.Id == request.Id, cancellationToken);
 
-                if (maybeGender.IsNone)
-                    return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
+            if (maybeGender.IsNone)
+                return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
 
-                Gender gender = maybeGender.Value;
+            Gender gender = maybeGender.Value;
 
-                genderRepository.Remove(gender);
+            genderRepository.Remove(gender);
 
-                await unitOfWork.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result.Success();
-            }
-            catch (Exception)
-            {
-                return Result.Failure(new Error(ErrorCode.Delete, "Ошибка на стороне сервера"));
-            }
+            return Result.Success();
         }
     }
 }

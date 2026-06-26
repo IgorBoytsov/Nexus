@@ -11,10 +11,6 @@ namespace Nexus.Bff.Features.Auth.Command.SrpChallenge
         private readonly IAuthClient _authClient = authClient;
         
         public async Task<Result<SrpChallengeResponse?>> Handle(GetSrpChallengeCommand request, CancellationToken cancellationToken)
-        {
-            var result = await _authClient.GetSrpChallenge(new SrpChallengeRequest(request.Login));
-
-            return result;
-        }
+            => await _authClient.GetSrpChallenge(new SrpChallengeRequest(request.Login));
     }
 }

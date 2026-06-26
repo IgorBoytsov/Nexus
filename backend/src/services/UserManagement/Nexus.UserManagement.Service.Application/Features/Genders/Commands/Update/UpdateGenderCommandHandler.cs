@@ -14,25 +14,18 @@ namespace Nexus.UserManagement.Service.Application.Features.Genders.Commands.Upd
     {
         public async Task<Result> Handle(UpdateGenderCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                Maybe<Gender> maybeGender = await genderRepository.GetByAsync(g => g.Id == request.Id, cancellationToken);
+            Maybe<Gender> maybeGender = await genderRepository.GetByAsync(g => g.Id == request.Id, cancellationToken);
 
-                if (maybeGender.IsNone)
-                    return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
+            if (maybeGender.IsNone)
+                return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
 
-                Gender gender = maybeGender.Value;
+            Gender gender = maybeGender.Value;
 
-                gender.UpdateName(GenderName.Create(request.Name));
+            gender.UpdateName(GenderName.Create(request.Name));
 
-                await unitOfWork.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result.Success();
-            }
-            catch (Exception)
-            {
-                return Result.Failure(new Error(ErrorCode.Update, "Ошибка на стороне сервера"));
-            }
+            return Result.Success();
         }
     }
 }

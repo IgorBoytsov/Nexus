@@ -15,27 +15,19 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Chang
     {
         public async Task<Result> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                Maybe<User> maybeUser = await userRepository.GetByAsync(u => u.Id == request.UserId, includes: [u => u.Deks, u => u.UserAuthenticators], clt: cancellationToken);
+            Maybe<User> maybeUser = await userRepository.GetByAsync(u => u.Id == request.UserId, includes: [u => u.Deks, u => u.UserAuthenticators], clt: cancellationToken);
 
-                if (maybeUser.IsNone)
-                    return Result.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден"));
+            if (maybeUser.IsNone)
+                return Result.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден"));
 
-                User user = maybeUser.Value;
+            User user = maybeUser.Value;
 
-                user.UpdateSrp(Verificator.Create(request.EncryptedVerifier), Salt.Create(request.SrpSalt), SrpVersion.Create(request.SrpVersion), CredentialBlob.Create(request.EncryptedVerifierWrapKey), CryptoVersion.Create(request.KeyWrapVersion), AsymmetricKeyId.Create(request.AsymmetricKeyId));
-                user.RotateMainDek(EncryptedValue.Create(request.EncryptedDek), Salt.Create(request.DekSalt), CryptoVersion.Create(request.CryptoVersion));
+            user.UpdateSrp(Verificator.Create(request.EncryptedVerifier), Salt.Create(request.SrpSalt), SrpVersion.Create(request.SrpVersion), CredentialBlob.Create(request.EncryptedVerifierWrapKey), CryptoVersion.Create(request.KeyWrapVersion), AsymmetricKeyId.Create(request.AsymmetricKeyId));
+            user.RotateMainDek(EncryptedValue.Create(request.EncryptedDek), Salt.Create(request.DekSalt), CryptoVersion.Create(request.CryptoVersion));
 
-                await unitOfWork.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result.Success();
-            }
-            catch (Exception)
-            {
-                return Result.Failure(new Error(ErrorCode.Server, "Произошла критическая ошибки на стороне сервера при восстановление доступа"));
-            }
-
+            return Result.Success();
         }
     }
 }

@@ -13,25 +13,17 @@ namespace Nexus.UserManagement.Service.Application.Features.Countries.Commands.D
     {
         public async Task<Result> Handle(DeleteCountryCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                Maybe<Country> maybeCountry = await countryRepository.GetByAsync(c => c.Id == request.Id, cancellationToken);
+            Maybe<Country> maybeCountry = await countryRepository.GetByAsync(c => c.Id == request.Id, cancellationToken);
 
-                if (maybeCountry.IsNone)
-                    return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
+            if (maybeCountry.IsNone)
+                return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
 
-                Country country = maybeCountry.Value;
+            Country country = maybeCountry.Value;
 
-                countryRepository.Remove(country);
+            countryRepository.Remove(country);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                await unitOfWork.SaveChangesAsync(cancellationToken);
-
-                return Result.Success();
-            }
-            catch (Exception)
-            {
-                return Result.Failure(new Error(ErrorCode.Delete, "Ошибка на стороне сервера"));
-            }
+            return Result.Success();
         }
     }
 }

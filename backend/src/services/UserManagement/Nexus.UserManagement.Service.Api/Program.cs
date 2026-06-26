@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Nexus.UserManagement.Service.Application.Extension;
 using Nexus.UserManagement.Service.Infrastructure.Extension;
+using Serilog;
+using Shared.Logging;
 using Shared.Web.Extensions;
 using System.Text;
 
@@ -12,6 +14,8 @@ namespace Nexus.UserManagement.Service.Api
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.AddSerilogLogger();
 
             builder.Services.AddCors(options =>
             {
@@ -68,6 +72,8 @@ namespace Nexus.UserManagement.Service.Api
 
             app.MapStaticAssets();
             app.MapControllers();
+
+            app.UseSerilogRequestLogging();
 
             app.MapControllerRoute(
                 name: "default",

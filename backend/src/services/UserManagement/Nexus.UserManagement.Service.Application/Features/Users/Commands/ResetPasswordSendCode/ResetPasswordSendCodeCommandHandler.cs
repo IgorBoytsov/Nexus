@@ -27,7 +27,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
             if (!redisResult)
                 return Result.Failure(new Error(ErrorCode.Server, "Произошла ошибка на стороне сервера"));
 
-                return Result.Success();
+            return Result.Success();
         }
 
         private string GenerateCode()
