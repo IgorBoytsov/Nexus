@@ -1,7 +1,7 @@
-using Nexus.Bff.Features.Profile.Query.Info;
 using Crossdyne.Toolkit.Results;
 using Shared.Contracts.UserManagement.Requests;
 using Shared.Contracts.UserManagement.Responses;
+using Nexus.Bff.Models.Responses;
 
 namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {

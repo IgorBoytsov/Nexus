@@ -1,5 +1,5 @@
 using Crossdyne.Toolkit.Results;
-using Nexus.Bff.Features.Profile.Query.Info;
+using Nexus.Bff.Models.Responses;
 
 namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {

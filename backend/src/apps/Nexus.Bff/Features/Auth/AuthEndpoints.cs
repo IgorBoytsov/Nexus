@@ -36,7 +36,9 @@ namespace Nexus.Bff.Features.Auth
 
             #region Восстановление доступа через ключи
 
-            app.MapGet("recovery-keys", async ([FromQuery] string login, [FromServices] IUserManagementService userManagementService) =>
+            app.MapGet("recovery/keys", async (
+                [FromQuery] string login, 
+                [FromServices] IUserManagementService userManagementService) =>
             {
                 var result = await userManagementService.GetRecoveryKeys(login);
 
@@ -46,7 +48,7 @@ namespace Nexus.Bff.Features.Auth
                 return Results.Ok(result.Value);
             });
 
-            app.MapPost("recovery-via-keys", async (
+            app.MapPost("recovery/keys/password/change", async (
                 [FromBody] RecoveryViaKeysRequest request, 
                 [FromServices] IUserManagementService userManagementService) =>
             {
@@ -98,7 +100,7 @@ namespace Nexus.Bff.Features.Auth
                 return Results.Ok();
             });
 
-            app.MapPost("reset-password", async (
+            app.MapPost("password/reset", async (
                 [FromBody] ResetPasswordCompleteRequest request, 
                 [FromServices] IUserManagementService userManagementService) =>
             {

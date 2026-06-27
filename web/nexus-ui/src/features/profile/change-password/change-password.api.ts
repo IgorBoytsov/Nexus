@@ -13,7 +13,7 @@ export class ChangePasswordApi {
     private http = inject(HttpClient);
 
     init(): Observable<Result<GetChangePasswordDataResponse>> {
-        return this.http.get<GetChangePasswordDataResponse>('/change-password', { withCredentials: true })
+        return this.http.get<GetChangePasswordDataResponse>('/password/change/init', { withCredentials: true })
         .pipe(
             map(response => Result.success(response)), 
             catchError((error: HttpErrorResponse) => of(ResultHttp.failure<GetChangePasswordDataResponse>(error)))
@@ -21,7 +21,7 @@ export class ChangePasswordApi {
     }
 
     changePassword(request: ChangePasswordRequest): Observable<Result<Unit>> {
-        return this.http.post<void>('/change-password', request, { withCredentials: true })
+        return this.http.post<void>('/password/change', request, { withCredentials: true })
         .pipe(
             map(() => Result.success(Unit)), 
             catchError((error: HttpErrorResponse) => of(ResultHttp.failure<Unit>(error)))

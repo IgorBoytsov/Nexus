@@ -12,7 +12,24 @@ namespace Nexus.Bff.Features.Profile
         {
             #region Смена пароля
 
-            app.MapPost("change-password", async (
+            app.MapGet("password/change/init", async (
+                HttpContext httpContext, 
+                [FromServices] IUserManagementService userManagementService) =>
+            {
+                var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrWhiteSpace(userId))
+                    return Results.Unauthorized();
+
+                var result = await userManagementService.GetChangePasswordData(new GetChangePasswordDataRequest(userId));
+
+                if (result.IsFailure)
+                    return result.Errors.MapToMinimalApiResult();
+
+                return Results.Ok(result.Value);
+            }).RequireAuthorization();
+
+            app.MapPost("password/change", async (
                 HttpContext httpContext, 
                 [FromBody] ChangePasswordRequest request, 
                 [FromServices] IUserManagementService userManagementService) =>
@@ -38,23 +55,6 @@ namespace Nexus.Bff.Features.Profile
                     return result.Errors.MapToMinimalApiResult();
 
                 return Results.Ok();
-            }).RequireAuthorization();
-
-            app.MapGet("change-password", async (
-                HttpContext httpContext, 
-                [FromServices] IUserManagementService userManagementService) =>
-            {
-                var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (string.IsNullOrWhiteSpace(userId))
-                    return Results.Unauthorized();
-
-                var result = await userManagementService.GetChangePasswordData(new GetChangePasswordDataRequest(userId));
-
-                if (result.IsFailure)
-                    return result.Errors.MapToMinimalApiResult();
-
-                return Results.Ok(result.Value);
             }).RequireAuthorization();
 
             #endregion

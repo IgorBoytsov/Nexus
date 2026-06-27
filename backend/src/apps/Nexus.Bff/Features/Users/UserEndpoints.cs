@@ -38,7 +38,7 @@ namespace Nexus.Bff.Features.Users
                 return Results.Ok();
             });
 
-            app.MapGet("exist-user-by-login", async (
+            app.MapGet("exist/user/login", async (
                 [FromQuery] string login, 
                 [FromServices] IUserManagementService userManagementService, 
                 CancellationToken ct) =>
@@ -51,7 +51,7 @@ namespace Nexus.Bff.Features.Users
                 return Results.Ok();
             });
 
-            app.MapGet("public-key", async ([FromServices] IAuthClient authClient) =>
+            app.MapGet("public/key", async ([FromServices] IAuthClient authClient) =>
             {
                 var result = await authClient.GetPublicKey();
 
