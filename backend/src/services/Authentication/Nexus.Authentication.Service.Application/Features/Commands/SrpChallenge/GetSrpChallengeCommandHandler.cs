@@ -7,6 +7,8 @@ using Nexus.Authentication.Service.Application.Extensions;
 using Shared.Contracts.Security.Interfaces;
 using Shared.Contracts.Cache.Interfaces;
 using Shared.Contracts.Authentication.Responses;
+using Shared.Contracts.UserManagement.Responses;
+using Microsoft.Extensions.Logging;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {
@@ -15,21 +17,19 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
         IRedisCacheService redisCacheService,
         ISrpServer srpServer,
         ICryptoServices cryptoServices,
-        IDataProtector verifierProtector) : IRequestHandler<GetSrpChallengeCommand, Result<SrpChallengeResponse>>
+        IDataProtector verifierProtector,
+        ILogger<GetSrpChallengeCommandHandler> logger) : IRequestHandler<GetSrpChallengeCommand, Result<SrpChallengeResponse>>
     {
-        private readonly IUserManagementServiceClient _userManagementClient = userManagementClient;
-        private readonly IRedisCacheService _redisCacheService = redisCacheService;
-        private readonly ISrpServer _srpServer = srpServer;
-        private readonly ICryptoServices _cryptoServices = cryptoServices;
-        private readonly IDataProtector _verifierProtector = verifierProtector;
-
         public async Task<Result<SrpChallengeResponse>> Handle(GetSrpChallengeCommand request, CancellationToken cancellationToken)
         {
             string normalizedLogin = request.Login.Trim().ToLowerInvariant();
-            var userData = await _userManagementClient.GetUserByLoginAsync(normalizedLogin);
+
+            logger.LogDebug("Начало инициализации входа (SrpChallenge) для пользователя: {Login}", normalizedLogin);
+
+            UserAuthDataResponse? userData = await userManagementClient.GetUserByLoginAsync(normalizedLogin);
 
             if (userData == null)
-                return Result<SrpChallengeResponse>.Failure(new Error(ErrorCode.NotFound, "Пользователь не найден"));
+                return new Error(ErrorCode.NotFound, "Пользователь не найден");
 
             SrpProfile srpProfile = SrpProfileRegistry.GetProfile((SrpGroup)userData.SrpVersion); 
             var srpContext = SrpContext.FromOptions(srpProfile.Options);
@@ -39,14 +39,14 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
 
             var encryptedVerifier = userData.EncryptedVerifier;
             var encryptedVerifierWrapKey = userData.EncryptedVerifierWrapKey;
-            var verifierWrapKey = _verifierProtector.Unprotect(encryptedVerifierWrapKey);
+            var verifierWrapKey = verifierProtector.Unprotect(encryptedVerifierWrapKey);
             var verifierWrapKeyBytes = Convert.FromBase64String(verifierWrapKey);
             
-            var decryptedVerifierBase64 = _cryptoServices.DecryptData<string>(encryptedVerifier, verifierWrapKeyBytes, aesGcmOptions);
+            string? decryptedVerifierBase64 = cryptoServices.DecryptData<string>(encryptedVerifier, verifierWrapKeyBytes, aesGcmOptions);
 
             byte[] vBytes = Convert.FromBase64String(decryptedVerifierBase64!);
 
-            var sessionState = _srpServer.GetSrpChallenge(normalizedLogin, vBytes, srpContext);
+            var sessionState = srpServer.GetSrpChallenge(normalizedLogin, vBytes, srpContext);
 
             var session = new SrpSessionState(
                 normalizedLogin,
@@ -55,9 +55,11 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
                 sessionState.PublicKeyB
             );
 
-            await _redisCacheService.SetJsonAsync(RedisKeyExtensions.SrpSession(normalizedLogin), session, TimeSpan.FromMinutes(2));
+            await redisCacheService.SetJsonAsync(RedisKeyExtensions.SrpSession(normalizedLogin), session, TimeSpan.FromMinutes(2));
 
-            return Result<SrpChallengeResponse>.Success(new SrpChallengeResponse(userData.ClientSalt, sessionState.PublicKeyB));
+            logger.LogInformation("SRP challenge успешно сгенерирован для логина: {Login}", normalizedLogin);
+
+            return new SrpChallengeResponse(userData.ClientSalt, sessionState.PublicKeyB);
         }
     }
 }

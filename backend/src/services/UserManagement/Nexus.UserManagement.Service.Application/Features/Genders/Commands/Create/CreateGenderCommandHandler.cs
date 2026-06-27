@@ -12,20 +12,13 @@ namespace Nexus.UserManagement.Service.Application.Features.Genders.Commands.Cre
     {
         public async Task<Result<Guid>> Handle(CreateGenderCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var gender = Gender.Create(request.Name);
+            var gender = Gender.Create(request.Name);
 
-                await genderRepository.AddAsync(gender, cancellationToken);
+            await genderRepository.AddAsync(gender, cancellationToken);
 
-                await unitOfWork.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result<Guid>.Success(gender.Id);
-            }
-            catch (Exception)
-            {
-                return Result<Guid>.Failure(new Error(ErrorCode.Create, "Ошибка на стороне сервера"));
-            }
+            return gender.Id;
         }
     }
 }

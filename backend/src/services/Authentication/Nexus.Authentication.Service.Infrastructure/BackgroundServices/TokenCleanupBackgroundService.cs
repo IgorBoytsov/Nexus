@@ -2,19 +2,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Nexus.Authentication.Service.Infrastructure.Persistence.Contexts;
 
 namespace Nexus.Authentication.Service.Infrastructure.BackgroundServices
 {
     public sealed class TokenCleanupBackgroundService(
         IServiceScopeFactory scopeFactory, 
-        IConfiguration configuration) : BackgroundService
+        IConfiguration configuration,
+        ILogger<TokenCleanupBackgroundService> logger) : BackgroundService
     {
         private readonly TimeSpan _cleanupInterval = TimeSpan.FromHours(configuration.GetValue<double>("TokenCleanup:IntervalHours", 1));
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Console.WriteLine($"Сервис очистки токенов запущен. Интервал выполнения: {_cleanupInterval}");
+            logger.LogInformation($"Сервис очистки токенов запущен. Интервал выполнения: {_cleanupInterval}");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -38,7 +40,7 @@ namespace Nexus.Authentication.Service.Infrastructure.BackgroundServices
                 await Task.Delay(_cleanupInterval, stoppingToken);
             }
 
-            Console.WriteLine("Сервис очистки токенов остановлен.");
+            logger.LogInformation("Сервис очистки токенов остановлен.");
         }
     }
 }

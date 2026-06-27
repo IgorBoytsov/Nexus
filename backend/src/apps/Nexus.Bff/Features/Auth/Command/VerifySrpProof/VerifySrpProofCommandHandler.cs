@@ -39,9 +39,9 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
             var resultCache = await cache.SetJsonAsync(RedisKeyExtensions.SrpTempToken(tempAuthToken), userSession, TimeSpan.FromMinutes(2));
 
             if (!resultCache)
-                return Result<VerifierSrpProofDTO>.Failure(new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера"));
+                return new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера");
 
-            return Result<VerifierSrpProofDTO>.Success(new VerifierSrpProofDTO(authData.M2!, tempAuthToken));
+            return new VerifierSrpProofDTO(authData.M2!, tempAuthToken);
         }
     }
 }

@@ -7,7 +7,8 @@ COPY ["backend/src/apps/Nexus.Bff/Nexus.Bff.csproj", "backend/src/apps/Nexus.Bff
 
 COPY ["backend/src/shared/contracts/Shared.Contracts/Shared.Contracts.csproj", "backend/src/shared/contracts/Shared.Contracts/"]
 COPY ["backend/src/shared/core/Shared.Kernel/Shared.Kernel.csproj", "backend/src/shared/core/Shared.Kernel/"]
-
+COPY ["backend/src/shared/core/Shared.Application/Shared.Application.csproj", "backend/src/shared/core/Shared.Application/"]
+COPY ["backend/src/shared/core/Shared.Logging/Shared.Logging.csproj", "backend/src/shared/core/Shared.Logging/"]
 COPY ["backend/src/shared/web/Shared.Web/Shared.Web.csproj", "backend/src/shared/web/Shared.Web/"]
 COPY ["backend/src/shared/validations/Shared.Validations/Shared.Validations.csproj", "backend/src/shared/validations/Shared.Validations/"]
 

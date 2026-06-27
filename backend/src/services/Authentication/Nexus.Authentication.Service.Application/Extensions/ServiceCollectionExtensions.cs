@@ -3,10 +3,12 @@ using Crossdyne.Security.Abstractions;
 using Crossdyne.Security.Cryptography;
 using Crossdyne.Security.Srp.Server;
 using Medallion.Threading.Redis;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Authentication.Service.Application.Secure;
 using Nexus.Authentication.Service.Application.Services;
+using Shared.Application.Behaviors;
 using Shared.Contracts.Security.Interfaces;
 using Shared.Security.Hasher;
 using Shared.Validations.Extensions;
@@ -18,6 +20,7 @@ namespace Nexus.Authentication.Service.Application.Extensions
     {
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionBehavior<,>));
             services.AddValidations(Assembly.GetExecutingAssembly());
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();

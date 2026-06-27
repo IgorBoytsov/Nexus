@@ -15,16 +15,16 @@ namespace Nexus.Bff.Features.Auth.Command.CompleteSrpAuth
             var userSession = await cache.GetJsonAsync<UserSession>(templateCacheKey);
 
             if (userSession is null)
-                return Result<CompleteSrpAuthResponse>.Failure(new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера. Пожалуйста повторите процесс входа."));
+                return new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера. Пожалуйста повторите процесс входа.");
 
             var resultCache = await cache.SetJsonAsync(RedisKeyExtensions.SessionKey(userSession.SessionId), userSession, TimeSpan.FromDays(30));
             
             if (!resultCache)
-                return Result<CompleteSrpAuthResponse>.Failure(new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера. Пожалуйста повторите процесс входа."));
+                return new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера. Пожалуйста повторите процесс входа.");
 
             await cache.RemoveAsync(templateCacheKey);
 
-            return Result<CompleteSrpAuthResponse>.Success(new CompleteSrpAuthResponse(userSession.SessionId, userSession.AccessToken, userSession.RefreshToken, userSession.AccessTokenExpiresAt, userSession.UserId, userSession.Login));
+            return new CompleteSrpAuthResponse(userSession.SessionId, userSession.AccessToken, userSession.RefreshToken, userSession.AccessTokenExpiresAt, userSession.UserId, userSession.Login);
         }
     }
 }

@@ -2,6 +2,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using Nexus.Authentication.Service.Application.Extensions;
 using Nexus.Authentication.Service.Infrastructure.Extensions;
+using Serilog;
+using Shared.Logging;
 using Shared.Web.Extensions;
 
 namespace Nexus.Authentication.Service.Api
@@ -20,6 +22,7 @@ namespace Nexus.Authentication.Service.Api
             
             builder.Services.AddOpenApi();
 
+            builder.Host.AddSerilogLogger();
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication(builder.Configuration);
 
@@ -32,6 +35,7 @@ namespace Nexus.Authentication.Service.Api
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
+            app.UseSerilogRequestLogging();
             app.MapControllers();
 
             app.Run();

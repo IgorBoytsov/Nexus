@@ -14,25 +14,18 @@ namespace Nexus.UserManagement.Service.Application.Features.Countries.Commands.U
     {
         public async Task<Result> Handle(UpdateCountryCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                Maybe<Country> maybeCountry = await countryRepository.GetByAsync(c => c.Id == request.Id, cancellationToken);
+            Maybe<Country> maybeCountry = await countryRepository.GetByAsync(c => c.Id == request.Id, cancellationToken);
 
-                if (maybeCountry.IsNone)
-                    return Result.Failure(new Error(ErrorCode.Update, "Такой записи не существует."));
+            if (maybeCountry.IsNone)
+                return Result.Failure(new Error(ErrorCode.Update, "Такой записи не существует."));
 
-                Country country = maybeCountry.Value;
+            Country country = maybeCountry.Value;
 
-                country.UpdateName(CountryName.Create(request.Name));
+            country.UpdateName(CountryName.Create(request.Name));
 
-                await unitOfWork.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result.Success();
-            }
-            catch (Exception)
-            {
-                return Result.Failure(new Error(ErrorCode.Update, "Ошибка на стороне сервера"));
-            }
+            return Result.Success();
         }
     }
 }
