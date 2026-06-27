@@ -2,7 +2,6 @@ using System.Reflection;
 using Nexus.Bff.Extensions;
 using Serilog;
 using Shared.Logging;
-using Shared.Validations.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +21,6 @@ builder.Services
     .ConfigureOptions()
     .AddServices(configuration)
     .AddHttpClients(configuration)
-    .AddValidations(executingAssembly)
     .AddDistributedLock()
     .UseCors()
     .AddSharedCryptoKeyForDecryptCookie(configuration)
