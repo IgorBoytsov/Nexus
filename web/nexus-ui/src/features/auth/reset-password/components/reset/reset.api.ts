@@ -12,7 +12,7 @@ export class StepResetApi{
     private http = inject(HttpClient);
     
     recoveryAccessPassword(data: ResetPasswordCompleteRequest): Observable<Result<Unit>>{
-        return this.http.post(`/reset-password`, data)
+        return this.http.post(`/password/reset`, data)
         .pipe(
             map(() => Result.success()),
             catchError(error =>  of(ResultHttp.failure<Unit>(error)))

@@ -10,6 +10,6 @@ export class CryptoApi {
     private http = inject(HttpClient);
     
     getPublicKey(): Observable<PublicKeyResponse> {
-        return this.http.get<PublicKeyResponse>(`/public-key`);;
+        return this.http.get<PublicKeyResponse>(`/public/key`);;
     }
 }

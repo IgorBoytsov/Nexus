@@ -14,8 +14,6 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="Crossdyne.Toolkit" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
-    <PackageReference Include="FluentValidation" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
 
     <PackageReference Include="Serilog.AspNetCore"/>
     <PackageReference Include="Serilog.Settings.Configuration"/>
@@ -31,7 +29,6 @@
     <ProjectReference Include="..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
     <ProjectReference Include="..\..\shared\core\Shared.Logging\Shared.Logging.csproj" />
     <ProjectReference Include="..\..\shared\infrastructure\Shared.Redis\Shared.Redis.csproj" />
-    <ProjectReference Include="..\..\shared\validations\Shared.Validations\Shared.Validations.csproj" />
     <ProjectReference Include="..\..\shared\web\Shared.Web\Shared.Web.csproj" />
   </ItemGroup>
 
