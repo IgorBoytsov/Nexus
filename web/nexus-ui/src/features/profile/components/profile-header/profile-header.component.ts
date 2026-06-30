@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from "@angular/core";
+import { Component, computed, inject, input, model, signal } from "@angular/core";
 import { ProfileInfoService } from "../../services/profile-info.service";
 import { Result } from "@crossdyne/toolkit";
 import { MapErrorsHelper } from "../../../../core/helpers/map-errors.helper";
@@ -15,7 +15,9 @@ export class ProfileHeaderComponent {
     selectedFile = signal<File | null>(null);
     private objectUrl = signal<string | null>(null);
 
-    nickName = input.required<string>();
+    nickName = model.required<string>();
+    isEditing = signal(false);
+
     dateRegistration = input.required<Date>();
     avatarUrlInput = input<string | null>(null);
 
@@ -107,6 +109,26 @@ export class ProfileHeaderComponent {
 
     ngOnDestroy(): void {
         this.revokeObjectUrl();
+    }
+
+    switchEditName(): void {
+        this.isEditing.set(true);
+    }
+
+    cancelEditName(): void {
+        this.isEditing.set(false);
+    }
+
+    async saveChangeName(): Promise<void> {
+        const result: Result<void> = await this.profileInfoService.changeName({userName: this.nickName()});
+
+        result.match(
+            () => {
+                console.log('Ник успешно изменен!');
+                this.isEditing.set(false);
+            },
+            errors => console.error(MapErrorsHelper.mapErrors(errors))
+        );
     }
 }
 

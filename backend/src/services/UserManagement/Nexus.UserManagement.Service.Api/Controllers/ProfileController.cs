@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Nexus.UserManagement.Service.Api.Extensions;
 using Nexus.UserManagement.Service.Api.Models;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangeAvatar;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangeUserName;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.ExistByLogin;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfileInfo;
+using Shared.Contracts.UserManagement.Requests;
 using Shared.Web.Extensions;
 using Unit = Crossdyne.Toolkit.Primitives.Unit;
 
@@ -71,6 +73,24 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             using var stream = file.OpenReadStream();
 
             var command = new ChangeAvatarCommand(extractResult.Value.UserId, stream, file.FileName);
+            Result<Unit> result = await mediator.Send(command);
+
+            if (result.IsFailure)
+                return this.MapActionResult(result.Errors);
+
+            return Ok();
+        }
+
+        [HttpPatch("change/name")]
+        [Authorize]
+        public async Task<IActionResult> ChangeName([FromBody] ChangeUserNameRequest request)
+        {
+            Result<ExtractData> extractResult = this.ExtractCredentials(User, out IActionResult actionResult);
+            
+            if (extractResult.IsFailure)
+                return actionResult;
+
+            var command = new ChangeUserNameCommand(extractResult.Value.UserId, request.UserName);
             Result<Unit> result = await mediator.Send(command);
 
             if (result.IsFailure)

@@ -1,3 +1,5 @@
+@use '../../../../scss/variables' as *;
+
 .header-container {
     display: flex;
     flex-direction: row;
@@ -19,36 +21,36 @@
       flex-shrink: 0;
     }
 
-    .avatar-picker:hover {
-      border-color: #007bff;
-    }
+      .avatar-picker:hover {
+        border-color: #007bff;
+      }
 
-    .avatar-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+      .avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
 
-    .avatar-overlay {
-      position: absolute;
-      inset: 0; 
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
+      .avatar-overlay {
+        position: absolute;
+        inset: 0; 
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
 
-    .avatar-picker:hover .avatar-overlay {
-      opacity: 1;
-    }
+      .avatar-picker:hover .avatar-overlay {
+        opacity: 1;
+      }
 
-    .camera-icon {
-      font-size: 32px;
-      color: white;
-    }
+      .camera-icon {
+        font-size: 32px;
+        color: white;
+      }
 
     .error {
       color: #dc3545;
@@ -58,14 +60,94 @@
 
     // Name
     .nick-name-container {
-        align-self: flex-start;
+        align-self: flex-start; 
+        margin-top: 0px;       
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        gap: 8px;               
+        height: 30px;
     }
 
         .nick-name {
-            font-size: 1.5rem;
-            font-weight: 600;
+          flex-shrink: 0;
+          field-sizing: content;
+          max-width: 100%;
+          
+          border: 1px solid transparent;
+          background-color: transparent;
+          font: inherit;
+          color: inherit;
+          padding: 2px 4px;
+          border-radius: 4px;
+          outline: none;
+          transition: all 0.2s ease;
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 600;
+
+            &:disabled {
+              cursor: default;
+              -webkit-text-fill-color: inherit;
+              opacity: 1;
+              columns: inherit;
+            }
+
+            &.editing {
+              background-color: transparent;
+              border-color: #0e3e72;
+              box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+              cursor: text;
+
+              &:focus {
+                border-color: #80bdff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+              }
+            }
         }
 
+        .btn-edit, .btn-save, .btn-cancel {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 5px 0px 0px 0px;
+          padding: 6px;
+          background: transparent;
+          border: none;
+          border-radius: 8px;
+          color: $text-primary;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          svg {
+            width: 18px;
+            height: 18px;
+            color: currentColor;
+          }
+        }
+
+        .btn-edit {
+          &:hover {
+            background: rgb(255, 255, 63);
+            color: black;
+          }
+        }
+
+        .btn-save {
+          &:hover {
+            background: rgb(0, 243, 0);
+            color: black;
+          }
+        }
+
+        .btn-cancel {
+          &:hover {
+            background: rgb(151, 22, 22);
+            color: black;
+          }
+        }
+
+    // Experience
     .date-registration-container {
         margin-left: auto;
         align-self: flex-start;

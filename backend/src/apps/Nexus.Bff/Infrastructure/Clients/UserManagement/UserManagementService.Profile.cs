@@ -1,4 +1,6 @@
+using Crossdyne.Toolkit.Primitives;
 using Crossdyne.Toolkit.Results;
+using Shared.Contracts.UserManagement.Requests;
 using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.Bff.Infrastructure.Clients.UserManagement
@@ -50,6 +52,23 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
                     return new Error(ErrorCode.Server, $"HTTP {(int)response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
 
                 return await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                return new Error(ErrorCode.Server, $"Ошибка в Api: {ex}");
+            }
+        }
+
+        public async Task<Result<Unit>> ChangeName(ChangeUserNameRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PatchAsJsonAsync("api/v1/users/change/name", request);
+
+                if (!response.IsSuccessStatusCode)
+                    return new Error(ErrorCode.Server, $"HTTP {(int)response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
+
+                return Unit.Value;
             }
             catch (Exception ex)
             {

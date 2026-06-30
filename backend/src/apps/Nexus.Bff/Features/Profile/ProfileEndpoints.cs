@@ -105,6 +105,19 @@ namespace Nexus.Bff.Features.Profile
 
                 return Results.Ok();
             }).DisableAntiforgery().RequireAuthorization();
+
+
+            app.MapPatch("change/name", async (
+                [FromBody] ChangeUserNameRequest request, 
+                [FromServices] IUserManagementService userManagementService) =>
+            {
+                var result = await userManagementService.ChangeName(request);
+
+                if (result.IsFailure)
+                    return result.Errors.MapToMinimalApiResult();
+
+                return Results.Ok();
+            }).RequireAuthorization();
         }
     }
 }
