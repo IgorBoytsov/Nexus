@@ -53,8 +53,9 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 12px;
+    padding: 4px;
 }
+
 .project-link {
     display: flex;
     align-items: center;
@@ -150,7 +151,8 @@
 }
 
 .project-description {
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 500;
     color: #9ca3af;
     line-height: 1.4;
 }
