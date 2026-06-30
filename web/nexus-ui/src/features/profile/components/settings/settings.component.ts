@@ -1,0 +1,103 @@
+import { Component, inject, signal } from "@angular/core";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { CryptoConfigurationService } from "../../../../core/services/crypto-configuration.service";
+import { CryptoService, CryptoVersion } from "@crossdyne/security";
+import { KeyManagementService } from "../../../../core/services/key-management.service";
+import { SrpVerifierService } from "../../../../core/services/srp-verifier.service";
+import { ChangePasswordService } from "../../services/change-password.service";
+import { RsaService } from "../../../../core/services/rsa.service";
+import { Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
+import { ChangePasswordRequest } from "../../models/change-password.request";
+import { HttpErrorResponse } from "@angular/common/http";
+
+@Component({
+    selector: 'settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss'],
+    standalone: true,
+    imports: [ReactiveFormsModule]
+})
+export class SettingsComponent {
+    private fb = inject(FormBuilder);
+    private router = inject(Router);
+    private changedPasswordApi = inject(ChangePasswordService);
+    private rsaService = inject(RsaService);
+    private srpService = inject(SrpVerifierService);
+    private keyManagement = inject(KeyManagementService);
+    private cryptoConfig = inject(CryptoConfigurationService);
+
+    private readonly cryptoService = new CryptoService();
+
+    changePasswordForm: FormGroup; 
+    isLoading = signal(false);
+    errorMessage = signal<string | null>(null);
+
+    constructor() {
+        this.changePasswordForm = this.fb.group({
+            oldPassword: ['', Validators.required],
+            newPassword: ['', Validators.required]
+        })
+    }
+
+    async onSubmit(): Promise<void> {
+        this.isLoading.set(true);
+
+        try {
+            const { oldPassword, newPassword } = this.changePasswordForm.value;
+            const initResult = await firstValueFrom(this.changedPasswordApi.init());
+
+            if (initResult.isFailure){
+                this.errorMessage.set(initResult.stringMessage);
+                return;
+            }
+
+            //#region Конфигурация
+
+            const { login, encryptedDek, cryptoVersionDek, dekSalt, srvVersion } = initResult.value;
+            
+            const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
+            const cryptoProfile = this.cryptoConfig.getCryptoProfile(cryptoVersionDek as CryptoVersion);
+
+            const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
+            const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
+
+            //#endregion
+
+            const rsaPublicKey = await this.rsaService.getPublicKey();
+
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
+
+            const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(login, oldPassword, newPassword, dekSalt, encryptedDek, rawDekKeyDerivationSalt, cryptoProfile);
+
+            const request: ChangePasswordRequest = {
+                userId: null,
+                encryptedVerifier: encryptedVerifier,
+                srpSalt: base64SrpAuthSalt,
+                srpVersion: srpGroup,
+                encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
+                keyWrapVersion: cryptoProfile.version,
+                asymmetricKeyId: "env_v1",
+                encryptedDek: reEncryptedDek,
+                dekSalt: base64DekKeyDerivationSalt,
+                cryptoVersion: cryptoProfile.version,
+            };
+            
+            await firstValueFrom(this.changedPasswordApi.changePassword(request));
+
+            this.router.navigate(['/login'])
+        } catch (error) {
+             console.error("Ошибка регистрации:", error);
+            
+            if (error instanceof HttpErrorResponse) {
+                console.error('Status:', error.status);
+                console.error('Error body:', error.error);
+                console.error('Headers:', error.headers.keys());
+            }
+
+            this.errorMessage.set(error instanceof Error ? error.message : 'Неизвестная ошибка');
+        } finally {
+            this.isLoading.set(false);
+        }
+    }
+}

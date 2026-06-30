@@ -1,22 +1,29 @@
-// #region Фон и цвета
+// #region Фон
 
 $color-logo: white;
-$color-bg: #1D1C21;
-$bg-card: #1a1a2e;
-$accent: #6c63ff;
-$accent-light: #8b83ff;
-$accent-glow: rgba(108, 99, 255, 0.3);
-$text-primary: #e8e8f0;
-$text-secondary: #9999aa;
-$border: #2a2a3e;
-$gradient-1: linear-gradient(135deg, #6c63ff 0%, #e94bff 100%);
-$gradient-2: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+$color-bg: linear-gradient(135deg, #01081B 0%, #00060C 100%);
+
+// #endregion
+
+// #region Карточки
+
+$bg-card: #111524;
+$card-bg-border: #1E212A;
+
+// #endregion
+
+// #region Кнопки
+
+$button-bg: #13161E;
+$button-bg-hover: #2D3039;
+$button-db-active: #5983e4;
 
 // #endregion
 
 // #region Текст
 
-$color-text-primary: #f1f5f9;
+$text-primary: #f1f5f9;
+$text-secondary: #9999aa;
 $color-text-error: #dd7171;
 $font-size-text-error: 0.875rem;
 

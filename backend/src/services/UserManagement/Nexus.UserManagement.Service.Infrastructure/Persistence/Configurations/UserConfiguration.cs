@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Nexus.UserManagement.Service.Domain.Models;
+using Nexus.UserManagement.Service.Domain.ValueObjects.Common;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Constants;
 
@@ -58,6 +59,11 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.HasIndex(u => u.Email, "IX_Users_Email").IsUnique();
+
+            builder.Property(a => a.AvatarKey)
+                .HasColumnName("avatar_key")
+                .HasConversion(key => key.HasValue ? key.Value.Value : null, db => !string.IsNullOrWhiteSpace(db) ? S3Key.Restore(db) : (S3Key?)null )
+                .IsRequired();
 
             /*__Dates__*/
 

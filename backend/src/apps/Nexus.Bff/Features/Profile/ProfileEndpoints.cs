@@ -1,7 +1,11 @@
 using System.Security.Claims;
+using Crossdyne.Toolkit.Results;
 using Microsoft.AspNetCore.Mvc;
+using Nexus.Bff.Infrastructure.Clients;
 using Nexus.Bff.Infrastructure.Clients.UserManagement;
+using Nexus.Bff.Models.Responses;
 using Shared.Contracts.UserManagement.Requests;
+using Shared.Contracts.UserManagement.Responses;
 using Shared.Web.Extensions;
 
 namespace Nexus.Bff.Features.Profile
@@ -62,9 +66,10 @@ namespace Nexus.Bff.Features.Profile
             app.MapGet("/profile", async (
                 HttpContext httpContext, 
                 [FromServices] IUserManagementService userManagementService, 
+                [FromServices] IFileService fileService,
                 CancellationToken ct = default) =>
             {
-                var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                string? userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
                 if (string.IsNullOrEmpty(userId))
                     return Results.Unauthorized(); 
@@ -74,8 +79,32 @@ namespace Nexus.Bff.Features.Profile
                 if(result.IsFailure)
                     return result.Errors.MapToMinimalApiResult();
 
-                return Results.Ok(result.Value); 
+                ProfileInfoResponse profileInfoResponse = result.Value;
+                S3KeyResponse? s3Key = profileInfoResponse.AvatarS3Key;
+
+                if (s3Key == null)
+                    return Results.Ok(new ProfileInfoBffResponse(profileInfoResponse.Login, profileInfoResponse.UserName, profileInfoResponse.Email, profileInfoResponse.DateRegistration, ""));
+
+                Result<string> urlResult = await fileService.GetUrl(s3Key.Bucket, s3Key.FolderPath, s3Key.Key);
+
+                if (urlResult.IsFailure)
+                    return Results.Ok(new ProfileInfoBffResponse(profileInfoResponse.Login, profileInfoResponse.UserName, profileInfoResponse.Email, profileInfoResponse.DateRegistration, ""));
+
+                return Results.Ok(new ProfileInfoBffResponse(profileInfoResponse.Login, profileInfoResponse.UserName, profileInfoResponse.Email, profileInfoResponse.DateRegistration, urlResult.Value)); 
             }).RequireAuthorization();
+
+            app.MapPatch("change/avatar", async (
+                [FromForm] IFormFile file, 
+                [FromServices] IUserManagementService userManagementService) =>
+            {
+                using var stream = file.OpenReadStream();
+                var result = await userManagementService.ChangeAvatar(stream, file.FileName);
+
+                if (result.IsFailure)
+                    return result.Errors.MapToMinimalApiResult();
+
+                return Results.Ok();
+            }).DisableAntiforgery().RequireAuthorization();
         }
     }
 }

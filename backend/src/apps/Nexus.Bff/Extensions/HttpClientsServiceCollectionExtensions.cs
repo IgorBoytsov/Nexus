@@ -1,3 +1,4 @@
+using Nexus.Bff.Handlers;
 using Nexus.Bff.Infrastructure.Clients;
 using Nexus.Bff.Infrastructure.Clients.UserManagement;
 
@@ -7,13 +8,12 @@ namespace Nexus.Bff.Extensions
     {
         public static IServiceCollection AddHttpClients(this IServiceCollection services, IConfiguration configuration)
         {
-            var authBaseUrl = configuration["Urls:AuthServicesBase"];
-            string authenticationServices = "AuthenticationServices";
-            services.AddHttpClient<IAuthClient, AuthClient>(authenticationServices, client => client.BaseAddress = new Uri(authBaseUrl!));
+            services.AddHttpContextAccessor();
+            services.AddTransient<AccessTokenHandler>();
 
-            var userManagementBaseUrl = configuration["Urls:UserManagementBase"];
-            string userManagementService = "UserManagementService";
-            services.AddHttpClient<IUserManagementService, UserManagementService>(userManagementService, client => client.BaseAddress = new Uri(userManagementBaseUrl!));
+            services.AddHttpClient<IAuthClient, AuthClient>(client => client.BaseAddress = new Uri(configuration["Urls:AuthServicesBase"]!)).AddHttpMessageHandler<AccessTokenHandler>();
+            services.AddHttpClient<IUserManagementService, UserManagementService>(client => client.BaseAddress = new Uri(configuration["Urls:UserManagementBase"]!)).AddHttpMessageHandler<AccessTokenHandler>();
+            services.AddHttpClient<IFileService, FileService>(client => client.BaseAddress = new Uri(configuration["Urls:FileService"]!));
 
             return services;
         }

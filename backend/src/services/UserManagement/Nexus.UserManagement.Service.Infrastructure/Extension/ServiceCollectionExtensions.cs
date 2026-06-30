@@ -3,10 +3,13 @@ using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Nexus.UserManagement.Service.Application.Interfaces.Clients;
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
 using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Infrastructure.Clients;
 using Nexus.UserManagement.Service.Infrastructure.Persistence;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
+using Nexus.UserManagement.Service.Infrastructure.Persistence.Extensions.Dapper;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Countries;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Genders;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Roles;
@@ -33,6 +36,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Extension
 
             SqlMapper.ResetTypeHandlers();
             SqlMapper.AddTypeHandler(new JsonListStringHandler());
+            SqlMapper.AddTypeHandler(new S3KeyResponseTypeHandler());
 
             #endregion
 
@@ -52,6 +56,13 @@ namespace Nexus.UserManagement.Service.Infrastructure.Extension
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserReadOnlyRepository, UserReadOnlyRepository>();
+
+            #endregion
+
+            #region Http Clients
+
+            string? fileServiceUrl = configuration["ServiceUrls:FileService"];
+            services.AddHttpClient<IFileService, FileService>(client => client.BaseAddress = new Uri(fileServiceUrl!));
 
             #endregion
 

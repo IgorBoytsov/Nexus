@@ -1,5 +1,5 @@
 using Crossdyne.Toolkit.Results;
-using Nexus.Bff.Models.Responses;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.Bff.Infrastructure.Clients.UserManagement
 {
@@ -30,6 +30,30 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
             catch (Exception ex)
             {
                 return Result.Failure(new Error(ErrorCode.Server, $"Ошибка в Api: {ex}"));
+            }
+        }
+
+        public async Task<Result<string>> ChangeAvatar(Stream file, string fileName)
+        {
+            try
+            {
+                using var content = new MultipartFormDataContent();
+
+                if (file.CanSeek)
+                    file.Position = 0;
+
+                content.Add(new StreamContent(file), "File", fileName);
+
+                var response = await _httpClient.PatchAsync("api/v1/users/change/avatar", content);
+
+                if (!response.IsSuccessStatusCode)
+                    return new Error(ErrorCode.Server, $"HTTP {(int)response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
+
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                return new Error(ErrorCode.Server, $"Ошибка в Api: {ex}");
             }
         }
     }

@@ -180,6 +180,11 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("AvatarKey")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("avatar_key");
+
                     b.Property<DateTime?>("DateEntry")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_entry");

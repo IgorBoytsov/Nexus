@@ -1,6 +1,7 @@
 ﻿using Crossdyne.Toolkit.Results;
 using Nexus.UserManagement.Service.Domain.Enums;
 using Nexus.UserManagement.Service.Domain.Exceptions;
+using Nexus.UserManagement.Service.Domain.ValueObjects.Common;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Deks;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Role;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
@@ -17,6 +18,10 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public Login Login { get; private set; } 
         public UserName UserName { get; private set; }
         public Email Email { get; private set; }
+
+        /*--Аватар--*/
+
+        public S3Key? AvatarKey { get; private set; }
 
         /*--Даты--*/
 
@@ -163,6 +168,16 @@ namespace Nexus.UserManagement.Service.Domain.Models
         {
             var key = RecoveryKey.Create(this.Id, encryptedValue, cryptoVersion, keyHint);
             _recoveryKeys.Add(key);
+        }
+
+        #endregion
+
+        #region Avatar
+
+        public void ChangeAvatar(S3Key key)
+        {
+            AvatarKey = key;
+            DateUpdate = DateTime.UtcNow;
         }
 
         #endregion

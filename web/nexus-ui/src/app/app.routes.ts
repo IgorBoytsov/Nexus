@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from '../features/auth/login/login.component';
 import { RegisterComponent } from '../features/auth/register/register.component';
 import { MainLayoutComponent } from '../core/layout/main/main-layout.component';
-import { ProfilePage } from '../pages/profile/profile.page';
+import { ProfilePage } from '../features/profile/page/profile.page';
 import { AuthLayoutComponent } from '../core/layout/auth/auth-layout.component';
 import { ResetComponent } from '../features/auth/reset-password/reset-password.component';
 import { StepLoginComponent } from '../features/auth/reset-password/components/find-login/find-login.component';
@@ -14,8 +14,8 @@ import { StepFindLoginComponent } from '../features/auth/recovery-password-keys/
 import { StepEnterCodeComponent } from '../features/auth/recovery-password-keys/components/enter-code/enter-code.component';
 import { StepSetPasswordComponent } from '../features/auth/recovery-password-keys/components/set-password/set-password.component';
 import { recoveryStepGuard as recoveryKeysStepGuard } from '../features/auth/recovery-password-keys/guards/recovery-password-keys.guard';
-import { ChangePasswordComponent } from '../features/profile/change-password/change-password.component';
 import { guestGuard } from '../core/guards/guest.guard';
+import { ChangePasswordComponent } from '../features/profile/components/change-password/change-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },

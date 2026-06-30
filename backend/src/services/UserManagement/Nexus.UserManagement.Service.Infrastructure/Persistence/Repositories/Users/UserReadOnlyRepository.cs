@@ -1,6 +1,5 @@
 using System.Data;
 using Dapper;
-using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfileInfo;
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
 using Nexus.UserManagement.Service.Infrastructure.Helpers;
 using Shared.Contracts.UserManagement.Responses;
