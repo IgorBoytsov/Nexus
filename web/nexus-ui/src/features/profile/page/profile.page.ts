@@ -9,13 +9,14 @@ import { Router } from "@angular/router";
 import { SettingsComponent } from "../components/settings/settings.component";
 import { ProfileInfoService } from "../services/profile-info.service";
 import { ProfileInfoResponse } from "../models/profile-info.response";
+import { ProjectsComponent } from "../components/projects/projects.component";
 
 @Component({
     selector: 'app-profile-page',
     templateUrl: './profile.page.html',
     styleUrls: ['./profile.page.scss'],
     standalone: true,
-    imports: [CommonModule, ProfileInfoComponent, ProfileHeaderComponent, SettingsComponent],
+    imports: [CommonModule, ProfileInfoComponent, ProfileHeaderComponent, SettingsComponent, ProjectsComponent],
 })
 export class ProfilePage implements OnInit {
 
@@ -23,7 +24,7 @@ export class ProfilePage implements OnInit {
     private logoutService = inject(LogoutService);
     private router = inject(Router);
 
-    activeTab = signal<'profile' | 'settings'>('profile');
+    activeTab = signal<'profile' | 'settings' | 'projects'>('profile');
 
     login = signal<string>('');
     userName = signal<string>('');
@@ -37,7 +38,7 @@ export class ProfilePage implements OnInit {
 
     //#region Выбор активной вкладки
 
-    setActiveTab(tab: 'profile' | 'settings'): void {
+    setActiveTab(tab: 'profile' | 'settings' | 'projects'): void {
         this.activeTab.set(tab);
     }
 

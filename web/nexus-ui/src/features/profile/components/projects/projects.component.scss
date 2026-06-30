@@ -1,0 +1,193 @@
+@use '../../../../scss/variables' as *;
+
+.projects-container {
+    background-color: $bg-card;
+    border: 1.5px solid $card-bg-border;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #10b981, #06b6d4, #6366f1);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+        border-color: rgba(16, 185, 129, 0.3);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+        &::before {
+            opacity: 1;
+        }
+    }
+}
+
+.projects-header {
+    padding: 20px;
+
+    .header-row {
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+}
+
+.projects-icon {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 182, 212, 0.15));
+    color: #10b981;
+
+    .projects-container:hover & {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 182, 212, 0.25));
+    }
+}
+
+.projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+}
+.project-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background-color: $bg-card;
+    border: 1.5px solid $card-bg-border; 
+    
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.08), transparent);
+        transition: left 0.6s ease;
+    }
+
+    &:hover {
+        border-color: rgba(99, 102, 241, 0.3);
+        background: linear-gradient(rgba(99, 102, 241, 0.03), rgba(99, 102, 241, 0.03)), $bg-card;
+        
+        transform: translateX(4px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+        .external-icon {
+            opacity: 1;
+            transform: translate(2px, -2px);
+            color: #6366f1;
+        }
+
+        .project-icon {
+            transform: scale(1.08);
+        }
+
+        &::after {
+            left: 100%;
+        }
+    }
+
+    &:active {
+        transform: translateX(2px) scale(0.99);
+    }
+}
+
+.project-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+    color: #6366f1;
+    border-radius: 10px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+
+    &.vault {
+        background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(244, 114, 182, 0.15));
+        color: #ec4899;
+    }
+}
+
+.project-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.project-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f9fafb;
+}
+
+.external-icon {
+    color: #6b7280;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.project-description {
+    font-size: 13px;
+    color: #9ca3af;
+    line-height: 1.4;
+}
+
+.project-url {
+    font-size: 12px;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    color: #10b981;
+    margin-top: 2px;
+    opacity: 0.85;
+}
+
+@media (max-width: 640px) {
+    .projects-header {
+        padding: 16px;
+    }
+
+    .projects-list {
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .project-link {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .project-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .project-title {
+        font-size: 14px;
+    }
+
+    .project-description {
+        font-size: 12px;
+    }
+}
