@@ -1,6 +1,57 @@
 <div class="info-container">
-    <h1>Логин: {{ login() }}</h1>
-    <h1>Почта: {{ email() }}</h1>
-    <h1>Дата регистрации {{ dataRegistration() | date:'d MMMM yyyy' }}</h1>
-</div>
+    <div class="auth-info-container container">
+        <div class="info-row">
+            <div class="info-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="info-content-container">
+                <div class="info-content">
+                    <span class="info-label">Логин</span>
+                    <span class="info-value">{{ login() }}</span>
+                </div>
+                <button class="btn-copy" (click)="copy('login')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy">
+                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
 
+        <div class="info-row">
+            <div class="info-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="info-content-container">
+                <div class="info-content">
+                    <span class="info-label">Почта</span>
+                    <span class="info-value">{{ email() }}</span>
+                </div>
+                <button class="btn-copy" (click)="copy('email')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy">
+                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    </svg>
+                </button>            
+            </div>
+        </div>
+    </div>
+
+    <div class="data-info-container container">
+        <div class="info-row">
+            <div class="info-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3.01 3.9 3.01 5L3 19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V8H19V19ZM7 10H12V15H7V10Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="info-content">
+                <span class="info-label">Дата регистрации</span>
+                <span class="info-value">{{ dataRegistration() | date:'d MMMM yyyy' }}</span>
+            </div>
+        </div>
+    </div>
+</div>

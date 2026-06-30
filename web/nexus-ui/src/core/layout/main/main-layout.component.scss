@@ -91,19 +91,19 @@
 
 
 /* Скрываем текст на очень маленьких экранах */
-@media (max-width: 480px) {
-    .btn-account-text {
-        display: none;
-    }
-    .btn-account {
-        padding: 0.5rem;
-        border-radius: 50%;
-        justify-content: center;
-    }
-}
+// @media (max-width: 480px) {
+//     .btn-account-text {
+//         display: none;
+//     }
+//     .btn-account {
+//         padding: 0.5rem;
+//         border-radius: 50%;
+//         justify-content: center;
+//     }
+// }
 
-@media (max-width: 768px) {
-    .nav-actions {
-        display: none;
-    }
-}
+// @media (max-width: 768px) {
+//     .nav-actions {
+//         display: none;
+//     }
+// }

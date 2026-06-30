@@ -1,4 +1,4 @@
-import { Component, input} from "@angular/core";
+import { Component, input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 @Component({
@@ -12,4 +12,19 @@ export class ProfileInfoComponent {
     login = input.required<string>();
     email = input.required<string>();
     dataRegistration = input.required<Date>();
+
+    private readonly copyMap = new Map<string, () => string>([
+        ['login', () => this.login()],
+        ['email', () => this.email()]
+    ]);
+
+    async copy(elementToCopy: 'login' | 'email' | null){
+         if (!elementToCopy)
+            return;   
+
+         const getter = this.copyMap.get(elementToCopy);
+
+        if (getter)
+            await navigator.clipboard.writeText(getter());
+    }
 }
