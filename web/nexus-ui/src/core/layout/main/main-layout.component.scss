@@ -1,4 +1,4 @@
-@use "../../../scss/variables" as *;
+@use '../../../scss/variables' as *;
 
  *, *::before, *::after {
      margin: 0;
@@ -16,10 +16,10 @@
      position: fixed;
      top: 0; left: 0; right: 0;
      z-index: 1000;
-     background: rgba(10, 10, 15, 0.8);
+     background: #04050B;
      backdrop-filter: blur(20px);
      -webkit-backdrop-filter: blur(20px);
-     border-bottom: 1px solid $border;
+     border-bottom: 1px solid $card-bg-border;
      padding: 0 2rem;
  }
 
@@ -44,7 +44,7 @@
     gap: 0.5rem;
     padding: 0.5rem 1rem;
     background: $bg-card;
-    border: 1px solid $border;
+    border: 1px solid $card-bg-border;
     border-radius: 10px;
     font-size: 0.9rem;
     font-weight: 500;
@@ -53,10 +53,10 @@
 }
 
 .btn-account:hover {
-    border-color: $accent;
+    border-color: #6c63ff;
     color: $text-primary;
     background: rgba(108, 99, 255, 0.1);
-    box-shadow: 0 4px 20px $accent-glow;
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.3);
     transform: translateY(-1px);
 }
 
@@ -69,6 +69,26 @@
 .btn-account:hover svg {
     opacity: 1;
 }
+
+.btn-exit {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #111524;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: $text-primary;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+    .btn-exit:hover {
+        background-color: #fa0d05;
+    }
+
 
 /* Скрываем текст на очень маленьких экранах */
 @media (max-width: 480px) {
