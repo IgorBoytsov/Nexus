@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Crossdyne.Toolkit.Primitives;
 using Crossdyne.Toolkit.Results;
 using Microsoft.Extensions.Options;
 using Shared.Contracts.Authentication.Requests;
@@ -52,7 +53,7 @@ namespace Nexus.Bff.Infrastructure.Clients
             }
         }
 
-        public async Task<Result<Shared.Contracts.Authentication.Responses.AuthResponse>> RefreshTokens(Shared.Contracts.Authentication.Requests.RefreshTokensRequest request)
+        public async Task<Result<AuthResponse>> RefreshTokens(RefreshTokensRequest request)
         {
             try
             {
@@ -61,14 +62,14 @@ namespace Nexus.Bff.Infrastructure.Clients
                 if (!response.IsSuccessStatusCode)
                 {
                     var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
-                    return Result<Shared.Contracts.Authentication.Responses.AuthResponse>.Failure(errors!)!;
+                    return Result<AuthResponse>.Failure(errors!)!;
                 }
 
-                return Result<Shared.Contracts.Authentication.Responses.AuthResponse?>.Success(await response.Content.ReadFromJsonAsync<Shared.Contracts.Authentication.Responses.AuthResponse>())!;
+                return Result<AuthResponse?>.Success(await response.Content.ReadFromJsonAsync<AuthResponse>())!;
             }
             catch (Exception ex)
             {
-                return Result<Shared.Contracts.Authentication.Responses.AuthResponse?>.Failure(new Error(AppErrors.Api, $"Ошибка обновление токенов: {ex.Message}"))!;
+                return Result<AuthResponse?>.Failure(new Error(AppErrors.Api, $"Ошибка обновление токенов: {ex.Message}"))!;
             }
         }
 
@@ -79,6 +80,26 @@ namespace Nexus.Bff.Infrastructure.Clients
             var key = await response.Content.ReadAsStringAsync();
 
             return Result<string>.Success(key); 
+        }
+
+        public async Task<Result<Unit>> Logout(LogoutRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("api/auth/logout", request, options: _jsonOptions);
+                                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errors = await response.Content.ReadFromJsonAsync<Error[]>(_jsonOptions);
+                    return Result.Failure(errors!)!;
+                }
+
+                return Unit.Value;
+            }
+            catch (Exception ex)
+            {
+                return new Error(AppErrors.Api, $"Ошибка выхода из учетной записи: {ex.Message}");
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 using MediatR;
 using Crossdyne.Toolkit.Results;
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfileInfo
 {

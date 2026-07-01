@@ -1,0 +1,29 @@
+<div class="setting-container">
+    <div class="change-password-container">
+        <p class="title">Смена пароля</p>
+
+        <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmit()" class="login-form">
+            <div class="form-field">
+                <label for="oldPassword">Текущий пароль</label>
+                <input id="oldPassword" type="password" name="oldPassword" formControlName="oldPassword" [class.error]="changePasswordForm.get('oldPassword')?.invalid && changePasswordForm.get('oldPassword')?.touched"/>
+                @if (changePasswordForm.get('oldPassword')?.hasError('required') && changePasswordForm.get('login')?.touched) {
+                    <small class="error-message">Укажите текущий пароль, это нужно для корректно перешифровки данных</small>
+                }   
+            </div>
+
+            <div class="form-field">
+                <label for="newPassword">Новый пароль</label>
+                <input id="newPassword" type="password" name="newPassword" formControlName="newPassword" [class.error]="changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.touched"/>
+                @if (changePasswordForm.get('newPassword')?.hasError('required') && changePasswordForm.get('newPassword')?.touched) {
+                    <small class="error-message">Минимум 8 символов</small>
+                }
+            </div>
+
+            @if (errorMessage()) {
+                <small class="error-message">{{errorMessage()}}</small>
+            }
+                
+            <button type="submit" [disabled]="changePasswordForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Меняем...' : 'Сменить'}}</button>
+        </form>
+    </div>
+</div>

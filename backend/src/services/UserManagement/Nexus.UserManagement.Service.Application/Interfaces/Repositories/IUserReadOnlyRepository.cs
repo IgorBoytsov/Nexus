@@ -1,4 +1,3 @@
-using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfileInfo;
 using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.UserManagement.Service.Application.Interfaces.Repositories

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Nexus.Authentication.Service.Application.Features.Commands.Logout;
 using Nexus.Authentication.Service.Application.Features.Commands.Refresh;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof;
@@ -37,13 +38,24 @@ namespace Nexus.Authentication.Service.Api.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] Shared.Contracts.Authentication.Requests.RefreshTokensRequest request)
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokensRequest request)
         {
             var command = new RefreshTokenCommand(request.RefreshToken, request.AccessToken);
             var result = await _mediator.Send(command);
 
             return result.Match(
                 onSuccess: () => Ok(result.Value),
+                onFailure: errors => this.MapActionResult(errors));
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequest request)
+        {
+            var command = new LogoutCommand(request.RefreshToken);
+            var result = await _mediator.Send(command);
+
+            return result.Match(
+                onSuccess: () => Ok(),
                 onFailure: errors => this.MapActionResult(errors));
         }
     }
