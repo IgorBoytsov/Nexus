@@ -9,7 +9,7 @@ import { RecoveryViaKeysSetRequest } from "./models/recovery-via-keys-set.reques
 import { RecoveryKeysListComponent } from "../../../../../shared/ui/recovery-keys-list/recovery-keys-list.component";
 import { CryptoConstants } from "../../../../../core/constants/security.constants";
 import { RecoveryKeyService } from "../../../../../core/services/recovery-key.service";
-import { ArrayUtils } from "../../../../../core/utils/array.utils";
+import { ArrayHelper } from "../../../../../core/helpers/array.helper";
 import { RsaService } from "../../../../../core/services/rsa.service";
 import { SrpVerifierService } from "../../../../../core/services/srp-verifier.service";
 import { KeyManagementService } from "../../../../../core/services/key-management.service";
@@ -81,8 +81,8 @@ export class StepSetPasswordComponent {
 
                 const { recoveryKeysForDisplay, recoveryAssets} = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, CryptoConstants.RECOVERY_KEYS_COUNT, cryptoProfile);
 
-                ArrayUtils.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
-                ArrayUtils.reset(this.recoveryAssets, recoveryAssets);
+                ArrayHelper.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
+                ArrayHelper.reset(this.recoveryAssets, recoveryAssets);
 
                 const request: RecoveryViaKeysSetRequest = {
                     login: this.state.login!,
