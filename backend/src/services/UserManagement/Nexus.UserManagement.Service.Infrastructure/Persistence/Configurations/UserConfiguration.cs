@@ -63,7 +63,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
             builder.Property(a => a.AvatarKey)
                 .HasColumnName("avatar_key")
                 .HasConversion(key => key.HasValue ? key.Value.Value : null, db => !string.IsNullOrWhiteSpace(db) ? S3Key.Restore(db) : (S3Key?)null )
-                .IsRequired();
+                .IsRequired(false);
 
             /*__Dates__*/
 
