@@ -24,6 +24,8 @@
     <ProjectReference Include="..\..\..\shared\web\Shared.Web\Shared.Web.csproj" />
     <ProjectReference Include="..\Nexus.UserManagement.Service.Application\Nexus.UserManagement.Service.Application.csproj" />
     <ProjectReference Include="..\Nexus.UserManagement.Service.Infrastructure\Nexus.UserManagement.Service.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\dotnet-security\src\Crossdyne.Security.Cryptography\Crossdyne.Security.Cryptography.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\dotnet-security\src\Crossdyne.Security.Srp.Server\Crossdyne.Security.Srp.Server.csproj" />
   </ItemGroup>
 
 </Project>

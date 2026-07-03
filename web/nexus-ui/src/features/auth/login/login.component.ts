@@ -65,7 +65,7 @@ export class LoginComponent {
       }
 
       const { salt, b } = challengeResult.value; 
-      const {A, M1, S} = await this.srpService.generateSrpProof(login, password, salt, b, srpContext);
+      const {A, M1, SessionKeyK} = await this.srpService.generateSrpProof(login, password, salt, b, srpContext);
 
       const verifierResult = await this.executeSafe(this.authApi.srpVerifyProof({ Login: login, A, M1}));
       
@@ -81,7 +81,7 @@ export class LoginComponent {
         return;
       }
 
-      const isServerValid = await this.srpService.verifyServerM2(A, M1, S, m2, srpContext);
+      const isServerValid = await this.srpService.verifyServerM2(A, M1, SessionKeyK, m2, srpContext);
 
       if (!isServerValid) {
         this.errorMessage.set("Ошибка аутентификации: Подлинность сервера не подтверждена!");
