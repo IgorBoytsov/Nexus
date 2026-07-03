@@ -61,7 +61,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Extension
 
             #region Http Clients
 
-            string? fileServiceUrl = configuration["ServiceUrls:FileService"];
+            string? fileServiceUrl = configuration["Urls:FileService"];
             services.AddHttpClient<IFileService, FileService>(client => client.BaseAddress = new Uri(fileServiceUrl!));
 
             #endregion
