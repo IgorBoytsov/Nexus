@@ -61,7 +61,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
 
             logger.LogInformation("SRP challenge успешно сгенерирован для логина: {Login}", normalizedLogin);
 
-            return new SrpChallengeResponse(userData.ClientSalt, Convert.ToBase64String(sessionState.PublicKeyB.Span));
+            return new SrpChallengeResponse(userData.ClientSalt, Convert.ToBase64String(sessionState.PublicKeyB));
         }
     }
 }
