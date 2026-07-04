@@ -51,7 +51,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
             var session = new SrpSessionState(
                 normalizedLogin,
                 sessionState.PrivateKeyB,
-                Convert.ToBase64String(vBytes),
+                vBytes,
                 sessionState.PublicKeyB
             );
 
@@ -59,7 +59,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
 
             logger.LogInformation("SRP challenge успешно сгенерирован для логина: {Login}", normalizedLogin);
 
-            return new SrpChallengeResponse(userData.ClientSalt, sessionState.PublicKeyB);
+            return new SrpChallengeResponse(userData.ClientSalt, Convert.ToBase64String(sessionState.PublicKeyB.Span));
         }
     }
 }
