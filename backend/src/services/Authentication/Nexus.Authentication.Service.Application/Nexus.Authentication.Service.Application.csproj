@@ -10,8 +10,8 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
-    <!-- <PackageReference Include="Crossdyne.Security.Srp.Server" />
-    <PackageReference Include="Crossdyne.Security.Cryptography" /> -->
+    <PackageReference Include="Crossdyne.Security.Srp.Server" />
+    <PackageReference Include="Crossdyne.Security.Cryptography" />
     <PackageReference Include="Crossdyne.Toolkit" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <PackageReference Include="FluentValidation" />
@@ -26,8 +26,6 @@
     <ProjectReference Include="..\..\..\shared\security\Shared.Security\Shared.Security.csproj" />
     <ProjectReference Include="..\..\..\shared\validations\Shared.Validations\Shared.Validations.csproj" />
     <ProjectReference Include="..\Nexus.Authentication.Service.Domain\Nexus.Authentication.Service.Domain.csproj" />
-    <ProjectReference Include="..\..\..\..\..\..\dotnet-security\src\Crossdyne.Security.Srp.Server\Crossdyne.Security.Srp.Server.csproj" />
-    <ProjectReference Include="..\..\..\..\..\..\dotnet-security\src\Crossdyne.Security.Cryptography\Crossdyne.Security.Cryptography.csproj" />
   </ItemGroup>
 
 </Project>
