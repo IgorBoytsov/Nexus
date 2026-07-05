@@ -35,16 +35,17 @@ export class StepFindLoginComponent {
                 this.isLoading.set(true);
                 this.errorMessage.set(null);
                 
-                const { login } = this.stepLoginForm.value;
-                
-                const result = await firstValueFrom(this.http.existLogin(login));
+                const login = this.stepLoginForm.value.login as string;
+                const normalizeLogin = login.trim().toLowerCase();
+
+                const result = await firstValueFrom(this.http.existLogin(normalizeLogin));
 
                 if (result.isFailure){
                     this.errorMessage.set(result.stringMessage);
                     return;
                 }
 
-                this.state.setLogin(login);
+                this.state.setLogin(normalizeLogin);
                 this.router.navigate(['code'], { relativeTo: this.route });
             } catch (error) {
                 console.error('Ошибка: ', error);

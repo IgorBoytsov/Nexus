@@ -11,7 +11,9 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
 
         public async Task<Result> Handle(ResetPasswordConfirmCodeCommand request, CancellationToken cancellationToken)
         {
-            var codeStr = await _redis.GetStringAsync($"ConfirmCode for {request.Login}");
+            string normalizeLogin = request.Login.ToLowerInvariant();
+
+            var codeStr = await _redis.GetStringAsync($"ConfirmCode for {normalizeLogin}");
 
             if (string.IsNullOrWhiteSpace(codeStr))
                 return Result.Failure(new Error(AppErrors.TimeEnded, "Время действия кода закончилось. Повторите попытку"));
@@ -22,7 +24,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
             if (storageCode != requestCode)
                 return Result.Failure(new Error(AppErrors.IncorrectValue, "Вы ввели не верный код."));
 
-            await _redis.RemoveAsync($"ConfirmCode for {request.Login}");
+            await _redis.RemoveAsync($"ConfirmCode for {normalizeLogin}");
 
             return Result.Success();
         }

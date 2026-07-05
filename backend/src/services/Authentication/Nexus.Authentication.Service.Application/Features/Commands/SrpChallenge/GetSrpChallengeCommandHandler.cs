@@ -41,25 +41,27 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
             var encryptedVerifierWrapKey = userData.EncryptedVerifierWrapKey;
             var verifierWrapKey = verifierProtector.Unprotect(encryptedVerifierWrapKey);
             var verifierWrapKeyBytes = Convert.FromBase64String(verifierWrapKey);
-            
+            byte[] saltBytes = Convert.FromBase64String(userData.ClientSalt);
+
             string? decryptedVerifierBase64 = cryptoServices.DecryptData<string>(encryptedVerifier, verifierWrapKeyBytes, aesGcmOptions);
 
             byte[] vBytes = Convert.FromBase64String(decryptedVerifierBase64!);
 
-            var sessionState = srpServer.GetSrpChallenge(normalizedLogin, vBytes, srpContext);
+            var sessionState = srpServer.GetSrpChallenge(normalizedLogin, vBytes, saltBytes, srpContext);
 
             var session = new SrpSessionState(
                 normalizedLogin,
                 sessionState.PrivateKeyB,
-                Convert.ToBase64String(vBytes),
-                sessionState.PublicKeyB
+                vBytes,
+                sessionState.PublicKeyB,
+                saltBytes
             );
 
             await redisCacheService.SetJsonAsync(RedisKeyExtensions.SrpSession(normalizedLogin), session, TimeSpan.FromMinutes(2));
 
             logger.LogInformation("SRP challenge успешно сгенерирован для логина: {Login}", normalizedLogin);
 
-            return new SrpChallengeResponse(userData.ClientSalt, sessionState.PublicKeyB);
+            return new SrpChallengeResponse(userData.ClientSalt, Convert.ToBase64String(sessionState.PublicKeyB));
         }
     }
 }

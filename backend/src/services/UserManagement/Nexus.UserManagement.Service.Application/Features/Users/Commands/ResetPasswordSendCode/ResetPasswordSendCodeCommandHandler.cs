@@ -13,7 +13,9 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
     {
         public async Task<Result> Handle(ResetPasswordSendCodeCommand request, CancellationToken cancellationToken)
         {
-            Maybe<User> maybeUser = await userRepository.GetByAsync(u => u.Login == request.Login);
+            string normalizeLogin = request.Login.ToLowerInvariant();
+
+            Maybe<User> maybeUser = await userRepository.GetByAsync(u => u.Login == normalizeLogin);
 
             if (maybeUser.IsNone)
                 return Result.Failure(new Error(ErrorCode.NotFound, "Пользователя с таким логином не существует."));
@@ -22,7 +24,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
 
             var code = GenerateCode();
 
-            var redisResult = await redis.SetStringAsync($"ConfirmCode for {request.Login}", code, TimeSpan.FromMinutes(5));
+            var redisResult = await redis.SetStringAsync($"ConfirmCode for {normalizeLogin}", code, TimeSpan.FromMinutes(5));
 
             if (!redisResult)
                 return Result.Failure(new Error(ErrorCode.Server, "Произошла ошибка на стороне сервера"));

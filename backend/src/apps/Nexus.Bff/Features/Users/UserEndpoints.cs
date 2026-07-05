@@ -16,7 +16,7 @@ namespace Nexus.Bff.Features.Users
                 CancellationToken ct) =>
             {
                 var result = await userManagementService.Register(new RegisterUserRequest(
-                    request.Login,
+                    request.Login.ToLowerInvariant(),
                     request.UserName, 
                     request.Email, 
                     request.IdGender?.ToString(),
@@ -43,7 +43,7 @@ namespace Nexus.Bff.Features.Users
                 [FromServices] IUserManagementService userManagementService, 
                 CancellationToken ct) =>
             {
-                var result = await userManagementService.ExistUserByLogin(login);
+                var result = await userManagementService.ExistUserByLogin(login.ToLowerInvariant());
 
                 if (result.IsFailure)
                     return result.Errors.MapToMinimalApiResult();

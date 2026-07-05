@@ -78,15 +78,18 @@ export class RegisterComponent {
             const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
             const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
 
-            const { login, username, password, email } = this.registerForm.value;
+            const { username, password, email } = this.registerForm.value;
+
+            const rawLogin = this.registerForm.value.login as string;
+            const normalizeLogin = rawLogin.trim().toLowerCase();
 
             //#endregion
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, password, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(normalizeLogin, password, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
 
-            const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(login, password, rawDekKeyDerivationSalt, cryptoProfile);
+            const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(normalizeLogin, password, rawDekKeyDerivationSalt, cryptoProfile);
 
             const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, this.countRecoveryKays, cryptoProfile);
             
@@ -94,7 +97,7 @@ export class RegisterComponent {
             ArrayHelper.reset(this.recoveryAssets, recoveryAssets);
 
             const request: RegisterRequest = {
-                login: login,
+                login: normalizeLogin,
                 userName: username,
                 encryptedVerifier: encryptedVerifier,
                 srpSalt: base64SrpAuthSalt,
