@@ -54,7 +54,9 @@ export class ChangePasswordComponent {
 
             //#region Конфигурация
 
-            const { login, encryptedDek, cryptoVersionDek, dekSalt, srvVersion } = initResult.value;
+            const { encryptedDek, cryptoVersionDek, dekSalt, srvVersion } = initResult.value;
+            const login = initResult.value.login;
+            const normalizeLogin = login.trim().toLowerCase();
             
             const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
             const cryptoProfile = this.cryptoConfig.getCryptoProfile(cryptoVersionDek as CryptoVersion);
@@ -66,9 +68,9 @@ export class ChangePasswordComponent {
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(normalizeLogin, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
 
-            const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(login, oldPassword, newPassword, dekSalt, encryptedDek, rawDekKeyDerivationSalt, cryptoProfile);
+            const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(normalizeLogin, oldPassword, newPassword, dekSalt, encryptedDek, rawDekKeyDerivationSalt, cryptoProfile);
 
             const request: ChangePasswordRequest = {
                 userId: null,

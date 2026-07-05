@@ -16,7 +16,7 @@ namespace Nexus.Authentication.Service.Application.Services
             var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new(JwtRegisteredClaimNames.Name, user.Login),
+                new(JwtRegisteredClaimNames.Name, user.Login.ToLowerInvariant()),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

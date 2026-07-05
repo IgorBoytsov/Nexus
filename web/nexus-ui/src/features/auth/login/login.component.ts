@@ -57,7 +57,7 @@ export class LoginComponent {
     try {
       const { password } = this.loginForm.value;
       const rawLogin = this.loginForm.value.login as string;
-      const normalizedLogin = rawLogin.trim().toLocaleLowerCase();
+      const normalizedLogin = rawLogin.trim().toLowerCase();
 
       const challengeResult = await this.executeSafe(this.authApi.getCrpChallenge({ login: normalizedLogin }));
 

@@ -35,16 +35,17 @@ export class StepLoginComponent{
                 this.isLoading.set(true);
                 this.errorMessage.set(null);
 
-                const { login } = this.stepLoginForm.value;
+                const login = this.stepLoginForm.value.login as string;
+                const normalizeLogin = login.trim().toLowerCase();
 
-                const codeResult = await firstValueFrom(this.api.generateCode(login));
+                const codeResult = await firstValueFrom(this.api.generateCode(normalizeLogin));
 
                 if (codeResult.isFailure){
                     this.errorMessage.set(codeResult.stringMessage)
                     return;
                 }
 
-                this.state.setLogin(login);
+                this.state.setLogin(normalizeLogin);
                 this.router.navigate(['code'], {relativeTo: this.route} );
 
             } catch (error) {

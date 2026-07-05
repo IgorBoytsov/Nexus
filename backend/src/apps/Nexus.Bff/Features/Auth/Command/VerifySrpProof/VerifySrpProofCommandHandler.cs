@@ -20,7 +20,7 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 
         public async Task<Result<VerifierSrpProofDTO>> Handle(VerifySrpProofCommand request, CancellationToken cancellationToken)
         {
-            var result = await _authClient.VerifierSrpProof(new SrpVerifyRequest(request.Login, request.A, request.M1));
+            var result = await _authClient.VerifierSrpProof(new SrpVerifyRequest(request.Login.ToLowerInvariant(), request.A, request.M1));
 
             if (result.IsFailure)
                 return Result<VerifierSrpProofDTO>.Failure(result.Errors);
@@ -30,7 +30,7 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
             var data = jwtReader.ExtractData(authData.AccessToken);
             var sessionId = Guid.NewGuid().ToString();
 
-            var userSession = new UserSession(sessionId, authData.AccessToken, authData.RefreshToken, data.ExpiredTime, data.UserId, data.Login);
+            var userSession = new UserSession(sessionId, authData.AccessToken, authData.RefreshToken, data.ExpiredTime, data.UserId, data.Login.ToLowerInvariant());
 
             Span<byte> tempAuthTokenBytes = stackalloc byte[32];
             RandomNumberGenerator.Fill(tempAuthTokenBytes);

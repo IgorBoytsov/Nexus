@@ -81,7 +81,7 @@ export class RegisterComponent {
             const { username, password, email } = this.registerForm.value;
 
             const rawLogin = this.registerForm.value.login as string;
-            const normalizeLogin = rawLogin.trim().toLocaleLowerCase();
+            const normalizeLogin = rawLogin.trim().toLowerCase();
 
             //#endregion
 

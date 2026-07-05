@@ -24,7 +24,7 @@ namespace Nexus.Bff.Features.Auth
                 [FromServices] IAuthClient authClient, 
                 CancellationToken ct) =>
             {
-                var result = await authClient.GetSrpChallenge(new SrpChallengeRequest(request.Login));
+                var result = await authClient.GetSrpChallenge(new SrpChallengeRequest(request.Login.ToLowerInvariant()));
 
                 if(result.IsFailure)
                     return result.Errors.MapToMinimalApiResult();
