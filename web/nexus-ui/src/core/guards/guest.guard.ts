@@ -7,28 +7,30 @@ export const guestGuard: CanActivateFn = (route, state): Observable<boolean | Ur
   const http = inject(HttpClient);
   const router = inject(Router);
 
-  const query = route.queryParamMap;
+  const isLogout = route.queryParamMap.get('logout') === 'true';
 
-  if (query.get('logout') === 'true'){
-    const returnUrl = query.get('returnUrl') || '/'; 
+  if (isLogout) {
+    const rawReturnUrl = route.queryParamMap.get('returnUrl') || '/';
+    const isValidReturnUrl = rawReturnUrl.startsWith('/') && !rawReturnUrl.startsWith('//');
+    const returnUrl = isValidReturnUrl ? rawReturnUrl : '/';
     
-    return http.post('/logout', { 
-      withCredentials: true,
-       headers: { 'X-Skip-Auth-Interceptor': 'true' }  
-      }).pipe(
-        catchError(() => of(null)),
-        map(() => {
-          const params = returnUrl !== '/' ? { returnUrl } : {};
-          return router.createUrlTree(['/login'], { queryParams: params });
-        }),
-      );
-    }
+    const queryParams = returnUrl !== '/' ? { returnUrl } : {};
+    const loginUrlTree = router.createUrlTree(['/login'], { queryParams });
 
-    return http.get('/auth/status', {
+    return http.post('/logout', null, { 
       withCredentials: true,
-      headers: { 'X-Skip-Auth-Interceptor': 'true' }
+      headers: { 'X-Skip-Auth-Interceptor': 'true' }  
     }).pipe(
-      map(() => router.parseUrl('/user/profile')),
-      catchError(() => of(true))
+      map(() => loginUrlTree),
+      catchError(() => of(loginUrlTree)) 
     );
-  };
+  }
+
+  return http.get('/auth/status', {
+    withCredentials: true,
+    headers: { 'X-Skip-Auth-Interceptor': 'true' }
+  }).pipe(
+    map(() => router.parseUrl('/user/profile')),
+    catchError(() => of(true))
+  );
+};
