@@ -40,6 +40,14 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.U
             return info!;
         }
 
+        public async Task<DekResponse> GetDek(Guid userId)
+        {
+            var sql = SqlLoader.Load("Users", "GetDek");
+            var dek = await connection.QueryFirstOrDefaultAsync<DekResponse>(sql, new { userId });
+
+            return dek!;
+        }
+
         public async Task<GetChangePasswordDataResponse> GetChangePasswordData(Guid userId)
         {
             var sql = SqlLoader.Load("Users", "GetChangePasswordData");
