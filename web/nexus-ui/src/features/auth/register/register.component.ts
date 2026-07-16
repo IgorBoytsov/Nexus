@@ -73,7 +73,7 @@ export class RegisterComponent {
             //#region Конфигурация
 
             const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
-            const cryptoProfile = this.cryptoConfig.getCryptoProfile(); // V1
+            const cryptoVersion = this.cryptoConfig.getCryptoVersion(); // V1
 
             const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
             const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
@@ -87,11 +87,11 @@ export class RegisterComponent {
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(normalizeLogin, password, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(normalizeLogin, password, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoVersion);
 
-            const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(normalizeLogin, password, rawDekKeyDerivationSalt, cryptoProfile);
+            const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(normalizeLogin, password, rawDekKeyDerivationSalt, cryptoVersion);
 
-            const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, this.countRecoveryKays, cryptoProfile);
+            const { recoveryKeysForDisplay, recoveryAssets } = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, this.countRecoveryKays, cryptoVersion);
             
             ArrayHelper.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
             ArrayHelper.reset(this.recoveryAssets, recoveryAssets);
@@ -103,11 +103,11 @@ export class RegisterComponent {
                 srpSalt: base64SrpAuthSalt,
                 encryptedDek: encryptedDekBase64,
                 dekSalt: base64DekKeyDerivationSalt,
-                cryptoVersion: cryptoProfile.version,
+                cryptoVersion: cryptoVersion,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
                 asymmetricKeyId: "env_v1",
-                keyWrapVersion: cryptoProfile.version, 
+                keyWrapVersion: cryptoVersion, 
                 email: email,
                 idGender: null, 
                 idCountry: null,

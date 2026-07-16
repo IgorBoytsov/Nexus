@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { CryptoProfile, CryptoService, KeyDerivationService, SecurityUtils } from "@crossdyne/security";
+import { CryptoService, CryptoVersion, KeyDerivationService, SecurityUtils } from "@crossdyne/security";
 import { CryptoConstants } from "../constants/security.constants";
 
 @Injectable({
@@ -13,12 +13,12 @@ export class KeyManagementService {
         login: string, 
         password: string, 
         salt: Uint8Array<ArrayBufferLike>,
-        profile: CryptoProfile
+        cryptoVersion: CryptoVersion
     ): Promise<{ rawDek: Uint8Array, encryptedDekBase64: string }> {
-         const { kek } = await this.keyDerivation.deriveKeysFromPassword(login, password, salt);
+         const { kek } = await this.keyDerivation.deriveKeysFromPassword(login, password, salt, cryptoVersion);
          
          const dek = this.crypto.generateRandomBytes(CryptoConstants.KEY_SIZE_BYTES); // 32
-         const encryptedDek = await this.crypto.encryptData(dek, kek, profile.aesGcmOptions);
+         const encryptedDek = await this.crypto.encryptData(dek, kek, cryptoVersion);
 
          return { rawDek: dek, encryptedDekBase64: encryptedDek };
     }
@@ -30,15 +30,15 @@ export class KeyManagementService {
         storageDekSalt: string,
         storageEncryptedDek: string,
         newDekSalt: Uint8Array<ArrayBufferLike>,
-        profile: CryptoProfile,
+        cryptoVersion: CryptoVersion,
     ): Promise<string> {
         const storageDekSaltBytes = SecurityUtils.fromBase64(storageDekSalt);
         
-        const { kek: oldKek } = await this.keyDerivation.deriveKeysFromPassword(login, oldPassword, storageDekSaltBytes, profile.kdfOptions);
-        const decryptedDek = await this.crypto.decryptData<Uint8Array>(storageEncryptedDek, oldKek, profile.aesGcmOptions, true);
+        const { kek: oldKek } = await this.keyDerivation.deriveKeysFromPassword(login, oldPassword, storageDekSaltBytes, cryptoVersion);
+        const decryptedDek = await this.crypto.decryptData<Uint8Array>(storageEncryptedDek, oldKek, true);
        
-        const { kek: newKek } = await this.keyDerivation.deriveKeysFromPassword(login, newPassword, newDekSalt, profile.kdfOptions);
-        const reEncryptedDek = await this.crypto.encryptData(decryptedDek!, newKek, profile.aesGcmOptions);
+        const { kek: newKek } = await this.keyDerivation.deriveKeysFromPassword(login, newPassword, newDekSalt, cryptoVersion);
+        const reEncryptedDek = await this.crypto.encryptData(decryptedDek!, newKek, cryptoVersion);
 
         return reEncryptedDek;
     } 
@@ -48,11 +48,11 @@ export class KeyManagementService {
         newPassword: string,
         dek: string,
         dekSalt: Uint8Array<ArrayBufferLike>,
-        profile: CryptoProfile
+        cryptoVersion: CryptoVersion
     ) : Promise<{ rawDek: Uint8Array, encryptedDekBase64: string }> {
-        const { kek } = await this.keyDerivation.deriveKeysFromPassword(login!, newPassword, dekSalt);
+        const { kek } = await this.keyDerivation.deriveKeysFromPassword(login!, newPassword, dekSalt, cryptoVersion);
         const rawDekBytes = SecurityUtils.fromBase64(dek);
-        const encryptedDek = await this.crypto.encryptData(rawDekBytes, kek, profile.aesGcmOptions);
+        const encryptedDek = await this.crypto.encryptData(rawDekBytes, kek, cryptoVersion);
 
         return { rawDek: rawDekBytes, encryptedDekBase64: encryptedDek };
     }

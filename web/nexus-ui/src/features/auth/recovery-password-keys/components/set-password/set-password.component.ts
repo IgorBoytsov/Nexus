@@ -66,7 +66,7 @@ export class StepSetPasswordComponent {
                 const { newPassword } = this.stepSetPasswordForm.value;
 
                 const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
-                const cryptoProfile = this.cryptoConfig.getCryptoProfile(); // V1
+                const cryptoVersion = this.cryptoConfig.getCryptoVersion(); // V1
 
                 const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
                 const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
@@ -75,11 +75,11 @@ export class StepSetPasswordComponent {
                             
                 const rsaPublicKey = await this.rsaService.getPublicKey();
 
-                const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(this.state.login!, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
+                const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(this.state.login!, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoVersion);
 
-                const { rawDek, encryptedDekBase64 } = await this.keyManagement.reEncryptExistingDek(this.state.login!, newPassword, this.state.dek!, rawDekKeyDerivationSalt, cryptoProfile);
+                const { rawDek, encryptedDekBase64 } = await this.keyManagement.reEncryptExistingDek(this.state.login!, newPassword, this.state.dek!, rawDekKeyDerivationSalt, cryptoVersion);
 
-                const { recoveryKeysForDisplay, recoveryAssets} = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, CryptoConstants.RECOVERY_KEYS_COUNT, cryptoProfile);
+                const { recoveryKeysForDisplay, recoveryAssets} = await this.recoveryKeyService.generateKeys(this.crypto, rawDek, CryptoConstants.RECOVERY_KEYS_COUNT, cryptoVersion);
 
                 ArrayHelper.reset(this.recoveryKeysDisplay, recoveryKeysForDisplay);
                 ArrayHelper.reset(this.recoveryAssets, recoveryAssets);
@@ -90,11 +90,11 @@ export class StepSetPasswordComponent {
                     srpSalt: base64SrpAuthSalt,
                     srpVersion: srpGroup,
                     encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
-                    keyWrapVersion: cryptoProfile.version,
+                    keyWrapVersion: cryptoVersion,
                     asymmetricKeyId: 'env_v1',
                     encryptedDek: encryptedDekBase64,
                     dekSalt: base64DekKeyDerivationSalt,
-                    cryptoVersion: cryptoProfile.version,
+                    cryptoVersion: cryptoVersion,
                     recoveryKeys: this.recoveryAssets.map(a => ({ encryptedValue: a.encryptedDek, cryptoVersion: a.version }))
                 }
 

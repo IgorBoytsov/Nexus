@@ -59,7 +59,7 @@ export class StepEnterCodeComponent {
                     const profile = CryptoProfileRegistry.getProfile(rkCryptoVersion as CryptoVersion);
 
                     try {
-                        decryptedKeyStr = await this.crypto.decryptData<Uint8Array>(key, codeBytes, profile.aesGcmOptions, true);
+                        decryptedKeyStr = await this.crypto.decryptData<Uint8Array>(key, codeBytes, true);
                         if (decryptedKeyStr) {
                             successfulCryptoVersion = rkCryptoVersion;
                             break;

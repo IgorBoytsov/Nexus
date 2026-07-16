@@ -53,6 +53,7 @@ export class LoginComponent {
     this.errorMessage.set(null);
 
     const { srpContext } = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
+    const cryptoVersion = await this.cryptoConfig.getCryptoVersion(); // V1
 
     try {
       const { password } = this.loginForm.value;
@@ -67,7 +68,7 @@ export class LoginComponent {
       }
 
       const { salt, b } = challengeResult.value; 
-      const {A, M1, SessionKeyK} = await this.srpService.generateSrpProof(normalizedLogin, password, salt, b, srpContext);
+      const {A, M1, SessionKeyK} = await this.srpService.generateSrpProof(normalizedLogin, password, salt, b, srpContext, cryptoVersion);
 
       const verifierResult = await this.executeSafe(this.authApi.srpVerifyProof({ Login: normalizedLogin, A, M1}));
       

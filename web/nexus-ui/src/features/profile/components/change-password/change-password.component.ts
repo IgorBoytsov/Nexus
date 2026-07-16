@@ -3,7 +3,6 @@ import { ChangePasswordService } from "../../services/change-password.service";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
-import { CryptoService, CryptoVersion} from "@crossdyne/security";
 import { ChangePasswordRequest } from "../../models/change-password.request";
 import { HttpErrorResponse } from "@angular/common/http";
 import { RsaService } from "../../../../core/services/rsa.service";
@@ -26,8 +25,6 @@ export class ChangePasswordComponent {
     private srpService = inject(SrpVerifierService);
     private keyManagement = inject(KeyManagementService);
     private cryptoConfig = inject(CryptoConfigurationService);
-
-    private readonly cryptoService = new CryptoService();
 
     changePasswordForm: FormGroup; 
     isLoading = signal(false);
@@ -59,7 +56,7 @@ export class ChangePasswordComponent {
             const normalizeLogin = login.trim().toLowerCase();
             
             const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
-            const cryptoProfile = this.cryptoConfig.getCryptoProfile(cryptoVersionDek as CryptoVersion);
+            const cryptoVersion = this.cryptoConfig.getCryptoVersion();
 
             const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
             const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
@@ -68,9 +65,9 @@ export class ChangePasswordComponent {
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(normalizeLogin, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoProfile);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(normalizeLogin, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoVersion);
 
-            const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(normalizeLogin, oldPassword, newPassword, dekSalt, encryptedDek, rawDekKeyDerivationSalt, cryptoProfile);
+            const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(normalizeLogin, oldPassword, newPassword, dekSalt, encryptedDek, rawDekKeyDerivationSalt, cryptoVersion);
 
             const request: ChangePasswordRequest = {
                 userId: null,
@@ -78,11 +75,11 @@ export class ChangePasswordComponent {
                 srpSalt: base64SrpAuthSalt,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
-                keyWrapVersion: cryptoProfile.version,
+                keyWrapVersion: cryptoVersion,
                 asymmetricKeyId: "env_v1",
                 encryptedDek: reEncryptedDek,
                 dekSalt: base64DekKeyDerivationSalt,
-                cryptoVersion: cryptoProfile.version,
+                cryptoVersion: cryptoVersion,
             };
             
             await firstValueFrom(this.changedPasswordApi.changePassword(request));
