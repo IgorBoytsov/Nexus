@@ -34,16 +34,13 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
             SrpProfile srpProfile = SrpProfileRegistry.GetProfile((SrpGroup)userData.SrpVersion); 
             var srpContext = SrpContext.FromOptions(srpProfile.Options);
 
-            var cryptoProfile = CryptoProfileRegistry.GetProfile((CryptoVersion)userData.KeyWrapVersion);
-            var aesGcmOptions = cryptoProfile.AesGcmOptions;
-
             var encryptedVerifier = userData.EncryptedVerifier;
             var encryptedVerifierWrapKey = userData.EncryptedVerifierWrapKey;
             var verifierWrapKey = verifierProtector.Unprotect(encryptedVerifierWrapKey);
             var verifierWrapKeyBytes = Convert.FromBase64String(verifierWrapKey);
             byte[] saltBytes = Convert.FromBase64String(userData.ClientSalt);
 
-            string? decryptedVerifierBase64 = cryptoServices.DecryptData<string>(encryptedVerifier, verifierWrapKeyBytes, aesGcmOptions);
+            string? decryptedVerifierBase64 = cryptoServices.DecryptData<string>(encryptedVerifier, verifierWrapKeyBytes);
 
             byte[] vBytes = Convert.FromBase64String(decryptedVerifierBase64!);
 

@@ -10,6 +10,7 @@
     <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetUserByIdAuth.sql" />
     <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetUserByLoginAuth.sql" />
     <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetProfileInfo.sql" />
+    <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetDek.sql" />
     <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetPublicEncryptionInfo.sql" />
     <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetChangePasswordData.sql" />
     <EmbeddedResource Include="Persistence\Repositories\Users\Sql\GetRecoveryKeys.sql" />

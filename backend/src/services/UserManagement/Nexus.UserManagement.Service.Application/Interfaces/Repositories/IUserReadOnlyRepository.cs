@@ -8,6 +8,7 @@ namespace Nexus.UserManagement.Service.Application.Interfaces.Repositories
         Task<UserAuthDataResponse> GetUserByLoginAuth(string login);
         Task<ProfileInfoResponse> GetProfileInfo(Guid userId);
         Task<PublicEncryptionInfoResponse> GetPublicEncryptionInfoResponse(string login);
+        Task<DekResponse> GetDek(Guid userId);
         Task<GetChangePasswordDataResponse> GetChangePasswordData(Guid userId);
         Task<RecoveryViaKeysPayloadResponse> GetRecoveryKeys(string login);
         Task<bool> ExistUserByLoginAsync(string login);
