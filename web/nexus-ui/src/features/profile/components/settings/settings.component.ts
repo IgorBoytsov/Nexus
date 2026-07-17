@@ -9,6 +9,7 @@ import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { ChangePasswordRequest } from "../../models/change-password.request";
 import { HttpErrorResponse } from "@angular/common/http";
+import { CryptoVersion } from "@crossdyne/security";
 
 @Component({
     selector: 'settings',
@@ -53,8 +54,9 @@ export class SettingsComponent {
 
             const { login, encryptedDek, cryptoVersionDek, dekSalt, srvVersion } = initResult.value;
             
+            const oldCryptoVersion = cryptoVersionDek as CryptoVersion;
+            const newCryptoVersion = this.cryptoConfig.getCryptoVersion();
             const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
-            const cryptoVersion = this.cryptoConfig.getCryptoVersion();
 
             const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
             const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
@@ -63,9 +65,9 @@ export class SettingsComponent {
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoVersion);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(login, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, newCryptoVersion);
 
-            const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(login, oldPassword, newPassword, dekSalt, encryptedDek, rawDekKeyDerivationSalt, cryptoVersion);
+            const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(login, oldPassword, newPassword, dekSalt, encryptedDek, rawDekKeyDerivationSalt, oldCryptoVersion, newCryptoVersion);
 
             const request: ChangePasswordRequest = {
                 userId: null,
@@ -73,11 +75,11 @@ export class SettingsComponent {
                 srpSalt: base64SrpAuthSalt,
                 srpVersion: srpGroup,
                 encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
-                keyWrapVersion: cryptoVersion,
+                keyWrapVersion: newCryptoVersion,
                 asymmetricKeyId: "env_v1",
                 encryptedDek: reEncryptedDek,
                 dekSalt: base64DekKeyDerivationSalt,
-                cryptoVersion: cryptoVersion,
+                cryptoVersion: newCryptoVersion,
             };
             
             await firstValueFrom(this.changedPasswordApi.changePassword(request));
