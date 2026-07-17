@@ -52,20 +52,15 @@ export class StepEnterCodeComponent {
 
                 const { recoveryKeys } = result.value;
                 let decryptedKeyStr: Uint8Array | null = null;
-                let successfulCryptoVersion: number | null = null;
 
                 for (const rk of recoveryKeys) {
-                    const { key, cryptoVersion: rkCryptoVersion } = rk;
-                    const profile = CryptoProfileRegistry.getProfile(rkCryptoVersion as CryptoVersion);
-
+                    const { key } = rk;
                     try {
                         decryptedKeyStr = await this.crypto.decryptData<Uint8Array>(key, codeBytes, true);
                         if (decryptedKeyStr) {
-                            successfulCryptoVersion = rkCryptoVersion;
                             break;
                         }
                     } catch (error) {
-                        console.warn('Ключ версии', rkCryptoVersion, 'не подошел');
                         continue;
                     }
                 }
