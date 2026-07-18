@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { SrpClientService } from '@crossdyne/security'
+import { SrpClientService, SrpGroup } from '@crossdyne/security'
 import { AuthApi } from './auth.api';
 import { firstValueFrom, Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -52,7 +52,6 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const { srpContext } = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
     const cryptoVersion = await this.cryptoConfig.getCryptoVersion(); // V1
 
     try {
@@ -67,7 +66,8 @@ export class LoginComponent {
         return;
       }
 
-      const { salt, b } = challengeResult.value; 
+      const { salt, b, srpVersion } = challengeResult.value; 
+      const { srpContext } = await this.cryptoConfig.getSrpContext(srpVersion as SrpGroup); // Rfc5054_3072
       const {A, M1, SessionKeyK} = await this.srpService.generateSrpProof(normalizedLogin, password, salt, b, srpContext, cryptoVersion);
 
       const verifierResult = await this.executeSafe(this.authApi.srpVerifyProof({ Login: normalizedLogin, A, M1}));

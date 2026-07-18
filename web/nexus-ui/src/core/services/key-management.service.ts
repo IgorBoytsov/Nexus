@@ -30,15 +30,16 @@ export class KeyManagementService {
         storageDekSalt: string,
         storageEncryptedDek: string,
         newDekSalt: Uint8Array<ArrayBufferLike>,
-        cryptoVersion: CryptoVersion,
+        oldCryptoVersion: CryptoVersion,
+        newCryptoVersion: CryptoVersion
     ): Promise<string> {
         const storageDekSaltBytes = SecurityUtils.fromBase64(storageDekSalt);
         
-        const { kek: oldKek } = await this.keyDerivation.deriveKeysFromPassword(login, oldPassword, storageDekSaltBytes, cryptoVersion);
+        const { kek: oldKek } = await this.keyDerivation.deriveKeysFromPassword(login, oldPassword, storageDekSaltBytes, oldCryptoVersion);
         const decryptedDek = await this.crypto.decryptData<Uint8Array>(storageEncryptedDek, oldKek, true);
        
-        const { kek: newKek } = await this.keyDerivation.deriveKeysFromPassword(login, newPassword, newDekSalt, cryptoVersion);
-        const reEncryptedDek = await this.crypto.encryptData(decryptedDek!, newKek, cryptoVersion);
+        const { kek: newKek } = await this.keyDerivation.deriveKeysFromPassword(login, newPassword, newDekSalt, newCryptoVersion);
+        const reEncryptedDek = await this.crypto.encryptData(decryptedDek!, newKek, newCryptoVersion);
 
         return reEncryptedDek;
     } 

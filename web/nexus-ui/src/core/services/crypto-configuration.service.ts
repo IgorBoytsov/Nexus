@@ -8,8 +8,7 @@ import { CryptoConstants } from "../constants/security.constants";
 export class CryptoConfigurationService {
     private readonly crypto = new CryptoService();
 
-    async getSrpContext(): Promise<{ srpContext: SrpContext, srpGroup: SrpGroup }> {
-        const group = CryptoConstants.ACTUAL_SRP_GROUP;
+    async getSrpContext(group: SrpGroup = CryptoConstants.ACTUAL_SRP_GROUP): Promise<{ srpContext: SrpContext, srpGroup: SrpGroup }> {
         const context = await SrpContextFactory.create(group);
         return { srpContext: context, srpGroup: group};
     }
