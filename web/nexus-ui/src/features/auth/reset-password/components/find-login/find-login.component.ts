@@ -1,6 +1,6 @@
 import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { RecoveryStateService } from "../../services/reset-password-state.service";
 import { StepLoginApi } from "./find-login.api";
 import { firstValueFrom } from "rxjs";
@@ -10,7 +10,7 @@ import { firstValueFrom } from "rxjs";
     templateUrl: './find-login.component.html',
     styleUrls: ['./find-login.component.scss'],
     standalone: true,
-    imports: [ReactiveFormsModule]
+    imports: [ReactiveFormsModule, RouterLink]
 })
 export class StepLoginComponent{
     private fb = inject(FormBuilder);

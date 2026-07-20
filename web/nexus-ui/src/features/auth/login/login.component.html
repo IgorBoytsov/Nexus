@@ -26,8 +26,10 @@
             <button type="submit" [disabled]="loginForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Вход..' : 'Войти'}}</button>
         </form>
         <p class="auth-link">
-            Еще нету аккаунта?
-            <a routerLink="/register" class="">Создать</a>
+            <a routerLink="/register" class="">Еще нету аккаунта?</a>
+        </p>
+        <p class="auth-link">
+        <a routerLink="/recovery/keys" class="">Не удается войти?</a>
         </p>
     </div>
 </div>
