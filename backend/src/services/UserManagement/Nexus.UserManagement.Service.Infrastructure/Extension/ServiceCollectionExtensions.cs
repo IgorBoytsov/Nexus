@@ -1,8 +1,10 @@
 using System.Data;
+using Confluent.Kafka;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Nexus.UserManagement.Service.Application.Interfaces.Clients;
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
 using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
@@ -16,7 +18,9 @@ using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Roles
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Statuses;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Users;
 using Npgsql;
+using Shared.Contracts.Messaging.Interfaces;
 using Shared.Dapper.TypeHandlers;
+using Shared.Messaging;
 using Shared.Redis;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Extension
@@ -31,6 +35,10 @@ namespace Nexus.UserManagement.Service.Infrastructure.Extension
             services.AddDbContext<UserManagementContext>(option => option.UseNpgsql(connectionString));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IDbConnection>(sp => new NpgsqlConnection(connectionString));
+
+            services.Configure<ProducerConfig>(configuration.GetSection("Kafka:Producer"));
+            services.AddSingleton(sp => new ProducerBuilder<string, string>(sp.GetRequiredService<IOptions<ProducerConfig>>().Value).Build());
+            services.AddSingleton<IEventPublisher, KafkaProducer>();
 
             #region DapperHandler
 
