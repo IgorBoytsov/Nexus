@@ -8,7 +8,9 @@ namespace Shared.Messaging
     {
         public async Task PublishAsync<TEvent>(string topic, TEvent @event, string? key = null)
         {
-            var messageValue = JsonSerializer.Serialize(@event);
+            var messageValue = @event is string stringEvent 
+                ? stringEvent 
+                : JsonSerializer.Serialize(@event);
 
             var message = new Message<string, string>
             {
