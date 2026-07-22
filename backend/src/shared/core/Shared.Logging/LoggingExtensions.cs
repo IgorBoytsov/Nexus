@@ -14,7 +14,17 @@ namespace Shared.Logging
                     .Enrich.WithMachineName()
                     .Enrich.WithThreadId()
                     .Enrich.WithProperty("ApplicationName", context.HostingEnvironment.ApplicationName)
-                    .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName);
+                    .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
+                    .Filter.ByExcluding(logEvent =>
+                    {
+                        if (logEvent.Properties.TryGetValue("SourceContext", out var sourceContext) &&
+                            sourceContext.ToString().Contains("EntityFrameworkCore.Database.Command"))
+                        {
+                            return logEvent.RenderMessage().Contains("outbox_messages", StringComparison.OrdinalIgnoreCase);
+                        }
+                        
+                        return false;
+                    });
 
                 configuration.ReadFrom.Configuration(context.Configuration);
             });
