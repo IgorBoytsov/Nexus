@@ -1,4 +1,4 @@
 namespace Shared.Contracts.UserManagement.Events
 {
-    public sealed record UserPasswordResetIntegrationEvent(string IdEvent, string OccurredOnUtc, string UserId);
+    public sealed record UserPasswordResetIntegrationEvent(Guid IdEvent, DateTime OccurredOnUtc, Guid UserId);
 }
