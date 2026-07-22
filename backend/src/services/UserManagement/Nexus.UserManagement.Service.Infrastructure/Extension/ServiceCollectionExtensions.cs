@@ -54,6 +54,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Extension
             services.AddScoped<IDbContextOutbox, DbContextOutbox>();
             services.AddSingleton<IOutboxSignal, OutboxSignal>();
             services.AddHostedService<OutboxProcessor>();
+            services.AddHostedService<OutboxCleanupService>();
 
             #endregion
 
