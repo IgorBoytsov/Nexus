@@ -1,5 +1,6 @@
 using Crossdyne.Toolkit.Results;
 using MediatR;
+using Nexus.UserManagement.Service.Application.Abstractions.Messaging;
 using Shared.Contracts.Validation.Abstractions;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangePassword
@@ -16,7 +17,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Chang
         // Dek
         string EncryptedDek,
         string DekSalt,
-        int CryptoVersion) : IRequest<Result>,
+        int CryptoVersion) : IRequest<Result>, ICommand,
         IHasGuidUserId,
         IHasEncryptedVerifier, 
         IHasSrpSalt, 
