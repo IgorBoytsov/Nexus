@@ -35,6 +35,10 @@ services:
       - JwtSettings__Issuer=
       - JwtSettings__Audience=
       - OutboxCleanup__IntervalHours=
+      - Kafka__Producer__BootstrapServers=
+      - Kafka__Producer__Acks=All
+      - Kafka__Producer__LingerMs=5
+      - Kafka__Producer__BatchSize=16384
     restart: unless-stopped
     networks:
       - nexus-network

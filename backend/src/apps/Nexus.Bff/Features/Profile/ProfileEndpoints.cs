@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Crossdyne.Toolkit.Primitives;
 using Crossdyne.Toolkit.Results;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.Bff.Infrastructure.Clients;
@@ -117,6 +118,16 @@ namespace Nexus.Bff.Features.Profile
                     return result.Errors.MapToMinimalApiResult();
 
                 return Results.Ok();
+            }).RequireAuthorization();
+
+            app.MapDelete("account/delete", async ([FromServices] IUserManagementService userManagementService) =>
+            {
+                Result<Unit> result = await userManagementService.DeleteAccountAsync();
+
+                if (result.IsFailure)
+                    return result.Errors.MapToMinimalApiResult();
+
+                return Results.NoContent();
             }).RequireAuthorization();
         }
     }

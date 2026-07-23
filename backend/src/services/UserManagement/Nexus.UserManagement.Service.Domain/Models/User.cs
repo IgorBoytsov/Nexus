@@ -213,6 +213,11 @@ namespace Nexus.UserManagement.Service.Domain.Models
             DateUpdate = DateTime.UtcNow;
         }
 
+        public void Delete()
+        {
+            AddDomainEvent(new UserAccountDeletedDomainEvent(Guid.CreateVersion7(), DateTime.UtcNow, this.Id));
+        }
+
         #endregion
 
     }

@@ -75,5 +75,22 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
                 return new Error(ErrorCode.Server, $"Ошибка в Api: {ex}");
             }
         }
+
+        public async Task<Result<Unit>> DeleteAccountAsync()
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync("api/v1/users/account/delete");
+
+                if (!response.IsSuccessStatusCode)
+                    return new Error(ErrorCode.Server, $"HTTP {(int)response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
+
+                return Unit.Value;
+            }
+            catch (Exception ex)
+            {
+                return new Error(ErrorCode.Server, $"Ошибка в Api: {ex}");
+            }
+        }
     }
 }

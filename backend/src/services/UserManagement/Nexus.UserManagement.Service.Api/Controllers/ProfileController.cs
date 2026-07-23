@@ -7,9 +7,11 @@ using Nexus.UserManagement.Service.Api.Extensions;
 using Nexus.UserManagement.Service.Api.Models;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangeAvatar;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangeUserName;
+using Nexus.UserManagement.Service.Application.Features.Users.Commands.Delete;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.ExistByLogin;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetById;
 using Nexus.UserManagement.Service.Application.Features.Users.Queries.GetProfileInfo;
+using Nexus.UserManagement.Service.Infrastructure.Persistence;
 using Shared.Contracts.UserManagement.Requests;
 using Shared.Web.Extensions;
 using Unit = Crossdyne.Toolkit.Primitives.Unit;
@@ -97,6 +99,24 @@ namespace Nexus.UserManagement.Service.Api.Controllers
                 return this.MapActionResult(result.Errors);
 
             return Ok();
+        }
+
+        [HttpDelete("account/delete")]
+        [Authorize]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            Result<ExtractData> extractResult = this.ExtractCredentials(User, out IActionResult actionResult);
+            
+            if (extractResult.IsFailure)
+                return actionResult;
+            
+            var command = new DeleteAccountCommand(extractResult.Value.UserId);
+            var result = await mediator.Send(command);
+
+            if (result.IsFailure)
+                return this.MapActionResult(result.Errors);
+
+            return NoContent();
         }
     }
 }
