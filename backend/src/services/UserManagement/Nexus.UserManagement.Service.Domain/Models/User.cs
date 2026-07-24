@@ -220,5 +220,26 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         #endregion
 
+        public string GetCode()
+        {
+            var code = GenerateCode();
+
+            AddDomainEvent(new PasswordResetRequestedDomainEvent(Guid.CreateVersion7(), DateTime.UtcNow, this.Id, this.Email.Value, code, DateTime.UtcNow.AddMinutes(10)));
+
+            return code;
+        }
+
+        private string GenerateCode()
+        {
+            var rnd = new Random();
+            List<int> number = [];
+
+            for (int i = 0; i < 6; i++)
+            {
+                number.Add(rnd.Next(0,9));
+            }
+
+            return string.Join("", number);
+        }
     }
 }

@@ -8,7 +8,8 @@ namespace Nexus.UserManagement.Service.Infrastructure.MessageBroker
         private readonly Dictionary<string, string> _map = new(StringComparer.OrdinalIgnoreCase)
         {
             ["Shared.Contracts.UserManagement.Events.UserPasswordResetIntegrationEvent"] = "user-management.user.password-reset",
-            ["Shared.Contracts.UserManagement.Events.UserAccountDeletedIntegrationEvent"] = "user-management.user.account-delete"
+            ["Shared.Contracts.UserManagement.Events.UserAccountDeletedIntegrationEvent"] = "user-management.user.account-delete",
+            ["Shared.Contracts.UserManagement.Events.PasswordResetRequestedIntegrationEvent"] = "crossdyne-notifications",
         };
 
         public string Resolve(string eventType)

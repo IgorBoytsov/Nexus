@@ -4,11 +4,13 @@ using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
 using Crossdyne.Toolkit.Primitives;
 using Nexus.UserManagement.Service.Domain.Models;
 using Shared.Contracts.Cache.Interfaces;
+using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordSendCode
 {
     public sealed class ResetPasswordSendCodeCommandHandler(
         IUserRepository userRepository,
+        IUnitOfWork unitOfWork,
         IRedisCacheService redis) : IRequestHandler<ResetPasswordSendCodeCommand, Result>
     {
         public async Task<Result> Handle(ResetPasswordSendCodeCommand request, CancellationToken cancellationToken)
@@ -22,27 +24,16 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
 
             User user = maybeUser.Value;
 
-            var code = GenerateCode();
+            var code = user.GetCode();
 
-            var redisResult = await redis.SetStringAsync($"ConfirmCode for {normalizeLogin}", code, TimeSpan.FromMinutes(5));
+            var redisResult = await redis.SetStringAsync($"ConfirmCode for {normalizeLogin}", code, TimeSpan.FromMinutes(10));
 
             if (!redisResult)
                 return Result.Failure(new Error(ErrorCode.Server, "Произошла ошибка на стороне сервера"));
 
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
             return Result.Success();
-        }
-
-        private string GenerateCode()
-        {
-            var rnd = new Random();
-            List<int> number = [];
-
-            for (int i = 0; i < 6; i++)
-            {
-                number.Add(rnd.Next(0,9));
-            }
-
-            return string.Join("", number);
         }
     }
 }

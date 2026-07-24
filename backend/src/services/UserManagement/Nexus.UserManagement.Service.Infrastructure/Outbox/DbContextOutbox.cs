@@ -23,7 +23,8 @@ namespace Nexus.UserManagement.Service.Infrastructure.Outbox
         private static readonly Dictionary<Type, Type> EventMapping = new()
         {
             [typeof(UserPasswordResetDomainEvent)] = typeof(UserPasswordResetIntegrationEvent),
-            [typeof(UserAccountDeletedDomainEvent)] = typeof(UserAccountDeletedIntegrationEvent)
+            [typeof(UserAccountDeletedDomainEvent)] = typeof(UserAccountDeletedIntegrationEvent),
+            [typeof(PasswordResetRequestedDomainEvent)] = typeof(PasswordResetRequestedIntegrationEvent),
         };
 
         public void Append(IReadOnlyCollection<IDomainEvent> domainEvents)
