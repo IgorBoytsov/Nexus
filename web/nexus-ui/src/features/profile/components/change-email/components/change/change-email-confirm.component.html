@@ -1,0 +1,21 @@
+<div class="auth-page">
+    <div class="form-container">
+        <p class="title">Подтверждение смены.</p>
+
+        <form [formGroup]="stepConfirmForm" (ngSubmit)="onSubmit()" class="email-form">
+            <div class="form-field">
+                <label for="code">Код подтверждения</label>
+                <input id="code" type="text" name="code" formControlName="code" [class.error]="stepConfirmForm.get('code')?.invalid && stepConfirmForm.get('code')?.touched"/>
+                @if (stepConfirmForm.get('email')?.hasError('required') && stepConfirmForm.get('email')?.touched) {
+                    <small class="error-message">Почту нужно обязательно указать</small>
+                }   
+            </div>
+
+            @if (errorMessage()) {
+                <small class="error-message">{{errorMessage()}}</small>
+            }
+                
+            <button type="submit" [disabled]="stepConfirmForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Подтверждаем..' : 'Подтвердить'}}</button>
+        </form>
+    </div>
+</div>

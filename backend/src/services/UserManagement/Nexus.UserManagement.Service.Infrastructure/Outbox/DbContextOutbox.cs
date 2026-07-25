@@ -25,6 +25,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Outbox
             [typeof(UserPasswordResetDomainEvent)] = typeof(UserPasswordResetIntegrationEvent),
             [typeof(UserAccountDeletedDomainEvent)] = typeof(UserAccountDeletedIntegrationEvent),
             [typeof(PasswordResetRequestedDomainEvent)] = typeof(PasswordResetRequestedIntegrationEvent),
+            [typeof(ChangeEmailRequestedDomainEvent)] = typeof(ChangeEmailRequestedIntegrationEvent),
         };
 
         public void Append(IReadOnlyCollection<IDomainEvent> domainEvents)

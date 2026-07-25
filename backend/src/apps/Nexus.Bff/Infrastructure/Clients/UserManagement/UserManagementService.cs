@@ -8,7 +8,7 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
     {
         private readonly HttpClient _httpClient = httpClient;
         private readonly JsonSerializerOptions _jsonOptions = jsonOptions.Value;
-        
+
         protected async Task<Result<T>> HandleResponse<T>(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)

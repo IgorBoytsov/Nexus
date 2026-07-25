@@ -1,0 +1,21 @@
+<div class="auth-page">
+    <div class="form-container">
+        <p class="title">Смена электронной почты.</p>
+
+        <form [formGroup]="stepInitForm" (ngSubmit)="onSubmit()" class="email-form">
+            <div class="form-field">
+                <label for="email">Электронная почта</label>
+                <input id="email" type="text" name="email" formControlName="email" [class.error]="stepInitForm.get('email')?.invalid && stepInitForm.get('email')?.touched"/>
+                @if (stepInitForm.get('email')?.hasError('required') && stepInitForm.get('email')?.touched) {
+                    <small class="error-message">Почту нужно обязательно указать</small>
+                }   
+            </div>
+
+            @if (errorMessage()) {
+                <small class="error-message">{{errorMessage()}}</small>
+            }
+                
+            <button type="submit" [disabled]="stepInitForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Выполняем..' : 'Сменить'}}</button>
+        </form>
+    </div>
+</div>

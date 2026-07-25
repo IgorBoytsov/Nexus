@@ -10,6 +10,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.MessageBroker
             ["Shared.Contracts.UserManagement.Events.UserPasswordResetIntegrationEvent"] = "user-management.user.password-reset",
             ["Shared.Contracts.UserManagement.Events.UserAccountDeletedIntegrationEvent"] = "user-management.user.account-delete",
             ["Shared.Contracts.UserManagement.Events.PasswordResetRequestedIntegrationEvent"] = "crossdyne-notifications",
+            ["Shared.Contracts.UserManagement.Events.ChangeEmailRequestedIntegrationEvent"] = "crossdyne-notifications",
         };
 
         public string Resolve(string eventType)

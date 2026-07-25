@@ -64,6 +64,42 @@ namespace Nexus.Bff.Features.Profile
 
             #endregion
 
+            app.MapPost("/change/email/init", async (
+                HttpContext httpContext, 
+                [FromServices] IUserManagementService service, 
+                [FromBody] ChangeEmailInitRequest request) =>
+            {
+                var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrWhiteSpace(userId))
+                    return Results.Unauthorized();
+
+                 var result = await service.ChangeEmailSendCode(request);                
+                 
+                 if (result.IsFailure)
+                    return result.Errors.MapToMinimalApiResult();
+
+                return Results.Ok();
+            }).RequireAuthorization();
+
+            app.MapPost("/change/email", async (
+                HttpContext httpContext, 
+                [FromServices] IUserManagementService service, 
+                [FromBody] ChangeEmailRequest request) =>
+            {
+                var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrWhiteSpace(userId))
+                    return Results.Unauthorized();
+
+                 var result = await service.ChangeEmail(request);                
+                 
+                 if (result.IsFailure)
+                    return result.Errors.MapToMinimalApiResult();
+
+                return Results.Ok(); 
+            }).RequireAuthorization();
+
             app.MapGet("/profile", async (
                 HttpContext httpContext, 
                 [FromServices] IUserManagementService userManagementService, 

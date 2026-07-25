@@ -1,5 +1,6 @@
-import { Component, input } from "@angular/core";
+import { Component, inject, input } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { Router } from "@angular/router";
 
 @Component({
     selector: 'profile-info',
@@ -9,6 +10,8 @@ import { CommonModule } from "@angular/common";
     imports: [CommonModule]
 })
 export class ProfileInfoComponent {
+    private router = inject(Router);
+
     login = input.required<string>();
     email = input.required<string>();
     dataRegistration = input.required<Date>();
@@ -26,5 +29,9 @@ export class ProfileInfoComponent {
 
         if (getter)
             await navigator.clipboard.writeText(getter());
+    }
+
+    async navigateChangeEmail() {
+        this.router.navigate(['/change/email']);
     }
 }

@@ -16,6 +16,10 @@ import { StepSetPasswordComponent } from '../features/auth/recovery-password-key
 import { recoveryStepGuard as recoveryKeysStepGuard } from '../features/auth/recovery-password-keys/guards/recovery-password-keys.guard';
 import { guestGuard } from '../core/guards/guest.guard';
 import { ChangePasswordComponent } from '../features/profile/components/change-password/change-password.component';
+import { ChangeEmailComponent } from '../features/profile/components/change-email/change-email.component';
+import { changeEmailStepGuard } from '../features/profile/components/change-email/guards/change-email-step.guard';
+import { ChangeEmailInitComponent } from '../features/profile/components/change-email/components/init/change-email-init.component';
+import { ChangeEmailConfirmComponent } from '../features/profile/components/change-email/components/change/change-email-confirm.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -33,6 +37,16 @@ export const routes: Routes = [
           { path: '', component: StepFindLoginComponent, canActivate: [recoveryKeysStepGuard] },
           { path: 'code', component: StepEnterCodeComponent, canActivate: [recoveryKeysStepGuard] },
           { path: 'set', component: StepSetPasswordComponent, canActivate: [recoveryKeysStepGuard] },
+          { path: '**', redirectTo: '' }
+        ]
+      },
+      {
+        path: 'change/email',
+        component: ChangeEmailComponent,
+        canActivate: [],
+        children: [
+          { path: '', component: ChangeEmailInitComponent, canActivate: [changeEmailStepGuard] },
+          { path: 'confirm', component: ChangeEmailConfirmComponent, canActivate: [changeEmailStepGuard] },
           { path: '**', redirectTo: '' }
         ]
       },

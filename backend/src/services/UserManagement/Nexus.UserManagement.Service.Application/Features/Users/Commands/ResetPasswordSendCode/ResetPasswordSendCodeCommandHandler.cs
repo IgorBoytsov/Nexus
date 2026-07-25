@@ -24,7 +24,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
 
             User user = maybeUser.Value;
 
-            var code = user.GetCode();
+            var code = user.GetResetPasswordCode();
 
             var redisResult = await redis.SetStringAsync($"ConfirmCode for {normalizeLogin}", code, TimeSpan.FromMinutes(10));
 

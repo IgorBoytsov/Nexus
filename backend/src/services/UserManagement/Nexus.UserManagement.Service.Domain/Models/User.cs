@@ -220,7 +220,22 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         #endregion
 
-        public string GetCode()
+        public string GetChangeEmailCode(Email email)
+        {
+            var code = GenerateCode();
+
+            AddDomainEvent(new ChangeEmailRequestedDomainEvent(Guid.CreateVersion7(), DateTime.UtcNow, this.Id, email, code, DateTime.UtcNow.AddMinutes(10)));
+        
+            return code;
+        }
+
+        public void ChangeEmail(Email email)
+        {
+            Email = email;
+            DateUpdate = DateTime.UtcNow;
+        }
+
+        public string GetResetPasswordCode()
         {
             var code = GenerateCode();
 
