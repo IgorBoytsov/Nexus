@@ -39,6 +39,7 @@ services:
       - Kafka__Producer__Acks=All
       - Kafka__Producer__LingerMs=5
       - Kafka__Producer__BatchSize=16384
+      - AutoMapper__AutoMapperKey=
     restart: unless-stopped
     networks:
       - nexus-network
