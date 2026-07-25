@@ -1,6 +1,7 @@
 <div class="auth-page">
     <div class="form-container">
-        <p class="title">Поиск учетной записи</p>
+        <p class="title">Сбросить пароль.</p>
+        <p class="title alert-title">Все зашифрованные данные будут утеряны!</p>
 
         <form [formGroup]="stepLoginForm" (ngSubmit)="onSubmit()" class="login-form">
             <div class="form-field">
@@ -17,5 +18,11 @@
                 
             <button type="submit" [disabled]="stepLoginForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Поиск..' : 'Найти'}}</button>
         </form>
+        <p class="auth-link">
+         <a routerLink="/login" class="">Войти</a>
+        </p>
+        <p class="auth-link">
+         <a routerLink="/recovery/keys" class="">Восстановить через ключ</a>
+        </p>
     </div>
 </div>

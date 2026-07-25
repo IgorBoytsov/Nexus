@@ -98,6 +98,61 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Migrations
                     b.ToTable("genders", (string)null);
                 });
 
+            modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("content");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("text")
+                        .HasColumnName("error");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("event_type");
+
+                    b.Property<DateTime>("NextRetryAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_retry_at");
+
+                    b.Property<DateTime>("OccurredOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_on_utc");
+
+                    b.Property<DateTime?>("ProcessedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_on_utc");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("retry_count");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NextRetryAt")
+                        .HasDatabaseName("IX_outbox_messages_pending")
+                        .HasFilter("processed_on_utc IS NULL");
+
+                    NpgsqlIndexBuilderExtensions.IncludeProperties(b.HasIndex("NextRetryAt"), new[] { "OccurredOnUtc", "EventType", "Content", "RetryCount", "Error" });
+
+                    b.HasIndex("RetryCount")
+                        .HasDatabaseName("IX_outbox_messages_retry_count")
+                        .HasFilter("retry_count > 0");
+
+                    b.HasIndex("EventType", "OccurredOnUtc")
+                        .HasDatabaseName("IX_outbox_messages_event_type_occurred");
+
+                    b.ToTable("outbox_messages", "outbox");
+                });
+
             modelBuilder.Entity("Nexus.UserManagement.Service.Domain.Models.RecoveryKey", b =>
                 {
                     b.Property<Guid>("Id")

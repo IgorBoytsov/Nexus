@@ -85,7 +85,12 @@
                     <projects></projects>
                 }
                 @case ('settings') {
-                    <settings></settings>
+                    <div class="settings-container">
+                        <settings></settings>
+                        <div class="delete-account">
+                            <button (click)="deleteAccount()">Удалить аккаунт</button>
+                        </div>
+                    </div>
                 }
             }
         </div>

@@ -1,5 +1,6 @@
 using Crossdyne.Toolkit.Results;
 using MediatR;
+using Nexus.UserManagement.Service.Application.Abstractions.Messaging;
 using Shared.Contracts.Validation.Abstractions;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.RecoveryViaKeys
@@ -18,7 +19,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Recov
         string DekSalt, 
         int CryptoVersion,
         // Recovery Keys
-        List<RecoveryKeyCommandData> RecoveryKeys) : IRequest<Result>,
+        List<RecoveryKeyCommandData> RecoveryKeys) : IRequest<Result>, ICommand,
         IHasLogin,
         IHasEncryptedVerifier, 
         IHasSrpSalt, 

@@ -20,5 +20,8 @@ namespace Nexus.Bff.Infrastructure.Clients.UserManagement
         Task<Result> ChangePassword(ChangePasswordRequest request);
         Task<Result<string>> ChangeAvatar(Stream file, string fileName);
         Task<Result<Unit>> ChangeName(ChangeUserNameRequest request);
+        Task<Result<Unit>> DeleteAccountAsync();
+        Task<Result<Unit>> ChangeEmailSendCode(ChangeEmailInitRequest request);
+        Task<Result<Unit>> ChangeEmail(ChangeEmailRequest request);
     }
 }

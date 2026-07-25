@@ -26,12 +26,14 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Dapper" />
      <PackageReference Include="Microsoft.Extensions.Http" />
+     <PackageReference Include="Microsoft.Extensions.Hosting" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
     <ProjectReference Include="..\..\..\shared\infrastructure\Shared.Dapper\Shared.Dapper.csproj" />
     <ProjectReference Include="..\..\..\shared\infrastructure\Shared.EntityFramework\Shared.EntityFramework.csproj" />
+    <ProjectReference Include="..\..\..\shared\infrastructure\Shared.Messaging\Shared.Messaging.csproj" />
     <ProjectReference Include="..\..\..\shared\infrastructure\Shared.Redis\Shared.Redis.csproj" />
     <ProjectReference Include="..\Nexus.UserManagement.Service.Application\Nexus.UserManagement.Service.Application.csproj" />
     <ProjectReference Include="..\Nexus.UserManagement.Service.Domain\Nexus.UserManagement.Service.Domain.csproj" />

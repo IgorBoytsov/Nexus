@@ -1,5 +1,6 @@
 ﻿using Crossdyne.Toolkit.Results;
 using Nexus.UserManagement.Service.Domain.Enums;
+using Nexus.UserManagement.Service.Domain.Events;
 using Nexus.UserManagement.Service.Domain.Exceptions;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Common;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Deks;
@@ -118,6 +119,51 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         #endregion
 
+        #region AccountAccess
+
+        public void ChangePassword(
+            Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob credentialBlob, 
+            CryptoVersion srpWrapKeyCryptoVersion, AsymmetricKeyId asymmetricKeyId, 
+            EncryptedValue newEncryptedDek, Salt newDekSalt, CryptoVersion dekCryptoVersion)
+        {
+            var srp = GetSrpAuthenticator();
+            srp.Update(verificator, salt, srpVersion, credentialBlob, srpWrapKeyCryptoVersion, asymmetricKeyId);
+
+            var mainDek = GetMainDek();
+            mainDek.Rotate(newEncryptedDek, newDekSalt, dekCryptoVersion);
+        }
+
+        public void ResetPassword(
+            Verificator verificator, Salt salt, SrpVersion srpVersion, 
+            CredentialBlob credentialBlob, CryptoVersion srpWrapKeyCryptoVersion, AsymmetricKeyId asymmetricKeyId,
+            EncryptedValue newEncryptedDek, Salt newDekSalt, CryptoVersion dekCryptoVersion)
+        {
+            var srp = GetSrpAuthenticator();
+            srp.Update(verificator, salt, srpVersion, credentialBlob, srpWrapKeyCryptoVersion, asymmetricKeyId);
+
+            var mainDek = GetMainDek();
+            mainDek.Rotate(newEncryptedDek, newDekSalt, dekCryptoVersion);
+            ClearRecoveryKeys();
+
+            DateUpdate = DateTime.UtcNow;
+
+            AddDomainEvent(new UserPasswordResetDomainEvent(Guid.CreateVersion7(), DateTime.UtcNow, this.Id)); 
+        }
+
+        private SrpAuthenticator GetSrpAuthenticator()
+        {
+            return UserAuthenticators.OfType<SrpAuthenticator>().FirstOrDefault() 
+                ?? throw new UserAuthenticatorException(new Error(ErrorCode.NotFound, "SRP аутентификатор не найден"));
+        }
+
+        private Dek GetMainDek()
+        {
+            return Deks.FirstOrDefault(x => x.Type == DekType.Main) 
+                ?? throw new DekException(new Error(ErrorCode.NotFound, "Основной DEK не найден"));
+        }
+
+        #endregion
+
         #region UserAuthentication
 
         public void AddSrpAuthenticator(Login login, Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob credentialBlob, CryptoVersion cryptoVersion, AsymmetricKeyId asymmetricKeyId)
@@ -126,13 +172,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
                 throw new UserAuthenticatorException(new Error(ErrorCode.Exist, "Метод входа через пароль уже существует для данного аккаунта"));
 
                 _userAuthenticators.Add(SrpAuthenticator.Create(this.Id, login, verificator, salt, srpVersion, credentialBlob, cryptoVersion, asymmetricKeyId));
-        }
-
-        public void UpdateSrp(Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob encryptedVerifierWrapKey, CryptoVersion cryptoVersion, AsymmetricKeyId asymmetricKeyId)
-        {
-            var srp = UserAuthenticators.OfType<SrpAuthenticator>().FirstOrDefault();
-
-            srp!.Update(verificator, salt, srpVersion, encryptedVerifierWrapKey, cryptoVersion, asymmetricKeyId);
         }
 
         public void AddEmailAuthenticator(Email email)
@@ -150,12 +189,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
                 throw new DekException(new Error(ErrorCode.Exist, "Основной ключ шифрования уже настроен."));
 
             _deks.Add(Dek.Create(this.Id, encryptedValue, salt, cryptoVersion, DekType.Main));
-        }
-
-        public void RotateMainDek(EncryptedValue encryptedValue, Salt salt, CryptoVersion cryptoVersion)
-        {
-            var dek = Deks.FirstOrDefault(x => x.Type == DekType.Main);
-            dek!.Rotate(encryptedValue, salt, cryptoVersion);
         }
 
         #endregion
@@ -180,7 +213,48 @@ namespace Nexus.UserManagement.Service.Domain.Models
             DateUpdate = DateTime.UtcNow;
         }
 
+        public void Delete()
+        {
+            AddDomainEvent(new UserAccountDeletedDomainEvent(Guid.CreateVersion7(), DateTime.UtcNow, this.Id));
+        }
+
         #endregion
 
+        public string GetChangeEmailCode(Email email)
+        {
+            var code = GenerateCode();
+
+            AddDomainEvent(new ChangeEmailRequestedDomainEvent(Guid.CreateVersion7(), DateTime.UtcNow, this.Id, email, code, DateTime.UtcNow.AddMinutes(10)));
+        
+            return code;
+        }
+
+        public void ChangeEmail(Email email)
+        {
+            Email = email;
+            DateUpdate = DateTime.UtcNow;
+        }
+
+        public string GetResetPasswordCode()
+        {
+            var code = GenerateCode();
+
+            AddDomainEvent(new PasswordResetRequestedDomainEvent(Guid.CreateVersion7(), DateTime.UtcNow, this.Id, this.Email.Value, code, DateTime.UtcNow.AddMinutes(10)));
+
+            return code;
+        }
+
+        private string GenerateCode()
+        {
+            var rnd = new Random();
+            List<int> number = [];
+
+            for (int i = 0; i < 6; i++)
+            {
+                number.Add(rnd.Next(0,9));
+            }
+
+            return string.Join("", number);
+        }
     }
 }

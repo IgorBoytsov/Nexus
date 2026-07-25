@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Crossdyne.Toolkit.Results;
 using Shared.Contracts.Validation.Abstractions;
+using Nexus.UserManagement.Service.Application.Abstractions.Messaging;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPassword
 {
@@ -18,7 +19,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
         string DekSalt, 
         int CryptoVersion, 
         // RecoveryKeys
-        List<RecoveryKeyCommandData> RecoveryKeys) : IRequest<Result>,
+        List<RecoveryKeyCommandData> RecoveryKeys) : IRequest<Result>, ICommand,
         IHasLogin,
         IHasEncryptedVerifier, 
         IHasSrpSalt, 

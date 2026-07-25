@@ -3,14 +3,14 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { StepLoginApi } from "./find-login.api";
 import { firstValueFrom } from "rxjs";
 import { RecoveryStateService } from "../../services/recovery-password-keys-state.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 
 @Component({
     selector: 'app-find-login',
     templateUrl: './find-login.component.html',
     styleUrls: ['./find-login.component.scss'],
     standalone: true,
-    imports: [ReactiveFormsModule]
+    imports: [ReactiveFormsModule, RouterLink]
 })
 export class StepFindLoginComponent {
     private fb = inject(FormBuilder);

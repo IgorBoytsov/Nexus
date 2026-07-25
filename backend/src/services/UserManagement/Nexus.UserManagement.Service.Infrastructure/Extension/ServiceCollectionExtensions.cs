@@ -1,12 +1,20 @@
 using System.Data;
+using Confluent.Kafka;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Nexus.UserManagement.Service.Application.Events;
 using Nexus.UserManagement.Service.Application.Interfaces.Clients;
+using Nexus.UserManagement.Service.Application.Interfaces.Events;
+using Nexus.UserManagement.Service.Application.Interfaces.Outbox;
 using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Application.Interfaces.Transactions;
 using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
 using Nexus.UserManagement.Service.Infrastructure.Clients;
+using Nexus.UserManagement.Service.Infrastructure.MessageBroker;
+using Nexus.UserManagement.Service.Infrastructure.Outbox;
 using Nexus.UserManagement.Service.Infrastructure.Persistence;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Extensions.Dapper;
@@ -16,7 +24,9 @@ using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Roles
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Statuses;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Users;
 using Npgsql;
+using Shared.Contracts.Messaging.Interfaces;
 using Shared.Dapper.TypeHandlers;
+using Shared.Messaging;
 using Shared.Redis;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Extension
@@ -31,6 +41,22 @@ namespace Nexus.UserManagement.Service.Infrastructure.Extension
             services.AddDbContext<UserManagementContext>(option => option.UseNpgsql(connectionString));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IDbConnection>(sp => new NpgsqlConnection(connectionString));
+            services.AddScoped<ITransactionManager, EfTransactionManager>();
+
+            services.Configure<ProducerConfig>(configuration.GetSection("Kafka:Producer"));
+            services.AddSingleton(sp => new ProducerBuilder<string, string>(sp.GetRequiredService<IOptions<ProducerConfig>>().Value).Build());
+            services.AddSingleton<IEventPublisher, KafkaProducer>();
+            services.AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher>();
+            services.AddSingleton<ITopicResolver, TopicResolver>();
+            
+            #region Outbox
+
+            services.AddScoped<IDbContextOutbox, DbContextOutbox>();
+            services.AddSingleton<IOutboxSignal, OutboxSignal>();
+            services.AddHostedService<OutboxProcessor>();
+            services.AddHostedService<OutboxCleanupService>();
+
+            #endregion
 
             #region DapperHandler
 

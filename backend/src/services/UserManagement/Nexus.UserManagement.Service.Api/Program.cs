@@ -30,7 +30,7 @@ namespace Nexus.UserManagement.Service.Api
 
             builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.AddCrossdyneDefaults());
 
-            builder.Services.AddInfrastructure(builder.Configuration).AddApplication();
+            builder.Services.AddInfrastructure(builder.Configuration).AddApplication(builder.Configuration);
 
             builder.Services.AddAuthentication(options =>
             {

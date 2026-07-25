@@ -10,19 +10,26 @@ import { SettingsComponent } from "../components/settings/settings.component";
 import { ProfileInfoService } from "../services/profile-info.service";
 import { ProfileInfoResponse } from "../models/profile-info.response";
 import { ProjectsComponent } from "../components/projects/projects.component";
+import { OverlayModule } from "@angular/cdk/overlay";
+import { Dialog } from "@angular/cdk/dialog";
+import { ConfirmFormResult } from "../../../shared/ui/confirm-form/model/confirm-form.result";
+import { ConfirmFormComponent } from "../../../shared/ui/confirm-form/confirm-form";
+import { ConfirmFormData } from "../../../shared/ui/confirm-form/model/confirm-form.data";
+import { ManagementAccountService } from "../services/management-account.service";
 
 @Component({
     selector: 'app-profile-page',
     templateUrl: './profile.page.html',
     styleUrls: ['./profile.page.scss'],
     standalone: true,
-    imports: [CommonModule, ProfileInfoComponent, ProfileHeaderComponent, SettingsComponent, ProjectsComponent],
+    imports: [CommonModule, ProfileInfoComponent, ProfileHeaderComponent, SettingsComponent, ProjectsComponent, OverlayModule],
 })
 export class ProfilePage implements OnInit {
-
     private profileInfoService = inject(ProfileInfoService);
     private logoutService = inject(LogoutService);
     private router = inject(Router);
+    private dialog = inject(Dialog);
+    private managementAccountService = inject(ManagementAccountService);
 
     activeTab = signal<'profile' | 'settings' | 'projects'>('profile');
 
@@ -78,4 +85,34 @@ export class ProfilePage implements OnInit {
 
     //#endregion
 
+    //#region Удаление учетной записи
+
+    deleteAccount() {
+        const dialogRef = this.dialog.open<ConfirmFormResult, ConfirmFormData, ConfirmFormComponent>(
+            ConfirmFormComponent,{
+                disableClose: true,
+                hasBackdrop: true,
+                data: {
+                    title: "Вы точно хотите удалить учетную запись? ",
+                    body: "Все данные будут потеряны, восстановить аккаунт будет нельзя. Логин, электронная почта станут доступны для регистрации новой учетной записи."
+                }
+            }
+        );
+
+        dialogRef.closed.subscribe(async result => {
+            if (!result)
+                return;
+
+            const resultDelete: Result<void> = await this.managementAccountService.deleteAccountAsync();
+
+            resultDelete.match(
+                () => {
+                    this.logoutService.logout();
+                },
+                errors => console.error(MapErrorsHelper.mapErrors(errors))
+            );
+        });
+    }
+
+    //#endregion
 }

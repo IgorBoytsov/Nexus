@@ -37,6 +37,10 @@
     margin-bottom: 1.5rem; 
 }
 
+.alert-title {
+    color: rgb(226, 61, 61);
+}
+
 .error-message {
     color: $color-text-error;
     font-size: $font-size-text-error;
@@ -127,9 +131,9 @@ input[type="reset"] {
 }
 
 .auth-link {
-  margin-left: 5px;
   color: #fdfdfd;
-  font-size: 18px;
+  font-size: 16px;
+  margin: 0;
 
   a {
     color: $color-a-primary;
@@ -142,22 +146,3 @@ input[type="reset"] {
     }
   }
 }
-
-// @mixin link-styles {
-//   .auth-link {
-//     margin-left: 5px;
-//     color: #fdfdfd;
-//     font-size: 18px;
-
-//     a {
-//       color: #c51212;
-//       text-decoration: none;
-//       transition: color 0.2s;
-
-//       &:hover {
-//         color: #0056b3;
-//         text-decoration: underline;
-//       }
-//     }
-//   }
-// }
