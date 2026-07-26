@@ -20,6 +20,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence
             ObjectDisposedException.ThrowIf(_disposed, this);
             
             var domainEvents = CollectDomainEvents();
+            bool hasEvents = domainEvents.Count > 0;
 
             await _eventsLock.WaitAsync(cancellationToken);
             try
@@ -31,16 +32,15 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence
                 _eventsLock.Release();
             }
 
-            var result = await context.SaveChangesAsync(cancellationToken);
-
-            if (domainEvents.Count > 0)
-            {
+            if (hasEvents)
                 outbox.Append(domainEvents);
-                await context.SaveChangesAsync(cancellationToken);
-                outboxSignal.Signal();
-            }
 
-            return result;
+            int countUpdate = await context.SaveChangesAsync(cancellationToken);
+
+            if (hasEvents)
+                outboxSignal.Signal();
+
+            return countUpdate;
         }
 
         public IReadOnlyCollection<IDomainEvent> GetPendingDomainEvents()
