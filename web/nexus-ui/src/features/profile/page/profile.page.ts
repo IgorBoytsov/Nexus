@@ -103,14 +103,16 @@ export class ProfilePage implements OnInit {
             if (!result)
                 return;
 
-            const resultDelete: Result<void> = await this.managementAccountService.deleteAccountAsync();
+            if (result.status === 'ok') {
+                const resultDelete: Result<void> = await this.managementAccountService.deleteAccountAsync();
 
-            resultDelete.match(
-                () => {
-                    this.logoutService.logout();
-                },
-                errors => console.error(MapErrorsHelper.mapErrors(errors))
-            );
+                resultDelete.match(
+                    () => {
+                        this.logoutService.logout();
+                    },
+                    errors => console.error(MapErrorsHelper.mapErrors(errors))
+                );
+            }
         });
     }
 
