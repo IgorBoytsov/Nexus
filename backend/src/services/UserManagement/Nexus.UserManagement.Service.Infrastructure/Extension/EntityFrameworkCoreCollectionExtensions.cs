@@ -9,7 +9,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Extension
 {
     public static class EntityFrameworkCoreCollectionExtensions
     {
-        public static IServiceCollection RegisterEntityFrameworkCore(this IServiceCollection services, string dateBaseConnectionString)
+        public static IServiceCollection RegisterWriteDatabase(this IServiceCollection services, string dateBaseConnectionString)
         {
             services.AddDbContext<UserManagementContext>(option => option.UseNpgsql(dateBaseConnectionString));
             services.AddScoped<IUnitOfWork, UnitOfWork>();

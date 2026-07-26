@@ -33,11 +33,12 @@ namespace Nexus.UserManagement.Service.Api
 
             // Infrastructure
             builder.Services
-                .RegisterCache(configuration)
-                .RegisterMessaging(configuration)
-                .RegisterWriteDatabase(configuration, databaseConnectionString)
+                .RegisterWriteDatabase(databaseConnectionString)
                 .RegisterReadonlyDatabase(databaseConnectionString)
                 .RegisterRepositories()
+                .RegisterMessaging(configuration)
+                .RegisterOutbox()
+                .RegisterCache(configuration)
                 .RegisterHttpClients(configuration);
 
             var app = builder.Build();

@@ -1,4 +1,9 @@
+using Shared.Contracts.Messaging.Interfaces;
+
 namespace Shared.Contracts.UserManagement.Events
 {
-    public sealed record UserAccountDeletedIntegrationEvent(Guid IdEvent, DateTime OccurredOnUtc, Guid UserId);
+    public sealed record UserAccountDeletedIntegrationEvent(
+        Guid IdEvent, 
+        DateTime OccurredOnUtc, 
+        Guid UserId) : IIntegrationEvent;
 }

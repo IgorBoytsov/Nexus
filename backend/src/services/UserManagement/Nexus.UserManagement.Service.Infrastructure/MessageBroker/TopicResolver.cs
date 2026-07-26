@@ -1,17 +1,20 @@
 using System.Text.RegularExpressions;
 using Nexus.UserManagement.Service.Application.Interfaces.Events;
+using Shared.Contracts.Messaging.Interfaces;
 
 namespace Nexus.UserManagement.Service.Infrastructure.MessageBroker
 {
     public sealed class TopicResolver : ITopicResolver
     {
-        private readonly Dictionary<string, string> _map = new(StringComparer.OrdinalIgnoreCase)
+        private readonly Dictionary<string, string> _map = new(StringComparer.OrdinalIgnoreCase);
+
+        public ITopicResolver Map<TEvent>(string topic) where TEvent : IIntegrationEvent
         {
-            ["Shared.Contracts.UserManagement.Events.UserPasswordResetIntegrationEvent"] = "user-management.user.password-reset",
-            ["Shared.Contracts.UserManagement.Events.UserAccountDeletedIntegrationEvent"] = "user-management.user.account-delete",
-            ["Shared.Contracts.UserManagement.Events.PasswordResetRequestedIntegrationEvent"] = "crossdyne-notifications",
-            ["Shared.Contracts.UserManagement.Events.ChangeEmailRequestedIntegrationEvent"] = "crossdyne-notifications",
-        };
+            var key = typeof(TEvent).FullName ?? throw new InvalidOperationException($"Тип {typeof(TEvent).Name} не имеет FullName");
+
+            _map[key] = topic;
+            return this;
+        }
 
         public string Resolve(string eventType)
         {
