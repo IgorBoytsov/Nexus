@@ -22,7 +22,7 @@ namespace Nexus.Bff.Features.Auth.Command.CompleteSrpAuth
             if (!resultCache)
                 return new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера. Пожалуйста повторите процесс входа.");
 
-            await cache.SetAddAsync(RedisKeyExtensions.UserSessionsKey(userSession.UserId), userSession.UserId, TimeSpan.FromDays(30));
+            await cache.SetAddAsync(RedisKeyExtensions.UserSessionsKey(userSession.UserId), userSession.SessionId, TimeSpan.FromDays(30));
 
             await cache.RemoveAsync(templateCacheKey);
 
