@@ -153,6 +153,7 @@ namespace Nexus.Bff.Extensions
                             else
                             {
                                 await cache.RemoveAsync(cacheSessionKey);
+                                await cache.SetRemoveAsync(RedisKeyExtensions.UserSessionsKey(session.UserId), sessionId);
                                 context.RejectPrincipal();
                                 return;
                             }

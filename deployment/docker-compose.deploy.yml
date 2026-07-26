@@ -1,5 +1,28 @@
 services:
 
+  nexus-bff:
+    image: nexus/bff:latest
+    container_name: nexus-bff
+    ports:
+      - "7002:80" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Urls__AuthServices=http://nexus-auth-api:80/
+      - Urls__UserManagement=http://nexus-user-management-api:80
+      - Urls__FileService=http://file-service:80
+      - Redis__ConnectionString=
+      - Kafka__Consumer__BootstrapServers=
+      - Kafka__Consumer__GroupId=nexus-bff-consumer-group
+      - Kafka__Consumer__AutoOffsetReset=Latest
+      - Kafka__Consumer__EnableAutoCommit=false
+      - Kafka__Consumer__EnablePartitionEof=false
+    restart: unless-stopped
+    depends_on:
+      - nexus-auth-api
+      - nexus-user-management-api
+    networks:
+      - nexus-network
+
   nexus-auth-api:
     image: nexus/auth-api:latest
     container_name: nexus-auth-api
@@ -46,24 +69,6 @@ services:
       - Kafka__Producer__BatchSize=16384
       - AutoMapper__AutoMapperKey=
     restart: unless-stopped
-    networks:
-      - nexus-network
-
-  nexus-bff:
-    image: nexus/bff:latest
-    container_name: nexus-bff
-    ports:
-      - "7002:80" 
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - Urls__AuthServices=http://nexus-auth-api:80/
-      - Urls__UserManagement=http://nexus-user-management-api:80
-      - Urls__FileService=http://file-service:80
-      - Redis__ConnectionString=
-    restart: unless-stopped
-    depends_on:
-      - nexus-auth-api
-      - nexus-user-management-api
     networks:
       - nexus-network
 
