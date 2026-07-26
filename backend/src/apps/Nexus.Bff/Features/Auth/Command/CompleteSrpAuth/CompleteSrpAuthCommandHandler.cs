@@ -7,7 +7,7 @@ using Shared.Contracts.Common;
 
 namespace Nexus.Bff.Features.Auth.Command.CompleteSrpAuth
 {
-    public sealed class CompleteSrpAuthCommandHandler(IRedisCacheService cache) : IRequestHandler<CompleteSrpAuthCommand, Result<CompleteSrpAuthResponse>>
+    public sealed class CompleteSrpAuthCommandHandler(ICacheService cache) : IRequestHandler<CompleteSrpAuthCommand, Result<CompleteSrpAuthResponse>>
     {
         public async Task<Result<CompleteSrpAuthResponse>> Handle(CompleteSrpAuthCommand request, CancellationToken cancellationToken)
         {

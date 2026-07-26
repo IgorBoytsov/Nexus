@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Shared.Redis
 {
-    internal sealed class RedisCacheService : IRedisCacheService
+    internal sealed class RedisCacheService : ICacheService
     {
         private readonly IConnectionMultiplexer _redis;
         private readonly RedisOptions _options;

@@ -9,7 +9,7 @@ using Unit = Crossdyne.Toolkit.Primitives.Unit;
 
 namespace Nexus.Bff.Features.Auth.Command.Logout
 {
-    public sealed class LogoutCommandHandler(IAuthClient client, IRedisCacheService cache) : IRequestHandler<LogoutCommand, Result<Unit>>
+    public sealed class LogoutCommandHandler(IAuthClient client, ICacheService cache) : IRequestHandler<LogoutCommand, Result<Unit>>
     {
         public async Task<Result<Unit>> Handle(LogoutCommand request, CancellationToken cancellationToken)
         {       

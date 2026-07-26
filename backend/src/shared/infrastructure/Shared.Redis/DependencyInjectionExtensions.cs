@@ -23,7 +23,7 @@ namespace Shared.Redis
                 return ConnectionMultiplexer.Connect(config);
             });
 
-            services.AddScoped<IRedisCacheService, RedisCacheService>();
+            services.AddScoped<ICacheService, RedisCacheService>();
 
             return services;
         }

@@ -13,7 +13,7 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {
     public sealed class VerifySrpProofCommandHandler(
         IAuthClient authClient, 
-        IRedisCacheService cache,
+        ICacheService cache,
         IJwtReadService jwtReader) : IRequestHandler<VerifySrpProofCommand, Result<VerifierSrpProofDTO>>
     {   
         private readonly IAuthClient _authClient = authClient;

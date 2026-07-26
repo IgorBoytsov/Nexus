@@ -6,7 +6,7 @@ using Shared.Contracts.UserManagement.Events;
 namespace Nexus.Bff.Features.Auth.EventHandlers
 {
     public sealed class UserAccountDeletedIntegrationEventHandler(
-        IRedisCacheService cache, 
+        ICacheService cache, 
         ILogger<UserAccountDeletedIntegrationEventHandler> logger) : IIntegrationEventHandler<UserAccountDeletedIntegrationEvent>
     {
         public async Task HandleAsync(UserAccountDeletedIntegrationEvent @event, CancellationToken cancellationToken)

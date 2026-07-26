@@ -13,7 +13,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Chang
     public sealed class ChangeEmailSendCodeCommandHandler(
         IUserRepository repository, 
         IUnitOfWork unitOfWork,
-        IRedisCacheService redisCacheService) : IRequestHandler<ChangeEmailSendCodeCommand, Result<Unit>>
+        ICacheService redisCacheService) : IRequestHandler<ChangeEmailSendCodeCommand, Result<Unit>>
     {
         public async Task<Result<Unit>> Handle(ChangeEmailSendCodeCommand request, CancellationToken cancellationToken)
         {

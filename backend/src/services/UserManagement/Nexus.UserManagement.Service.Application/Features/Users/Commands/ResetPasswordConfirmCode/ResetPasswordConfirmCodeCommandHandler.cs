@@ -5,9 +5,9 @@ using Shared.Contracts.Cache.Interfaces;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordConfirmCode
 {
-    public sealed class ResetPasswordConfirmCodeCommandHandler(IRedisCacheService redis) : IRequestHandler<ResetPasswordConfirmCodeCommand, Result>
+    public sealed class ResetPasswordConfirmCodeCommandHandler(ICacheService redis) : IRequestHandler<ResetPasswordConfirmCodeCommand, Result>
     {
-        private readonly IRedisCacheService _redis = redis;
+        private readonly ICacheService _redis = redis;
 
         public async Task<Result> Handle(ResetPasswordConfirmCodeCommand request, CancellationToken cancellationToken)
         {

@@ -1,6 +1,6 @@
 ﻿namespace Shared.Contracts.Cache.Interfaces
 {
-    public interface IRedisCacheService
+    public interface ICacheService
     {
         Task<bool> SetStringAsync(string key, string value, TimeSpan? expiry = null);
         Task<string?> GetStringAsync(string key);

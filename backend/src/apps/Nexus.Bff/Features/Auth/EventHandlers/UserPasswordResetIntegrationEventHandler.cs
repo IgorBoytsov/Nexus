@@ -6,7 +6,7 @@ using Shared.Contracts.UserManagement.Events;
 namespace Nexus.Bff.Features.Auth.EventHandlers
 {
     public sealed class UserPasswordResetIntegrationEventHandler(
-        IRedisCacheService cache, 
+        ICacheService cache, 
         ILogger<UserPasswordResetIntegrationEventHandler> logger) : IIntegrationEventHandler<UserPasswordResetIntegrationEvent>
     {
         public async Task HandleAsync(UserPasswordResetIntegrationEvent @event, CancellationToken cancellationToken)

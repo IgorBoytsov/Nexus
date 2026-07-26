@@ -20,7 +20,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
     public class VerifySrpProofHandler(
         IUnitOfWork unitOfWork,
         IAccessDataRepository accessDataRepository,
-        IRedisCacheService redisCacheService,
+        ICacheService redisCacheService,
         IJwtTokenGenerator jwtTokenGenerator,
         ISrpServer srpServer,
         IUserManagementServiceClient userManagementClient,
