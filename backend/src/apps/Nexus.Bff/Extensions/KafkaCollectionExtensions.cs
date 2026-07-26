@@ -2,6 +2,7 @@ using Confluent.Kafka;
 using Nexus.Bff.Features.Auth.EventHandlers;
 using Shared.Contracts.Messaging.Interfaces;
 using Shared.Contracts.UserManagement.Events;
+using Shared.Messaging;
 
 namespace Nexus.Bff.Extensions
 {

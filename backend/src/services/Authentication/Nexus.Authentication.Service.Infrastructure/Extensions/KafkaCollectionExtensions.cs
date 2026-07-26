@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Nexus.Authentication.Service.Application.Features.EventHandlers;
 using Shared.Contracts.Messaging.Interfaces;
 using Shared.Contracts.UserManagement.Events;
+using Shared.Messaging;
 
 namespace Nexus.Authentication.Service.Infrastructure.Extensions
 {
