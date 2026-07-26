@@ -10,8 +10,8 @@ namespace Nexus.UserManagement.Service.Application.Mapping.Events
         {
             CreateMap<ChangeEmailRequestedDomainEvent, ChangeEmailRequestedIntegrationEvent>()
                 .ConstructUsing(src => new ChangeEmailRequestedIntegrationEvent(
-                    IdEvent: src.IdEvent.ToString(),
-                    OccurredOnUtc: src.OccurredOnUtc.ToString("O"),
+                    IdEvent: src.IdEvent,
+                    OccurredOnUtc: src.OccurredOnUtc,
                     UserId: src.UserId.Value.ToString(),
                     To: src.Email.Value,
                     Subject: "Код для подтверждения смены адреса электриной почты",

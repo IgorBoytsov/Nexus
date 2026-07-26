@@ -13,6 +13,11 @@ services:
       - JwtSettings__ExpiryMinutes=
       - JwtSettings__Issuer=
       - JwtSettings__Audience=
+      - Kafka__Consumer__BootstrapServers=
+      - Kafka__Consumer__GroupId=nexus-authentication-service-consumer-group
+      - Kafka__Consumer__AutoOffsetReset=Latest
+      - Kafka__Consumer__EnableAutoCommit=false
+      - Kafka__Consumer__EnablePartitionEof=false
       - Crypto__RsaPrivateKey=
       - Crypto__RsaPublicKey=
       - Redis__ConnectionString=
