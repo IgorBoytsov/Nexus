@@ -17,14 +17,29 @@ namespace Nexus.Authentication.Service.Api
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             builder.Services.Configure<JsonSerializerOptions>(opt => opt.AddCrossdyneDefaults());
-
-            builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.AddCrossdyneDefaults());
             
+            builder.Host.AddSerilogLogger();
+            
+            IConfiguration configuration = builder.Configuration;
+
+            //Api
+            builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.AddCrossdyneDefaults());
             builder.Services.AddOpenApi();
 
-            builder.Host.AddSerilogLogger();
-            builder.Services.AddInfrastructure(builder.Configuration);
-            builder.Services.AddApplication(builder.Configuration);
+            //Application
+            builder.Services
+                .RegisterMediator()
+                .RegisterSecurity()
+                .RegisterValidation();
+
+            //Infrastructure
+            builder.Services
+                .RegisterDatabase(configuration)
+                .RegisterRepositories()
+                .RegisterHttpClients(configuration)
+                .RegisterBackgroundServices()
+                .RegisterMessaging(configuration)
+                .RegisterCache(configuration);
 
             var app = builder.Build();
 
