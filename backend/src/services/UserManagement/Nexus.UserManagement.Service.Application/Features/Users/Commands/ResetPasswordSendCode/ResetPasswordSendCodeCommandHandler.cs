@@ -11,7 +11,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Reset
     public sealed class ResetPasswordSendCodeCommandHandler(
         IUserRepository userRepository,
         IUnitOfWork unitOfWork,
-        IRedisCacheService redis) : IRequestHandler<ResetPasswordSendCodeCommand, Result>
+        ICacheService redis) : IRequestHandler<ResetPasswordSendCodeCommand, Result>
     {
         public async Task<Result> Handle(ResetPasswordSendCodeCommand request, CancellationToken cancellationToken)
         {

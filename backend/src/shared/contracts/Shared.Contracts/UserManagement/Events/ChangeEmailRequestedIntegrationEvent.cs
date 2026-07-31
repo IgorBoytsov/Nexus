@@ -1,11 +1,13 @@
+using Shared.Contracts.Messaging.Interfaces;
+
 namespace Shared.Contracts.UserManagement.Events
 {
     public sealed record ChangeEmailRequestedIntegrationEvent(
-        string IdEvent, 
-        string OccurredOnUtc, 
+        Guid IdEvent, 
+        DateTime OccurredOnUtc, 
         string UserId, 
         string To, 
         string Subject, 
         string Body,
-        string ExpiresAt);
+        string ExpiresAt) : IIntegrationEvent;
 }

@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Shared.Redis
 {
-    internal sealed class RedisCacheService : IRedisCacheService
+    internal sealed class RedisCacheService : ICacheService
     {
         private readonly IConnectionMultiplexer _redis;
         private readonly RedisOptions _options;
@@ -148,6 +148,64 @@ namespace Shared.Redis
                 Console.WriteLine( $"Unexpected error during{operationName}: {ex.Message}");
                 throw new ArgumentException($"Unexpected error during {operationName}", ex);
             }
+        }
+
+        #endregion
+    
+        #region Set
+
+        public async Task<bool> SetAddAsync(string key, string value, TimeSpan? expiry = null)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentException("Key cannot be null or empty", nameof(key));
+
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Value cannot be null or empty", nameof(value));
+
+            return await ExecuteWithRetryAsync(async () =>
+            {
+                var result = await _database.SetAddAsync(key, value);
+
+                if (expiry.HasValue)
+                    await _database.KeyExpireAsync(key, expiry.Value);
+
+                return result;
+            }, "SetAddAsync");
+        }
+
+        public async Task<string[]> SetMembersAsync(string key)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentException("Key cannot be null or empty", nameof(key));
+
+            return await ExecuteWithRetryAsync(async () =>
+            {
+                var members = await _database.SetMembersAsync(key);
+                return members.Select(m => m.ToString()!).ToArray();
+            }, "SetMembersAsync");
+        }
+
+        public async Task<bool> SetRemoveAsync(string key, string value)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentException("Key cannot be null or empty", nameof(key));
+
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Value cannot be null or empty", nameof(value));
+
+            return await ExecuteWithRetryAsync(async () => await _database.SetRemoveAsync(key, value), "SetRemoveAsync");
+        }
+
+        public async Task<long> RemoveAsync(string[] keys)
+        {
+            if (keys == null || keys.Length == 0)
+                throw new ArgumentException("Keys cannot be null or empty", nameof(keys));
+
+            return await ExecuteWithRetryAsync(async () =>
+            {
+                var redisKeys = keys.Select(k => (RedisKey)k).ToArray();
+                return await _database.KeyDeleteAsync(redisKeys);
+            }, "RemoveAsync");
         }
 
         #endregion

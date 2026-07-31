@@ -7,7 +7,7 @@ using Shared.Contracts.Common;
 
 namespace Nexus.Bff.Features.Auth.Command.CompleteSrpAuth
 {
-    public sealed class CompleteSrpAuthCommandHandler(IRedisCacheService cache) : IRequestHandler<CompleteSrpAuthCommand, Result<CompleteSrpAuthResponse>>
+    public sealed class CompleteSrpAuthCommandHandler(ICacheService cache) : IRequestHandler<CompleteSrpAuthCommand, Result<CompleteSrpAuthResponse>>
     {
         public async Task<Result<CompleteSrpAuthResponse>> Handle(CompleteSrpAuthCommand request, CancellationToken cancellationToken)
         {
@@ -22,9 +22,17 @@ namespace Nexus.Bff.Features.Auth.Command.CompleteSrpAuth
             if (!resultCache)
                 return new Error(ErrorCode.Server, "Произошла непредвиденная ошибка на стороне сервера. Пожалуйста повторите процесс входа.");
 
+            await cache.SetAddAsync(RedisKeyExtensions.UserSessionsKey(userSession.UserId), userSession.SessionId, TimeSpan.FromDays(30));
+
             await cache.RemoveAsync(templateCacheKey);
 
-            return new CompleteSrpAuthResponse(userSession.SessionId, userSession.AccessToken, userSession.RefreshToken, userSession.AccessTokenExpiresAt, userSession.UserId, userSession.Login);
+            return new CompleteSrpAuthResponse(
+                userSession.SessionId, 
+                userSession.AccessToken, 
+                userSession.RefreshToken, 
+                userSession.AccessTokenExpiresAt, 
+                userSession.UserId, 
+                userSession.Login);
         }
     }
 }

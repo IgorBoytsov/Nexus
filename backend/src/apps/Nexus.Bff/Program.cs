@@ -21,6 +21,7 @@ builder.Services
     .ConfigureOptions()
     .AddServices(configuration)
     .AddHttpClients(configuration)
+    .RegisterMessaging(configuration)
     .AddDistributedLock()
     .UseCors()
     .AddSharedCryptoKeyForDecryptCookie(configuration)

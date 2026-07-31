@@ -11,7 +11,7 @@ namespace Nexus.UserManagement.Service.Application.Mapping.Events
             CreateMap<PasswordResetRequestedDomainEvent, PasswordResetRequestedIntegrationEvent>()
                 .ConstructUsing(src => new PasswordResetRequestedIntegrationEvent(
                     IdEvent: src.IdEvent,
-                    OccurredOnUtc: src.OccurredOnUtc.ToString("O"),
+                    OccurredOnUtc: src.OccurredOnUtc,
                     UserId: src.UserId.Value,
                     To: src.Email,
                     Subject: "Код для подтверждения сброса пароля",

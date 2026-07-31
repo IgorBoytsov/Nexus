@@ -1,31 +1,22 @@
 using System.Text.Json;
 using AutoMapper;
 using Nexus.UserManagement.Service.Application.Interfaces.Outbox;
-using Nexus.UserManagement.Service.Domain.Events;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
-using Shared.Contracts.UserManagement.Events;
 using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Outbox
 {
     public sealed class DbContextOutbox(
         UserManagementContext context, 
-        IMapper mapper) : IDbContextOutbox
+        IMapper mapper,
+        EventTypeMappingRegistry mappingRegistry) : IDbContextOutbox
     {
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             PropertyNameCaseInsensitive = true,
             WriteIndented = false
-        };
-
-        private static readonly Dictionary<Type, Type> EventMapping = new()
-        {
-            [typeof(UserPasswordResetDomainEvent)] = typeof(UserPasswordResetIntegrationEvent),
-            [typeof(UserAccountDeletedDomainEvent)] = typeof(UserAccountDeletedIntegrationEvent),
-            [typeof(PasswordResetRequestedDomainEvent)] = typeof(PasswordResetRequestedIntegrationEvent),
-            [typeof(ChangeEmailRequestedDomainEvent)] = typeof(ChangeEmailRequestedIntegrationEvent),
         };
 
         public void Append(IReadOnlyCollection<IDomainEvent> domainEvents)
@@ -36,9 +27,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Outbox
             var outboxMessages = domainEvents.Select(e =>
             {
                 var sourceType = e.GetType();
-
-                if (!EventMapping.TryGetValue(sourceType, out var destType))
-                    throw new InvalidOperationException($"Не найден маппинг для доменного события {sourceType.Name} в интеграционное");
+                var destType = mappingRegistry.GetIntegrationType(sourceType);
 
                 var integrationEvent = mapper.Map(e, sourceType, destType);
 

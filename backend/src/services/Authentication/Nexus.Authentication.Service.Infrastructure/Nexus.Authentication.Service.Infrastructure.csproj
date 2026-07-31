@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\infrastructure\Shared.Dapper\Shared.Dapper.csproj" />
     <ProjectReference Include="..\..\..\shared\infrastructure\Shared.EntityFramework\Shared.EntityFramework.csproj" />
+    <ProjectReference Include="..\..\..\shared\infrastructure\Shared.Messaging\Shared.Messaging.csproj" />
     <ProjectReference Include="..\..\..\shared\infrastructure\Shared.Redis\Shared.Redis.csproj" />
     <ProjectReference Include="..\Nexus.Authentication.Service.Application\Nexus.Authentication.Service.Application.csproj" />
     <ProjectReference Include="..\Nexus.Authentication.Service.Domain\Nexus.Authentication.Service.Domain.csproj" />

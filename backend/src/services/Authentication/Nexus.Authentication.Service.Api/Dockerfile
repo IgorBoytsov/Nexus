@@ -15,6 +15,7 @@ COPY ["backend/src/shared/core/Shared.Logging/Shared.Logging.csproj", "backend/s
 COPY ["backend/src/shared/security/Shared.Security/Shared.Security.csproj", "backend/src/shared/security/Shared.Security/"]
 COPY ["backend/src/shared/infrastructure/Shared.Dapper/Shared.Dapper.csproj", "backend/src/shared/infrastructure/Shared.Dapper/"]
 COPY ["backend/src/shared/infrastructure/Shared.EntityFramework/Shared.EntityFramework.csproj", "backend/src/shared/infrastructure/Shared.EntityFramework/"]
+COPY ["backend/src/shared/infrastructure/Shared.Messaging/Shared.Messaging.csproj", "backend/src/shared/infrastructure/Shared.Messaging/"]
 COPY ["backend/src/shared/infrastructure/Shared.Redis/Shared.Redis.csproj", "backend/src/shared/infrastructure/Shared.Redis/"]
 COPY ["backend/src/shared/validations/Shared.Validations/Shared.Validations.csproj", "backend/src/shared/validations/Shared.Validations/"]
 COPY ["backend/src/shared/web/Shared.Web/Shared.Web.csproj", "backend/src/shared/web/Shared.Web/"]

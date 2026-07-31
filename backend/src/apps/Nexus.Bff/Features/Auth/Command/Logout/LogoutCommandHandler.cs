@@ -9,7 +9,7 @@ using Unit = Crossdyne.Toolkit.Primitives.Unit;
 
 namespace Nexus.Bff.Features.Auth.Command.Logout
 {
-    public sealed class LogoutCommandHandler(IAuthClient client, IRedisCacheService cache) : IRequestHandler<LogoutCommand, Result<Unit>>
+    public sealed class LogoutCommandHandler(IAuthClient client, ICacheService cache) : IRequestHandler<LogoutCommand, Result<Unit>>
     {
         public async Task<Result<Unit>> Handle(LogoutCommand request, CancellationToken cancellationToken)
         {       
@@ -17,8 +17,12 @@ namespace Nexus.Bff.Features.Auth.Command.Logout
 
             var userSession = await cache.GetJsonAsync<UserSession>(cacheSessionKey);
 
+            if (userSession is null)
+                return Unit.Value;
+
             await client.Logout(new LogoutRequest(userSession!.RefreshToken));   
             await cache.RemoveAsync(cacheSessionKey);
+            await cache.SetRemoveAsync(RedisKeyExtensions.UserSessionsKey(userSession.UserId), request.SessionId);
 
             return Unit.Value;
         }

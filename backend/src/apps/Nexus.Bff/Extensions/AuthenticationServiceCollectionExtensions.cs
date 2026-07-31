@@ -102,7 +102,7 @@ namespace Nexus.Bff.Extensions
                     }
 
                     var cacheSessionKey = RedisKeyExtensions.SessionKey(sessionId!);
-                    var cache = context.HttpContext.RequestServices.GetRequiredService<IRedisCacheService>();
+                    var cache = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
                     
                     var session = await cache.GetJsonAsync<UserSession>(cacheSessionKey);
 
@@ -153,6 +153,7 @@ namespace Nexus.Bff.Extensions
                             else
                             {
                                 await cache.RemoveAsync(cacheSessionKey);
+                                await cache.SetRemoveAsync(RedisKeyExtensions.UserSessionsKey(session.UserId), sessionId);
                                 context.RejectPrincipal();
                                 return;
                             }

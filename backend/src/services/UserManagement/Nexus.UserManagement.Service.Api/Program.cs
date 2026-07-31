@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Nexus.UserManagement.Service.Api.Extensions;
 using Nexus.UserManagement.Service.Application.Extension;
 using Nexus.UserManagement.Service.Infrastructure.Extension;
 using Serilog;
 using Shared.Logging;
 using Shared.Web.Extensions;
-using System.Text;
 
 namespace Nexus.UserManagement.Service.Api
 {
@@ -15,51 +13,39 @@ namespace Nexus.UserManagement.Service.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            IConfiguration configuration = builder.Configuration;
+            string databaseConnectionString = configuration.GetConnectionString("DefaultConnection")!;
+
             builder.Host.AddSerilogLogger();
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowMvcApp", policy =>
-                {
-                    policy.WithOrigins("http://localhost:5131")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowCredentials();
-                });
-            });
+            //Api
+            builder.Services
+                .RegisterAuthentication(configuration)
+                .RegisterCors();
 
             builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.AddCrossdyneDefaults());
 
-            builder.Services.AddInfrastructure(builder.Configuration).AddApplication(builder.Configuration);
+            //Application
+            builder.Services
+                .RegisterMediator()
+                .RegisterValidation()
+                .RegisterMapping(configuration);
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = builder.Configuration["JwtSettings:Audience"],
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"]!)
-                    )
-                };
-            });
-
-            builder.Services.AddAuthorization();
+            // Infrastructure
+            builder.Services
+                .RegisterWriteDatabase(databaseConnectionString)
+                .RegisterReadonlyDatabase(databaseConnectionString)
+                .RegisterRepositories()
+                .RegisterMessaging(configuration)
+                .RegisterOutbox()
+                .RegisterCache(configuration)
+                .RegisterHttpClients(configuration);
 
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
