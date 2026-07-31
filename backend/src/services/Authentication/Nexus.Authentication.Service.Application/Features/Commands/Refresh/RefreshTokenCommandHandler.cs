@@ -38,7 +38,8 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
             {
                 logger.LogDebug("Получена распределенная блокировка, обрабатывается токен обновления");
 
-                var maybeStorageToken = await accessDataRepository.GetByAsync(rt => rt.RefreshToken == request.RefreshToken, cancellationToken);
+                var rtHash = TokenHasher.Hash(request.RefreshToken);
+                var maybeStorageToken = await accessDataRepository.GetByAsync(rt => rt.RefreshTokenHash == rtHash, cancellationToken);
 
                 if (maybeStorageToken.IsNone)
                     return new Error(ErrorCode.Unauthorized, "RefreshToken не найден.");
@@ -73,8 +74,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
 
                 var newAccessData = AccessData.Create(
                     userId: Guid.Parse(userData.Id),
-                    refreshToken: newRefreshToken,
-                    accessToken: newAccessToken, 
+                    refreshTokenHash: TokenHasher.Hash(newRefreshToken),
                     creationDate: DateTime.UtcNow,
                     expiryDate: DateTime.UtcNow.AddDays(30),
                     isUsed: false,

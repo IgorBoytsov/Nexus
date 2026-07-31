@@ -56,7 +56,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             
             var accessData = AccessData.Create(
                 Guid.Parse(userData!.Id), 
-                refreshToken, accessToken,
+                TokenHasher.Hash(refreshToken),
                 DateTime.UtcNow,
                 DateTime.UtcNow.AddDays(30),
                 isUsed: false,

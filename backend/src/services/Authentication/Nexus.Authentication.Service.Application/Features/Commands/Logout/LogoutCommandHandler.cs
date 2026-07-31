@@ -12,7 +12,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Logout
     {
         public async Task<Result<Unit>> Handle(LogoutCommand request, CancellationToken cancellationToken)
         {
-            Maybe<AccessData> maybe = await repository.GetByAsync(x => x.RefreshToken == request.RefreshToken);
+            Maybe<AccessData> maybe = await repository.GetByAsync(x => x.RefreshTokenHash == request.RefreshToken);
 
             if (maybe.IsNone)
                 return Unit.Value;
