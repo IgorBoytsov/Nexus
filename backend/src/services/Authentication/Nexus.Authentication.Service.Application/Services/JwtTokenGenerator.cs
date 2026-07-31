@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Shared.Contracts.UserManagement.Responses;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Nexus.Authentication.Service.Application.Services
@@ -39,6 +40,10 @@ namespace Nexus.Authentication.Service.Application.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GenerateRefreshToken() => Guid.NewGuid().ToString() + "-" + Guid.NewGuid().ToString();
+        public string GenerateRefreshToken()
+        {
+            var bytes = RandomNumberGenerator.GetBytes(32);
+            return Base64UrlEncoder.Encode(bytes);
+        }
     }
 }
