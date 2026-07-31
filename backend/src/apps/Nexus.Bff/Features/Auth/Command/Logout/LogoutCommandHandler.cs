@@ -20,7 +20,7 @@ namespace Nexus.Bff.Features.Auth.Command.Logout
             if (userSession is null)
                 return Unit.Value;
 
-            await client.Logout(new LogoutRequest(userSession!.RefreshToken));   
+            await client.Logout(new LogoutRequest(userSession!.EncryptedRefreshToken));   
             await cache.RemoveAsync(cacheSessionKey);
             await cache.SetRemoveAsync(RedisKeyExtensions.UserSessionsKey(userSession.UserId), request.SessionId);
 

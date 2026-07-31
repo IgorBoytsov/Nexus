@@ -1,12 +1,7 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Crossdyne.Toolkit.Results;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Nexus.Authentication.Service.Application.Interfaces.Repositories;
 using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
@@ -23,7 +18,6 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
         IUnitOfWork unitOfWork,
         IAccessDataRepository accessDataRepository,
         IJwtTokenGenerator jwtTokenGenerator,
-        IConfiguration configuration,
         IUserManagementServiceClient userManagementServiceClient,
         RedisDistributedSynchronizationProvider lockProvider,
         ILogger<RefreshTokenCommandHandler> logger) : IRequestHandler<RefreshTokenCommand, Result<AuthResponse>>
@@ -48,19 +42,6 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
 
                 if (storageToken == null || storageToken.IsUsed || storageToken.IsRevoked || DateTime.UtcNow > storageToken.ExpiryDate)
                     return new Error(ErrorCode.Unauthorized, "Недействительный или просроченный Refresh токен.");
-
-
-                if (!string.IsNullOrWhiteSpace(request.AccessToken))
-                {
-                    var principal = GetPrincipalFromExpiredToken(request.AccessToken);
-
-                    if (principal?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value is not string userIdFromJwt ||
-                        !Guid.TryParse(userIdFromJwt, out var userIdGuid) ||
-                        userIdGuid != storageToken.UserId)
-                    {
-                        return new Error(ErrorCode.Unauthorized, "AccessToken не соответствует Refresh токену.");
-                    }
-                }
 
                 UserAuthDataResponse? userData = await userManagementServiceClient.GetUserByIdAsync(storageToken.UserId);
 
@@ -87,38 +68,6 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
                 logger.LogInformation("Успешная генерация новых токенов для пользователя {UserId}", userData.Id);
 
                 return new AuthResponse(newAccessToken, newRefreshToken); 
-            }
-        }
-
-        private ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
-        {
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!)),
-                ValidateLifetime = false
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            try
-            {
-                var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-
-                if (securityToken is not JwtSecurityToken jwtSecurityToken || 
-                    !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return null;
-                }
-
-                return principal;
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, "Ошибка в валидации времени жизни у access токена");
-                return null;
             }
         }
     }

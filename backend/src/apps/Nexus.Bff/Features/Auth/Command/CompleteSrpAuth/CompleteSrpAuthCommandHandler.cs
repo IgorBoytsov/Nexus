@@ -28,9 +28,6 @@ namespace Nexus.Bff.Features.Auth.Command.CompleteSrpAuth
 
             return new CompleteSrpAuthResponse(
                 userSession.SessionId, 
-                userSession.AccessToken, 
-                userSession.RefreshToken, 
-                userSession.AccessTokenExpiresAt, 
                 userSession.UserId, 
                 userSession.Login);
         }

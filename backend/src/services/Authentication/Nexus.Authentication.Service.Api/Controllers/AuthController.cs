@@ -40,7 +40,7 @@ namespace Nexus.Authentication.Service.Api.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshTokensRequest request)
         {
-            var command = new RefreshTokenCommand(request.RefreshToken, request.AccessToken);
+            var command = new RefreshTokenCommand(request.RefreshToken);
             var result = await _mediator.Send(command);
 
             return result.Match(
