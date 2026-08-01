@@ -13,6 +13,7 @@
     <PackageReference Include="DistributedLock.Redis" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Crossdyne.Toolkit" />
+    <PackageReference Include="Crossdyne.Security.Cryptography" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
 
     <PackageReference Include="Serilog.AspNetCore" />

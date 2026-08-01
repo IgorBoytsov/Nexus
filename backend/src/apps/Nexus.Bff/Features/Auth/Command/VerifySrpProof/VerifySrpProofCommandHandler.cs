@@ -5,16 +5,20 @@ using Shared.Contracts.Common;
 using Nexus.Bff.Services;
 using System.Security.Cryptography;
 using Nexus.Bff.Extensions;
-using Shared.Contracts.Cache.Interfaces;
 using Shared.Contracts.Authentication.Requests;
 using Shared.Contracts.Authentication.Responses;
+using Crossdyne.Security.Abstractions;
+using Nexus.Bff.Constants;
+using Shared.Contracts.Cache.Abstractions;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {
     public sealed class VerifySrpProofCommandHandler(
         IAuthClient authClient, 
         ICacheService cache,
-        IJwtReadService jwtReader) : IRequestHandler<VerifySrpProofCommand, Result<VerifierSrpProofDTO>>
+        IJwtReadService jwtReader,
+        ICryptoServices cryptoServices,
+        IConfiguration configuration) : IRequestHandler<VerifySrpProofCommand, Result<VerifierSrpProofDTO>>
     {   
         private readonly IAuthClient _authClient = authClient;
 
@@ -28,9 +32,10 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
             AuthResponse authData = result.Value!;
 
             var data = jwtReader.ExtractData(authData.AccessToken);
-            var sessionId = Guid.NewGuid().ToString();
+            var sessionId = Guid.NewGuid().ToString("N");
+            var key = Convert.FromBase64String(configuration.GetValue<string>(ConfigurationConstants.RedisDataEncryptionKey) ?? throw new InvalidOperationException($"{ConfigurationConstants.RedisDataEncryptionKey} не настроен"));
 
-            var userSession = new UserSession(sessionId, authData.AccessToken, authData.RefreshToken, data.ExpiredTime, data.UserId, data.Login.ToLowerInvariant());
+            var userSession = new UserSession(sessionId, cryptoServices.EncryptedData(authData.AccessToken, key, CryptoConstants.CryptoVersion), cryptoServices.EncryptedData(authData.RefreshToken, key, CryptoConstants.CryptoVersion), data.ExpiredTime, data.UserId, data.Login.ToLowerInvariant());
 
             Span<byte> tempAuthTokenBytes = stackalloc byte[32];
             RandomNumberGenerator.Fill(tempAuthTokenBytes);

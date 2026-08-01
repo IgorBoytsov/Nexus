@@ -11,6 +11,7 @@ services:
       - Urls__UserManagement=http://nexus-user-management-api:80
       - Urls__FileService=http://file-service:80
       - Redis__ConnectionString=
+      - Redis__DataEncryptionKey=Base64 32+ bit key, generate this command - openssl rand -base64 32
       - Kafka__Consumer__BootstrapServers=
       - Kafka__Consumer__GroupId=nexus-bff-consumer-group
       - Kafka__Consumer__AutoOffsetReset=Latest

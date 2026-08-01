@@ -1,4 +1,6 @@
 using System.Reflection;
+using Crossdyne.Security.Abstractions;
+using Crossdyne.Security.Cryptography;
 using MediatR;
 using Nexus.Bff.Services;
 using Shared.Application.Behaviors;
@@ -15,7 +17,8 @@ namespace Nexus.Bff.Extensions
             
             services.AddSingleton<IJwtReadService, JwtReadService>();
             services.AddCashService(configuration);
-            
+            services.AddSingleton<ICryptoServices, CryptoService>();
+
             return services;
         }
     }

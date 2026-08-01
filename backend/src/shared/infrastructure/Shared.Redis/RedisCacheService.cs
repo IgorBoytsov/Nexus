@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using Shared.Contracts.Cache.Interfaces;
+using Shared.Contracts.Cache.Abstractions;
 using StackExchange.Redis;
 using System.Text.Json;
 using System.Text.Json.Serialization;

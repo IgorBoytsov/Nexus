@@ -4,5 +4,5 @@ using Shared.Contracts.Authentication.Responses;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
 {
-    public sealed record RefreshTokenCommand(string RefreshToken, string? AccessToken = null) : IRequest<Result<AuthResponse>>;
+    public sealed record RefreshTokenCommand(string RefreshToken) : IRequest<Result<AuthResponse>>;
 }

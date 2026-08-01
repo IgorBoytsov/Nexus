@@ -3,7 +3,7 @@ using MediatR;
 using Nexus.Bff.Extensions;
 using Nexus.Bff.Infrastructure.Clients;
 using Shared.Contracts.Authentication.Requests;
-using Shared.Contracts.Cache.Interfaces;
+using Shared.Contracts.Cache.Abstractions;
 using Shared.Contracts.Common;
 using Unit = Crossdyne.Toolkit.Primitives.Unit;
 
@@ -20,7 +20,7 @@ namespace Nexus.Bff.Features.Auth.Command.Logout
             if (userSession is null)
                 return Unit.Value;
 
-            await client.Logout(new LogoutRequest(userSession!.RefreshToken));   
+            await client.Logout(new LogoutRequest(userSession!.EncryptedRefreshToken));   
             await cache.RemoveAsync(cacheSessionKey);
             await cache.SetRemoveAsync(RedisKeyExtensions.UserSessionsKey(userSession.UserId), request.SessionId);
 

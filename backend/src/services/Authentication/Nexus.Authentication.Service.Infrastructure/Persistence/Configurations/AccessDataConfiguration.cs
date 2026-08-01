@@ -13,8 +13,7 @@ namespace Nexus.Authentication.Service.Infrastructure.Persistence.Configurations
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.UserId).IsRequired();
-            builder.Property(x => x.RefreshToken).IsRequired();
-            builder.Property(x => x.AccessToken).IsRequired();
+            builder.Property(x => x.RefreshTokenHash).IsRequired();
             builder.Property(x => x.CreationDate).IsRequired();
             builder.Property(x => x.ExpiryDate).IsRequired();
             builder.Property(x => x.IsUsed).IsRequired();

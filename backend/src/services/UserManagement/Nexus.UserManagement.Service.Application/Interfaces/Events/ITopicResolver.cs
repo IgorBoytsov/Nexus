@@ -1,4 +1,4 @@
-using Shared.Contracts.Messaging.Interfaces;
+using Shared.Contracts.Messaging.Abstractions;
 
 namespace Nexus.UserManagement.Service.Application.Interfaces.Events
 {
