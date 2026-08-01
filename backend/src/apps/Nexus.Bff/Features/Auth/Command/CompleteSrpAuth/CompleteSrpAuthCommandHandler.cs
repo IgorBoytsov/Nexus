@@ -2,7 +2,7 @@ using Crossdyne.Toolkit.Results;
 using MediatR;
 using Nexus.Bff.Extensions;
 using Shared.Contracts.Authentication.Responses;
-using Shared.Contracts.Cache.Interfaces;
+using Shared.Contracts.Cache.Abstractions;
 using Shared.Contracts.Common;
 
 namespace Nexus.Bff.Features.Auth.Command.CompleteSrpAuth

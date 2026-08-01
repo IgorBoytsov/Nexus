@@ -9,7 +9,7 @@ using Nexus.Bff.Constants;
 using Nexus.Bff.Infrastructure.Clients;
 using Nexus.Bff.Services;
 using Shared.Contracts.Authentication.Requests;
-using Shared.Contracts.Cache.Interfaces;
+using Shared.Contracts.Cache.Abstractions;
 using Shared.Contracts.Common;
 using StackExchange.Redis;
 

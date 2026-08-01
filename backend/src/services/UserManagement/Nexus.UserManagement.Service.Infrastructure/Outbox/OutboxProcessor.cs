@@ -6,7 +6,7 @@ using Nexus.UserManagement.Service.Application.Interfaces.Events;
 using Nexus.UserManagement.Service.Application.Interfaces.Outbox;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
-using Shared.Contracts.Messaging.Interfaces;
+using Shared.Contracts.Messaging.Abstractions;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Outbox
 {

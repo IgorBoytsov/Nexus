@@ -9,11 +9,11 @@ using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Nexus.Authentication.Service.Application.Interfaces.Repositories;
 using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
 using Nexus.Authentication.Service.Application.Extensions;
-using Shared.Contracts.Cache.Interfaces;
 using Shared.Contracts.Authentication.Responses;
 using Microsoft.Extensions.Logging;
 using Shared.Contracts.UserManagement.Responses;
 using Shared.Kernel.Exceptions;
+using Shared.Contracts.Cache.Abstractions;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {

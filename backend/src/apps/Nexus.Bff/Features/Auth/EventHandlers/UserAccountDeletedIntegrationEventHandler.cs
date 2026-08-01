@@ -1,6 +1,6 @@
 using Nexus.Bff.Extensions;
-using Shared.Contracts.Cache.Interfaces;
-using Shared.Contracts.Messaging.Interfaces;
+using Shared.Contracts.Cache.Abstractions;
+using Shared.Contracts.Messaging.Abstractions;
 using Shared.Contracts.UserManagement.Events;
 
 namespace Nexus.Bff.Features.Auth.EventHandlers

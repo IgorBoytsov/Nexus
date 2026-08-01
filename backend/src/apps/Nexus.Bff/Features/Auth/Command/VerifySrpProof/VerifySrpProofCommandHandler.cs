@@ -5,11 +5,11 @@ using Shared.Contracts.Common;
 using Nexus.Bff.Services;
 using System.Security.Cryptography;
 using Nexus.Bff.Extensions;
-using Shared.Contracts.Cache.Interfaces;
 using Shared.Contracts.Authentication.Requests;
 using Shared.Contracts.Authentication.Responses;
 using Crossdyne.Security.Abstractions;
 using Nexus.Bff.Constants;
+using Shared.Contracts.Cache.Abstractions;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {

@@ -5,10 +5,10 @@ using Crossdyne.Security.Configuration;
 using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Nexus.Authentication.Service.Application.Extensions;
 using Shared.Contracts.Security.Interfaces;
-using Shared.Contracts.Cache.Interfaces;
 using Shared.Contracts.Authentication.Responses;
 using Shared.Contracts.UserManagement.Responses;
 using Microsoft.Extensions.Logging;
+using Shared.Contracts.Cache.Abstractions;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {

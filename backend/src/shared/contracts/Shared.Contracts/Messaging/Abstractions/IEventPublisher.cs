@@ -1,4 +1,4 @@
-namespace Shared.Contracts.Messaging.Interfaces
+namespace Shared.Contracts.Messaging.Abstractions
 {
     public interface IEventPublisher
     {
