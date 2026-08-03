@@ -1,4 +1,3 @@
-using Crossdyne.Security.Abstractions;
 using Crossdyne.Security.Cryptography;
 using Crossdyne.Security.Srp.Server;
 using Medallion.Threading.Redis;
@@ -16,8 +15,8 @@ namespace Nexus.Authentication.Service.Application.Extensions
         {
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddSingleton<IDataProtector, RsaDecryptor>();
-            services.AddTransient<ISrpServer, SrpServerService>();
-            services.AddSingleton<ICryptoServices, CryptoService>();
+            services.AddCrossdyneCryptography();
+            services.AddCrossdyneSrpServer();
 
             services.AddSingleton(sp =>
             {

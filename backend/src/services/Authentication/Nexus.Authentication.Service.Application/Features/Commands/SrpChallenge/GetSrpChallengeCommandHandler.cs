@@ -16,7 +16,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
         IUserManagementServiceClient userManagementClient,
         ICacheService redisCacheService,
         ISrpServer srpServer,
-        ICryptoServices cryptoServices,
+        ICryptoService cryptoServices,
         IDataProtector verifierProtector,
         ILogger<GetSrpChallengeCommandHandler> logger) : IRequestHandler<GetSrpChallengeCommand, Result<SrpChallengeResponse>>
     {

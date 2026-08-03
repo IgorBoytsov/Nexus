@@ -17,7 +17,7 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
         IAuthClient authClient, 
         ICacheService cache,
         IJwtReadService jwtReader,
-        ICryptoServices cryptoServices,
+        ICryptoService cryptoServices,
         IConfiguration configuration) : IRequestHandler<VerifySrpProofCommand, Result<VerifierSrpProofDTO>>
     {   
         private readonly IAuthClient _authClient = authClient;
