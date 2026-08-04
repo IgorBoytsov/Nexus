@@ -38,9 +38,6 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             if (userData == null)
                 return new Error(ErrorCode.NotFound, "Пользователь не найден.");
 
-            SrpProfile profile = SrpProfileRegistry.GetProfile((SrpGroup)userData.SrpVersion); 
-            var srpContext = SrpContext.FromOptions(profile.Options);
-
             if (string.IsNullOrWhiteSpace(request.A) || string.IsNullOrWhiteSpace(request.M1))
                 return new Error(AppErrors.Validation, "Неверные параметры аутентификации.");
             
@@ -49,7 +46,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpPr
             if (session is null)
             return new Error(AppErrors.SessionExpired, "Сессия аутентификации истекла или недействительна. Повторите вход.");
 
-            var M2_server = srpServer.VerifySrpProof(session, request.A, request.M1, srpContext);
+            var M2_server = srpServer.VerifySrpProof(session, request.A, request.M1, (SrpGroup)userData.SrpVersion);
 
             var accessToken = jwtTokenGenerator.GenerateAccessToken(userData!);
             var refreshToken = jwtTokenGenerator.GenerateRefreshToken();

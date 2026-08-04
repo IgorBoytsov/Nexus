@@ -157,8 +157,8 @@ namespace Nexus.Bff.Extensions
                                 var jwtReader = context.HttpContext.RequestServices.GetRequiredService<IJwtReadService>();
                                 var jwtData = jwtReader.ExtractData(refreshResult.Value.AccessToken);
 
-                                session.EncryptedAccessToken = cryptoService.EncryptedData(refreshResult.Value.AccessToken, key, CryptoConstants.CryptoVersion);
-                                session.EncryptedRefreshToken = cryptoService.EncryptedData(refreshResult.Value.RefreshToken, key, CryptoConstants.CryptoVersion);
+                                session.EncryptedAccessToken = cryptoService.EncryptData(refreshResult.Value.AccessToken, key, CryptoConstants.CryptoVersion);
+                                session.EncryptedRefreshToken = cryptoService.EncryptData(refreshResult.Value.RefreshToken, key, CryptoConstants.CryptoVersion);
                                 session.AccessTokenExpiresAt = jwtData.ExpiredTime;
 
                                 await cache.SetJsonAsync(cacheSessionKey, session, TimeSpan.FromDays(30));

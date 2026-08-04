@@ -35,7 +35,7 @@ namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
             var sessionId = Guid.NewGuid().ToString("N");
             var key = Convert.FromBase64String(configuration.GetValue<string>(ConfigurationConstants.RedisDataEncryptionKey) ?? throw new InvalidOperationException($"{ConfigurationConstants.RedisDataEncryptionKey} не настроен"));
 
-            var userSession = new UserSession(sessionId, cryptoServices.EncryptedData(authData.AccessToken, key, CryptoConstants.CryptoVersion), cryptoServices.EncryptedData(authData.RefreshToken, key, CryptoConstants.CryptoVersion), data.ExpiredTime, data.UserId, data.Login.ToLowerInvariant());
+            var userSession = new UserSession(sessionId, cryptoServices.EncryptData(authData.AccessToken, key, CryptoConstants.CryptoVersion), cryptoServices.EncryptData(authData.RefreshToken, key, CryptoConstants.CryptoVersion), data.ExpiredTime, data.UserId, data.Login.ToLowerInvariant());
 
             Span<byte> tempAuthTokenBytes = stackalloc byte[32];
             RandomNumberGenerator.Fill(tempAuthTokenBytes);

@@ -44,17 +44,20 @@ namespace Nexus.Bff.Features.Profile
                 if (string.IsNullOrWhiteSpace(userId))
                     return Results.Unauthorized();
 
+                Console.WriteLine($"Срп версия {request.SrpCryptoVersion}");
+
                 var result = await userManagementService.ChangePassword(new ChangePasswordRequest(
-                userId, 
-                request.EncryptedVerifier, 
-                request.SrpSalt, 
-                request.SrpVersion, 
-                request.EncryptedVerifierWrapKey, 
-                request.KeyWrapVersion,
-                request.AsymmetricKeyId, 
-                request.EncryptedDek, 
-                request.DekSalt,
-                request.CryptoVersion));
+                    userId, 
+                    request.EncryptedVerifier, 
+                    request.SrpSalt, 
+                    request.SrpVersion,
+                    request.SrpCryptoVersion,
+                    request.EncryptedVerifierWrapKey, 
+                    request.KeyWrapVersion,
+                    request.AsymmetricKeyId, 
+                    request.EncryptedDek, 
+                    request.DekSalt,
+                    request.CryptoVersion));
 
                 if (result.IsFailure)
                     return result.Errors.MapToMinimalApiResult();

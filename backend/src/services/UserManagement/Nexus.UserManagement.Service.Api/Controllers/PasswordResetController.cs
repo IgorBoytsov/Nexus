@@ -46,6 +46,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
                 request.EncryptedVerifier, 
                 request.SrpSalt, 
                 request.SrpVersion, 
+                request.SrpCryptoVersion,
                 request.EncryptedVerifierWrapKey,
                 request.KeyWrapVersion,
                 request.AsymmetricKeyId,
@@ -78,11 +79,13 @@ namespace Nexus.UserManagement.Service.Api.Controllers
         [HttpPost("{userId:guid}/password")]
         public async Task<IActionResult> ChangePassword([FromRoute] Guid userId, [FromBody] ChangePasswordRequest request)
         {
+            Console.WriteLine($"Срп версия {request.SrpCryptoVersion}");
             var command = new ChangePasswordCommand(
                 userId, 
                 request.EncryptedVerifier, 
                 request.SrpSalt, 
                 request.SrpVersion, 
+                request.SrpCryptoVersion,
                 request.EncryptedVerifierWrapKey, 
                 request.KeyWrapVersion, 
                 request.AsymmetricKeyId, 

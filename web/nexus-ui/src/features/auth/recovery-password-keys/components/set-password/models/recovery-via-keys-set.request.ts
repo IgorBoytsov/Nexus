@@ -4,6 +4,7 @@ export interface RecoveryViaKeysSetRequest {
     encryptedVerifier: string;
     srpSalt: string; 
     srpVersion: number;
+    newCryptoVersion: number;
     encryptedVerifierWrapKey: string; 
     keyWrapVersion: number; 
     asymmetricKeyId: string;

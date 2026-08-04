@@ -9,6 +9,7 @@ export interface RegisterRequest {
     encryptedVerifier: string;
     srpSalt: string;
     srpVersion: number;
+    srpCryptoVersion: number;
     encryptedVerifierWrapKey: string;
     keyWrapVersion: number; 
     asymmetricKeyId: string;

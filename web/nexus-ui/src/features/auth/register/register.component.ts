@@ -72,7 +72,7 @@ export class RegisterComponent {
             
             //#region Конфигурация
 
-            const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
+            const srpGroup = await this.cryptoConfig.getSrpGroup(); // Rfc5054_3072
             const cryptoVersion = this.cryptoConfig.getCryptoVersion(); // V1
 
             const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
@@ -87,7 +87,7 @@ export class RegisterComponent {
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(normalizeLogin, password, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoVersion);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(normalizeLogin, password, rsaPublicKey, rawSrpAuthSalt, CryptoConstants.ACTUAL_SRP_GROUP, cryptoVersion);
 
             const { rawDek, encryptedDekBase64 } = await this.keyManagement.generateAndEncryptDek(normalizeLogin, password, rawDekKeyDerivationSalt, cryptoVersion);
 
@@ -105,6 +105,7 @@ export class RegisterComponent {
                 dekSalt: base64DekKeyDerivationSalt,
                 cryptoVersion: cryptoVersion,
                 srpVersion: srpGroup,
+                srpCryptoVersion: cryptoVersion,
                 encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
                 asymmetricKeyId: "env_v1",
                 keyWrapVersion: cryptoVersion, 

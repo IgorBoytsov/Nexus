@@ -8,6 +8,7 @@ namespace Shared.Contracts.UserManagement.Responses
         string EncryptedVerifier, 
         string ClientSalt, 
         int SrpVersion,
+        int SrpCryptoVersion,
         string EncryptedVerifierWrapKey,
         int KeyWrapVersion,
         string AsymmetricKeyId,

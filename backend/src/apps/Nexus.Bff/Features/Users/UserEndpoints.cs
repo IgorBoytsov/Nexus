@@ -24,6 +24,7 @@ namespace Nexus.Bff.Features.Users
                     request.EncryptedVerifier, 
                     request.SrpSalt, 
                     request.SrpVersion, 
+                    request.SrpCryptoVersion,
                     request.EncryptedVerifierWrapKey,
                     request.KeyWrapVersion, 
                     request.AsymmetricKeyId,

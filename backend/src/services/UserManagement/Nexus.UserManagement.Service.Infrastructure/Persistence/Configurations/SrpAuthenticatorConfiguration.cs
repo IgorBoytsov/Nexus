@@ -38,6 +38,13 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                     db => db.HasValue ? SrpVersion.Create(db.Value) : null)
                 .IsRequired(false);
 
+            builder.Property(x => x.CryptoVersion)
+                .HasColumnName("srp_crypto_version")
+                .HasConversion(
+                    v => v.HasValue ? v.Value.Value : (int?)null,
+                    db => db.HasValue ? CryptoVersion.Create(db.Value) : null)
+                .IsRequired(false);
+
             builder.Property(x => x.EncryptedVerifierWrapKey)
                 .HasColumnName("srp_encrypted_verifier_wrapKey")
                 .HasConversion(

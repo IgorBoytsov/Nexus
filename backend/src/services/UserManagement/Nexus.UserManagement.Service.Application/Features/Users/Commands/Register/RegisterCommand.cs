@@ -16,6 +16,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Regis
         string EncryptedVerifier, 
         string SrpSalt, 
         int SrpVersion, 
+        int SrpCryptoVersion,
         string EncryptedVerifierWrapKey, 
         int KeyWrapVersion, 
         string AsymmetricKeyId,
