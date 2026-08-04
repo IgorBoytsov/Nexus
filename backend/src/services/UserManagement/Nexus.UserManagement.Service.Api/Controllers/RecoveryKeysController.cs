@@ -35,6 +35,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
                 request.EncryptedVerifier, 
                 request.SrpSalt, 
                 request.SrpVersion, 
+                request.SrpCryptoVersion,
                 request.EncryptedVerifierWrapKey, 
                 request.KeyWrapVersion, 
                 request.AsymmetricKeyId, 

@@ -6,6 +6,7 @@ SELECT
     ua.srp_encrypted_verifier as EncryptedVerifier,
     ua.srp_salt as ClientSalt,
     ua.srp_version as SrpVersion,
+    ua.srp_crypto_version as SrpCryptoVersion,
     ua."srp_encrypted_verifier_wrapKey" as EncryptedVerifierWrapKey,
     ua.srp_key_wrap_version as KeyWrapVersion,
     ua.srp_asymmetric_key_id as AsymmetricKeyId,
@@ -20,4 +21,4 @@ JOIN deks d ON d.user_id = u.id
 JOIN user_authenticators ua ON ua.user_id = u.id
 WHERE u.login = @login 
     AND d.dek_type = 1 
-    AND ua."Method" = 1
+    AND ua.Method = 1

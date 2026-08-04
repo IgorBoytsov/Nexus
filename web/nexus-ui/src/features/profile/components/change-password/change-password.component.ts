@@ -52,13 +52,13 @@ export class ChangePasswordComponent {
 
             //#region Конфигурация
 
-            const { encryptedDek, cryptoVersionDek, dekSalt, srvVersion } = initResult.value;
+            const { encryptedDek, cryptoVersionDek, dekSalt } = initResult.value;
             const login = initResult.value.login;
             const normalizeLogin = login.trim().toLowerCase();
             
             const oldCryptoVersion = cryptoVersionDek as CryptoVersion;
             const newCryptoVersion = this.cryptoConfig.getCryptoVersion();
-            const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
+            const srpGroup = await this.cryptoConfig.getSrpGroup(); // Rfc5054_3072
 
             const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
             const { rawSalt: rawDekKeyDerivationSalt, saltBase64: base64DekKeyDerivationSalt } = this.cryptoConfig.generateSalt(); // 32
@@ -67,7 +67,7 @@ export class ChangePasswordComponent {
 
             const rsaPublicKey = await this.rsaService.getPublicKey();
 
-            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(normalizeLogin, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, newCryptoVersion);
+            const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(normalizeLogin, newPassword, rsaPublicKey, rawSrpAuthSalt, srpGroup, newCryptoVersion);
 
             const reEncryptedDek = await this.keyManagement.reEncryptDekWithNewPassword(normalizeLogin, oldPassword, newPassword, dekSalt, encryptedDek, rawDekKeyDerivationSalt, oldCryptoVersion, newCryptoVersion);
 
@@ -76,6 +76,7 @@ export class ChangePasswordComponent {
                 encryptedVerifier: encryptedVerifier,
                 srpSalt: base64SrpAuthSalt,
                 srpVersion: srpGroup,
+                srpCryptoVersion: newCryptoVersion,
                 encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
                 keyWrapVersion: newCryptoVersion,
                 asymmetricKeyId: "env_v1",

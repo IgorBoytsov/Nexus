@@ -1,13 +1,14 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { SrpClientService, SrpGroup } from '@crossdyne/security'
+import { CryptoVersion, SecurityUtils, SrpClientService, SrpGroup, SrpKeyDerivationService } from '@crossdyne/security'
 import { AuthApi } from './auth.api';
 import { firstValueFrom, Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Result } from '@crossdyne/toolkit';
-import { CryptoConfigurationService } from '../../../core/services/crypto-configuration.service';
 import { environment } from '../../../environments/environment';
+import { CryptoConstants } from '../../../core/constants/security.constants';
+import { SrpChallengeResponse } from './models/srp-challenge.response';
 
 @Component({
   selector: 'app-login',
@@ -20,11 +21,11 @@ import { environment } from '../../../environments/environment';
 export class LoginComponent {
   private readonly fb = inject(FormBuilder); 
   private readonly router = inject(Router); 
-   private readonly route = inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
   private readonly authApi = inject(AuthApi);
   private readonly destroyRef = inject(DestroyRef);
-  private cryptoConfig = inject(CryptoConfigurationService);
 
+  private readonly srpKeyDerivationService = new SrpKeyDerivationService();
   private readonly srpService = new SrpClientService();
 
   loginForm: FormGroup;
@@ -52,23 +53,22 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const cryptoVersion = await this.cryptoConfig.getCryptoVersion(); // V1
-
     try {
       const { password } = this.loginForm.value;
       const rawLogin = this.loginForm.value.login as string;
       const normalizedLogin = rawLogin.trim().toLowerCase();
 
-      const challengeResult = await this.executeSafe(this.authApi.getCrpChallenge({ login: normalizedLogin }));
+      const challengeResult: Result<SrpChallengeResponse> = await this.executeSafe(this.authApi.getCrpChallenge({ login: normalizedLogin }));
 
       if (challengeResult.isFailure){
         this.handleError(challengeResult)
         return;
       }
 
-      const { salt, b, srpVersion } = challengeResult.value; 
-      const { srpContext } = await this.cryptoConfig.getSrpContext(srpVersion as SrpGroup); // Rfc5054_3072
-      const {A, M1, SessionKeyK} = await this.srpService.generateSrpProof(normalizedLogin, password, salt, b, srpContext, cryptoVersion);
+      const { salt, b, srpVersion, srpCryptoVersion } = challengeResult.value; 
+      const saltBytes = SecurityUtils.fromBase64(salt);
+      const authHashBytes = await this.srpKeyDerivationService.deriveAuthHashForSrp(normalizedLogin, password, saltBytes, srpVersion as SrpGroup, srpCryptoVersion as CryptoVersion);
+      const {A, M1, SessionKeyK} = await this.srpService.generateSrpProof(normalizedLogin, authHashBytes, salt, b, srpVersion as SrpGroup);
 
       const verifierResult = await this.executeSafe(this.authApi.srpVerifyProof({ Login: normalizedLogin, A, M1}));
       
@@ -84,7 +84,7 @@ export class LoginComponent {
         return;
       }
 
-      const isServerValid = await this.srpService.verifyServerM2(A, M1, SessionKeyK, m2, srpContext);
+      const isServerValid = await this.srpService.verifyServerM2(A, M1, SessionKeyK, m2, srpVersion as SrpGroup);
 
       if (!isServerValid) {
         this.errorMessage.set("Ошибка аутентификации: Подлинность сервера не подтверждена!");

@@ -8,4 +8,4 @@ SELECT
 FROM users u
 JOIN deks d ON d.user_id = u.id
 JOIN user_authenticators ua ON d.user_id = u.id
-WHERE d.dek_type = 1 AND ua."Method" = 1 AND u.id = @userId
+WHERE d.dek_type = 1 AND ua.method = 1 AND u.id = @userId

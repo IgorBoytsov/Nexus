@@ -15,6 +15,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Chang
     {
         public async Task<Result> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
         {
+            Console.WriteLine($"Срп версия {request.SrpCryptoVersion}");
             Maybe<User> maybeUser = await userRepository.GetByAsync(u => u.Id == request.UserId, includes: [u => u.Deks, u => u.UserAuthenticators], clt: cancellationToken);
 
             if (maybeUser.IsNone)
@@ -24,7 +25,7 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Chang
 
             user.ChangePassword(
                 Verificator.Create(request.EncryptedVerifier), Salt.Create(request.SrpSalt), SrpVersion.Create(request.SrpVersion), CredentialBlob.Create(request.EncryptedVerifierWrapKey), CryptoVersion.Create(request.KeyWrapVersion), AsymmetricKeyId.Create(request.AsymmetricKeyId),
-                EncryptedValue.Create(request.EncryptedDek), Salt.Create(request.DekSalt), CryptoVersion.Create(request.CryptoVersion));
+                EncryptedValue.Create(request.EncryptedDek), Salt.Create(request.DekSalt), CryptoVersion.Create(request.CryptoVersion), CryptoVersion.Create(request.SrpCryptoVersion));
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
 

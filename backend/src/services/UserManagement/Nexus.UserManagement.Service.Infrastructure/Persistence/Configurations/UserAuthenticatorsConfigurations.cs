@@ -34,6 +34,9 @@ namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
                 .HasValue<SrpAuthenticator>(UserAuthenticatorType.SRP)
                 .HasValue<EmailAuthenticator>(UserAuthenticatorType.Email);
 
+            builder.Property(ua => ua.Method)
+                .HasColumnName("method");
+
             builder.Property(ua => ua.CreatedAt)
                 .HasColumnName("created_at")
                 .IsRequired();

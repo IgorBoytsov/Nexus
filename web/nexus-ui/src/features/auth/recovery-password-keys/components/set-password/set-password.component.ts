@@ -65,7 +65,7 @@ export class StepSetPasswordComponent {
 
                 const { newPassword } = this.stepSetPasswordForm.value;
 
-                const { srpContext, srpGroup} = await this.cryptoConfig.getSrpContext(); // Rfc5054_3072
+                const srpGroup = await this.cryptoConfig.getSrpGroup(); // Rfc5054_3072
                 const cryptoVersion = this.cryptoConfig.getCryptoVersion(); // V1
 
                 const { rawSalt: rawSrpAuthSalt, saltBase64: base64SrpAuthSalt } = this.cryptoConfig.generateSalt(); // 32
@@ -75,7 +75,7 @@ export class StepSetPasswordComponent {
                             
                 const rsaPublicKey = await this.rsaService.getPublicKey();
 
-                const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(this.state.login!, newPassword, rsaPublicKey, rawSrpAuthSalt, srpContext, cryptoVersion);
+                const { encryptedVerifier, encryptedVerifierWrapKeyBase64 } = await this.srpService.generateVerifier(this.state.login!, newPassword, rsaPublicKey, rawSrpAuthSalt, CryptoConstants.ACTUAL_SRP_GROUP, cryptoVersion);
 
                 const { rawDek, encryptedDekBase64 } = await this.keyManagement.reEncryptExistingDek(this.state.login!, newPassword, this.state.dek!, rawDekKeyDerivationSalt, cryptoVersion);
 
@@ -89,6 +89,7 @@ export class StepSetPasswordComponent {
                     encryptedVerifier: encryptedVerifier,
                     srpSalt: base64SrpAuthSalt,
                     srpVersion: srpGroup,
+                    newCryptoVersion: cryptoVersion,
                     encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
                     keyWrapVersion: cryptoVersion,
                     asymmetricKeyId: 'env_v1',

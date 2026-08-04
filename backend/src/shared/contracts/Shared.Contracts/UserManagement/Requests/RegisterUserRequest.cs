@@ -11,6 +11,7 @@ namespace Shared.Contracts.UserManagement.Requests
         string EncryptedVerifier, 
         string SrpSalt, 
         int SrpVersion, 
+        int SrpCryptoVersion,
         string EncryptedVerifierWrapKey, 
         int KeyWrapVersion, 
         string AsymmetricKeyId,

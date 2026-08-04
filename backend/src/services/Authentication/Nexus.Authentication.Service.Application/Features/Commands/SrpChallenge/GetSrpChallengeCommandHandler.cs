@@ -16,7 +16,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
         IUserManagementServiceClient userManagementClient,
         ICacheService redisCacheService,
         ISrpServer srpServer,
-        ICryptoServices cryptoServices,
+        ICryptoService cryptoServices,
         IDataProtector verifierProtector,
         ILogger<GetSrpChallengeCommandHandler> logger) : IRequestHandler<GetSrpChallengeCommand, Result<SrpChallengeResponse>>
     {
@@ -31,9 +31,6 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
             if (userData == null)
                 return new Error(ErrorCode.NotFound, "Пользователь не найден");
 
-            SrpProfile srpProfile = SrpProfileRegistry.GetProfile((SrpGroup)userData.SrpVersion); 
-            var srpContext = SrpContext.FromOptions(srpProfile.Options);
-
             var encryptedVerifier = userData.EncryptedVerifier;
             var encryptedVerifierWrapKey = userData.EncryptedVerifierWrapKey;
             var verifierWrapKey = verifierProtector.Unprotect(encryptedVerifierWrapKey);
@@ -44,7 +41,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
 
             byte[] vBytes = Convert.FromBase64String(decryptedVerifierBase64!);
 
-            var sessionState = srpServer.GetSrpChallenge(normalizedLogin, vBytes, saltBytes, srpContext);
+            var sessionState = srpServer.GetSrpChallenge(normalizedLogin, vBytes, saltBytes, (SrpGroup)userData.SrpVersion);
 
             var session = new SrpSessionState(
                 normalizedLogin,
@@ -58,7 +55,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChalleng
 
             logger.LogInformation("SRP challenge успешно сгенерирован для логина: {Login}", normalizedLogin);
 
-            return new SrpChallengeResponse(userData.ClientSalt, Convert.ToBase64String(sessionState.PublicKeyB), userData.SrpVersion);
+            return new SrpChallengeResponse(userData.ClientSalt, Convert.ToBase64String(sessionState.PublicKeyB), userData.SrpVersion, userData.SrpCryptoVersion);
         }
     }
 }

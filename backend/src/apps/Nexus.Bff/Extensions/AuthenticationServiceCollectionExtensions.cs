@@ -105,7 +105,7 @@ namespace Nexus.Bff.Extensions
 
                     var cacheSessionKey = RedisKeyExtensions.SessionKey(sessionId!);
                     var cache = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
-                    var cryptoService = context.HttpContext.RequestServices.GetRequiredService<ICryptoServices>();
+                    var cryptoService = context.HttpContext.RequestServices.GetRequiredService<ICryptoService>();
                     var configuration = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
                     var key = Convert.FromBase64String(configuration.GetValue<string>(ConfigurationConstants.RedisDataEncryptionKey) ?? throw new InvalidOperationException($"{ConfigurationConstants.RedisDataEncryptionKey} не настроен"));
 
@@ -157,8 +157,8 @@ namespace Nexus.Bff.Extensions
                                 var jwtReader = context.HttpContext.RequestServices.GetRequiredService<IJwtReadService>();
                                 var jwtData = jwtReader.ExtractData(refreshResult.Value.AccessToken);
 
-                                session.EncryptedAccessToken = cryptoService.EncryptedData(refreshResult.Value.AccessToken, key, CryptoConstants.CryptoVersion);
-                                session.EncryptedRefreshToken = cryptoService.EncryptedData(refreshResult.Value.RefreshToken, key, CryptoConstants.CryptoVersion);
+                                session.EncryptedAccessToken = cryptoService.EncryptData(refreshResult.Value.AccessToken, key, CryptoConstants.CryptoVersion);
+                                session.EncryptedRefreshToken = cryptoService.EncryptData(refreshResult.Value.RefreshToken, key, CryptoConstants.CryptoVersion);
                                 session.AccessTokenExpiresAt = jwtData.ExpiredTime;
 
                                 await cache.SetJsonAsync(cacheSessionKey, session, TimeSpan.FromDays(30));

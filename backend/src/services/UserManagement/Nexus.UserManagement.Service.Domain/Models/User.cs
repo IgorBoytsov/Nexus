@@ -124,10 +124,10 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public void ChangePassword(
             Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob credentialBlob, 
             CryptoVersion srpWrapKeyCryptoVersion, AsymmetricKeyId asymmetricKeyId, 
-            EncryptedValue newEncryptedDek, Salt newDekSalt, CryptoVersion dekCryptoVersion)
+            EncryptedValue newEncryptedDek, Salt newDekSalt, CryptoVersion dekCryptoVersion, CryptoVersion srpCryptoVersion)
         {
             var srp = GetSrpAuthenticator();
-            srp.Update(verificator, salt, srpVersion, credentialBlob, srpWrapKeyCryptoVersion, asymmetricKeyId);
+            srp.Update(verificator, salt, srpVersion, credentialBlob, srpWrapKeyCryptoVersion, asymmetricKeyId, srpCryptoVersion);
 
             var mainDek = GetMainDek();
             mainDek.Rotate(newEncryptedDek, newDekSalt, dekCryptoVersion);
@@ -136,10 +136,10 @@ namespace Nexus.UserManagement.Service.Domain.Models
         public void ResetPassword(
             Verificator verificator, Salt salt, SrpVersion srpVersion, 
             CredentialBlob credentialBlob, CryptoVersion srpWrapKeyCryptoVersion, AsymmetricKeyId asymmetricKeyId,
-            EncryptedValue newEncryptedDek, Salt newDekSalt, CryptoVersion dekCryptoVersion)
+            EncryptedValue newEncryptedDek, Salt newDekSalt, CryptoVersion dekCryptoVersion, CryptoVersion srpCryptoVersion)
         {
             var srp = GetSrpAuthenticator();
-            srp.Update(verificator, salt, srpVersion, credentialBlob, srpWrapKeyCryptoVersion, asymmetricKeyId);
+            srp.Update(verificator, salt, srpVersion, credentialBlob, srpWrapKeyCryptoVersion, asymmetricKeyId, srpCryptoVersion);
 
             var mainDek = GetMainDek();
             mainDek.Rotate(newEncryptedDek, newDekSalt, dekCryptoVersion);
@@ -166,12 +166,12 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         #region UserAuthentication
 
-        public void AddSrpAuthenticator(Login login, Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob credentialBlob, CryptoVersion cryptoVersion, AsymmetricKeyId asymmetricKeyId)
+        public void AddSrpAuthenticator(Login login, Verificator verificator, Salt salt, SrpVersion srpVersion, CredentialBlob credentialBlob, CryptoVersion cryptoVersion, AsymmetricKeyId asymmetricKeyId, CryptoVersion srpCryptoVersion)
         {
             if (_userAuthenticators.Any(x => x.Method == UserAuthenticatorType.SRP))
                 throw new UserAuthenticatorException(new Error(ErrorCode.Exist, "Метод входа через пароль уже существует для данного аккаунта"));
 
-                _userAuthenticators.Add(SrpAuthenticator.Create(this.Id, login, verificator, salt, srpVersion, credentialBlob, cryptoVersion, asymmetricKeyId));
+                _userAuthenticators.Add(SrpAuthenticator.Create(this.Id, login, verificator, salt, srpVersion, credentialBlob, cryptoVersion, asymmetricKeyId, srpCryptoVersion));
         }
 
         public void AddEmailAuthenticator(Email email)
