@@ -13,9 +13,9 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         public static Status Create(string name)
         {
-            var statusNeame = StatusName.Create(name);
+            var statusName = StatusName.Create(name);
 
-            return new Status(Guid.NewGuid(), statusNeame);
+            return new Status(Guid.NewGuid(), statusName);
         }
 
         public void UpdateName(StatusName statusName)

@@ -22,7 +22,10 @@ namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Chang
 
             User user = maybe.Value;
 
-            user.ChangeEmail(Email.Create(request.Email));
+            Email email = Email.Create(request.Email);
+
+            user.ChangeEmail(email);
+            user.ChangeEmailAuthenticator(email);
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
 

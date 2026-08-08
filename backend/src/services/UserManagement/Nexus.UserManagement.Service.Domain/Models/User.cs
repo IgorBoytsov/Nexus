@@ -65,15 +65,11 @@ namespace Nexus.UserManagement.Service.Domain.Models
         }
 
         public static User Create(
-            string login, string userName,
-            string email,
+            Login login, UserName userName,
+            Email email,
             Guid statusId, Guid? genderId, Guid? countryId)
         {
-            var loginVo = Login.Create(login);
-            var userNameVo = UserName.Create(userName);
-            var emailVo = Email.Create(email);
-
-            var user = new User(UserId.New(), loginVo, userNameVo, emailVo, statusId);
+            var user = new User(UserId.New(), login, userName, email, statusId);
 
             if (genderId.HasValue)
                 user.IdGender = genderId;
@@ -179,6 +175,16 @@ namespace Nexus.UserManagement.Service.Domain.Models
             _userAuthenticators.Add(EmailAuthenticator.Create(this.Id, email));
         }
 
+        public void ChangeEmailAuthenticator(Email email)
+        {
+            var emailAuth = _userAuthenticators.FirstOrDefault(ua => ua.Method == UserAuthenticatorType.Email);
+
+            if (emailAuth is not null)
+                _userAuthenticators.Remove(emailAuth);
+
+            AddEmailAuthenticator(email);
+        }
+
         #endregion
 
         #region Deks
@@ -199,6 +205,8 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         public void AddRecoveryKey(EncryptedValue encryptedValue, CryptoVersion cryptoVersion, KeyHint keyHint)
         {
+            ClearRecoveryKeys();
+            
             var key = RecoveryKey.Create(this.Id, encryptedValue, cryptoVersion, keyHint);
             _recoveryKeys.Add(key);
         }
