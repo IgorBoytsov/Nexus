@@ -9,7 +9,7 @@
         public static UserAuthenticatorId From(Guid value)
         {
             if (value == Guid.Empty)
-                throw new ArgumentException("Id способа аунтетификации не может быть пустым.", nameof(value));
+                throw new ArgumentException("Id способа аутентификации не может быть пустым.", nameof(value));
 
             return new UserAuthenticatorId(value);
         }
