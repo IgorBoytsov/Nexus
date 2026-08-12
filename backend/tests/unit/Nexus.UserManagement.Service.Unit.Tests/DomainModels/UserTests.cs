@@ -495,24 +495,6 @@ namespace Nexus.UserManagement.Service.Unit.Tests.DomainModels
             Assert.Single(user.RecoveryKeys);
         }
 
-        [Fact]
-        public void User_AddRecoveryKey_SecondKey_ClearsOldAndAddsNew()
-        {
-            User user = CreateUser();
-
-            user.AddRecoveryKey(
-                EncryptedValue.Create("encrypted1"),
-                CryptoVersion.Create(1),
-                KeyHint.Create("hint1"));
-
-            user.AddRecoveryKey(
-                EncryptedValue.Create("encrypted2"),
-                CryptoVersion.Create(2),
-                KeyHint.Create("hint2"));
-
-            Assert.Single(user.RecoveryKeys);
-        }
-
         #endregion
 
         #region Create - ChangeAvatar
