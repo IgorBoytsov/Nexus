@@ -9,7 +9,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         private Role() { }
 
-        public Role(RoleId id, RoleName name) : base(id) => Name = name;
+        private Role(RoleId id, RoleName name) : base(id) => Name = name;
 
         public static Role Create(string name)
         {

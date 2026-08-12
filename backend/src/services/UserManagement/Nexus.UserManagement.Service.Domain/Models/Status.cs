@@ -9,7 +9,7 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         private Status() { }
 
-        public Status(Guid id, StatusName name) : base(id) => Name = name;
+        private Status(Guid id, StatusName name) : base(id) => Name = name;
 
         public static Status Create(string name)
         {
