@@ -205,8 +205,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
 
         public void AddRecoveryKey(EncryptedValue encryptedValue, CryptoVersion cryptoVersion, KeyHint keyHint)
         {
-            ClearRecoveryKeys();
-            
             var key = RecoveryKey.Create(this.Id, encryptedValue, cryptoVersion, keyHint);
             _recoveryKeys.Add(key);
         }
