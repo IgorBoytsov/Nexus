@@ -33,7 +33,7 @@ namespace Nexus.Bff.Extensions
 
         public static IServiceCollection AddDistributedLock(this IServiceCollection services)
         {
-            services.AddSingleton(sp =>
+            services.AddSingleton<IDistributedLockProvider>(sp =>
             {
                 var multiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
                 return new RedisDistributedSynchronizationProvider(multiplexer.GetDatabase());
@@ -127,7 +127,7 @@ namespace Nexus.Bff.Extensions
 
                     if (session.AccessTokenExpiresAt <= DateTime.UtcNow.AddMinutes(1))
                     {
-                        var lockProvider = context.HttpContext.RequestServices.GetRequiredService<RedisDistributedSynchronizationProvider>();
+                        var lockProvider = context.HttpContext.RequestServices.GetRequiredService<IDistributedLockProvider>();
                         var lockKey = RedisKeyExtensions.DistributedLock(sessionId);
 
                         await using var handle = await lockProvider.TryAcquireLockAsync(lockKey, timeout: TimeSpan.FromSeconds(5));

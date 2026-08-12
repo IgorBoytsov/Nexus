@@ -1,5 +1,6 @@
 using Crossdyne.Security.Cryptography;
 using Crossdyne.Security.Srp.Server;
+using Medallion.Threading;
 using Medallion.Threading.Redis;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Authentication.Service.Application.Secure;
@@ -18,7 +19,7 @@ namespace Nexus.Authentication.Service.Application.Extensions
             services.AddCrossdyneCryptography();
             services.AddCrossdyneSrpServer();
 
-            services.AddSingleton(sp =>
+            services.AddSingleton<IDistributedLockProvider>(sp =>
             {
                 var multiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
                 return new RedisDistributedSynchronizationProvider(multiplexer.GetDatabase());
