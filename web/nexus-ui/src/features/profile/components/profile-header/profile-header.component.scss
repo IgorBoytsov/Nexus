@@ -159,7 +159,6 @@
               gap: 14px;
               padding: 10px 16px;
               border-radius: 0;
-              border: 0px solid $card-bg-border;
               background: $bg-card;
               transition: border-color 0.2s;
 
@@ -229,10 +228,69 @@
                   }
               }
           }
+        }
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .date-registration-container {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-start;
+
+        .service-badge {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            width: 100%;
+            min-width: 0;
+
+            .service-icon {
+                width: 28px;
+                height: 28px;
+                flex-shrink: 0;
+
+                svg {
+                    width: 14px;
+                    height: 14px;
+                }
+            }
+        }
+
+        .service-body {
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+
+            .service-label {
+                display: none;
+            }
+        }
+
+        .service-counters {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6px;
+            margin-left: 0;
+
+            .service-num {
+                font-size: 16px;
+            }
+
+            .service-unit {
+                font-size: 11px;
+            }
+
+            .service-divider {
+                height: 12px;
+            }
+        }
+    }
 }
-
-
-
-
-
-
