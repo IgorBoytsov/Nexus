@@ -146,23 +146,93 @@
             color: black;
           }
         }
+        
+        .date-registration-container {
+          margin-left: auto;
+          align-self: flex-start;
+          display: flex;
+          align-items: center;
 
-    // Experience
-    .date-registration-container {
-        margin-left: auto;
-        align-self: flex-start;
-        display: flex;
-        gap: 10px;
+          .service-badge {
+              display: inline-flex;
+              align-items: center;
+              gap: 14px;
+              padding: 10px 16px;
+              border-radius: 0;
+              border: 0px solid $card-bg-border;
+              background: $bg-card;
+              transition: border-color 0.2s;
 
-        svg {
-          flex-shrink: 0;
-          width: 24px;
-          height: 24px;
-        }
+              .service-icon {
+                  width: 36px;
+                  height: 36px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-radius: 0;
+                  background: transparent;
+                  color: $color-a-primary;
+                  flex-shrink: 0;
+                  transition: color 0.2s;
 
-        span {
-          font-size: 20px;
-          align-self: center;
-          line-height: 1;
-        }
-    }
+                  svg {
+                      width: 18px;
+                      height: 18px;
+                  }
+              }
+          }
+
+          .service-body {
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+
+              .service-label {
+                  font-size: 11px;
+                  font-weight: 500;
+                  color: $text-secondary;
+                  text-transform: uppercase;
+                  letter-spacing: 0.04em;
+                  line-height: 1;
+              }
+
+              .service-counters {
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+
+                  .service-chip {
+                      display: flex;
+                      align-items: baseline;
+                      gap: 4px;
+                  }
+
+                  .service-num {
+                      font-size: 22px;
+                      font-weight: 600;
+                      color: $text-primary;
+                      font-variant-numeric: tabular-nums;
+                      line-height: 1;
+                  }
+
+                  .service-unit {
+                      font-size: 13px;
+                      color: $text-secondary;
+                      line-height: 1;
+                  }
+
+                  .service-divider {
+                      width: 1px;
+                      height: 18px;
+                      background: $card-bg-border;
+                      border-radius: 0;
+                  }
+              }
+          }
+}
+
+
+
+
+
+
