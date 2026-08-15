@@ -129,7 +129,7 @@ namespace Nexus.UserManagement.Service.Api.Controllers
             if (extractResult.IsFailure)
                 return actionResult;
 
-            var command = new ChangeEmailCommand(extractResult.Value.UserId, request.Email);
+            var command = new ChangeEmailCommand(extractResult.Value.UserId, request.Email, request.Code);
             Result<Unit> result = await mediator.Send(command);
 
             if (result.IsFailure)

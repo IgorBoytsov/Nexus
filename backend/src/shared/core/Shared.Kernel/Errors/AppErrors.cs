@@ -14,5 +14,6 @@ namespace Shared.Kernel.Errors
         public static readonly ErrorCode SessionExpired = ErrorCode.Custom(nameof(SessionExpired), 10006);
         public static readonly ErrorCode AccountNotSetUpForRecovery = ErrorCode.Custom(nameof(AccountNotSetUpForRecovery), 10007);
         public static readonly ErrorCode AlreadyUsed = ErrorCode.Custom(nameof(AlreadyUsed), 10008);
+        public static readonly ErrorCode CodeVerifier = ErrorCode.Custom(nameof(CodeVerifier), 10009);
     }
 }
