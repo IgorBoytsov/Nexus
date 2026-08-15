@@ -12,7 +12,7 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator
         public static Verificator Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new EmptyValueException(new Error(ErrorCode.Empty, "Бы передана пустая соль"));
+                throw new EmptyValueException(new Error(ErrorCode.Empty, "Была передана пустая соль"));
 
             return new Verificator(value);
         }

@@ -56,12 +56,29 @@
     </div>
 
     <div class="date-registration-container">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 22h14"/>
-            <path d="M5 2h14"/>
-            <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/>
-            <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>
-        </svg>
-        <span>{{ registrationDuration() }}</span>
+        <div class="service-badge">
+            <div class="service-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 22h14"/>
+                    <path d="M5 2h14"/>
+                    <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/>
+                    <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>
+                </svg>
+            </div>
+            <div class="service-body">
+                <div class="service-label">На платформе</div>
+                <div class="service-counters">
+                    <div class="service-chip">
+                        <span class="service-num">{{ yearsOnPlatform() }}</span>
+                        <span class="service-unit">{{ yearLabel() }}</span>
+                    </div>
+                    <div class="service-divider"></div>
+                    <div class="service-chip">
+                        <span class="service-num">{{ monthsOnPlatform() }}</span>
+                        <span class="service-unit">{{ monthLabel() }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -10,4 +10,8 @@
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Nexus.UserManagement.Service.Unit.Tests" />
+  </ItemGroup>
+
 </Project>

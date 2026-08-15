@@ -4,7 +4,7 @@ using Nexus.UserManagement.Service.Domain.Models;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts
 {
-    public sealed class UserManagementContext(DbContextOptions<UserManagementContext> options) : DbContext(options)
+    public class UserManagementContext(DbContextOptions<UserManagementContext> options) : DbContext(options)
     {
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Dek> Deks { get; set; } = null!;

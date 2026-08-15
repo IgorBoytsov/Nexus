@@ -34,11 +34,16 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.Common
 
         public static S3Key Create(string bucket, string[] folders, string fileName)
         {
-            ArgumentNullException.ThrowIfNull(bucket);
-            ArgumentNullException.ThrowIfNull(folders);
-            ArgumentNullException.ThrowIfNull(fileName);
+             if (folders is null)
+                throw new ArgumentException($"Список папок {nameof(folders)} должен быть инициализирован. Если вложенность не нужна, можно просто передать пустой массив."); 
+            
+            if (string.IsNullOrWhiteSpace(fileName))
+                throw new ArgumentException($"Поле {nameof(fileName)} должно иметь значение."); 
 
             string extension = Path.GetExtension(fileName).ToLowerInvariant();
+
+            if (string.IsNullOrWhiteSpace(extension))
+                throw new FormatException($"У ${nameof(fileName)} должно быть расширение.");
 
             return new (bucket, [.. folders], $"{Guid.CreateVersion7()}{extension}");
         }

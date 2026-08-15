@@ -6,7 +6,6 @@ using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
 using Nexus.Authentication.Service.Application.Interfaces.Repositories;
 using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
 using Shared.Contracts.Authentication.Responses;
-using Medallion.Threading.Redis;
 using Nexus.Authentication.Service.Application.Extensions;
 using Medallion.Threading;
 using Microsoft.Extensions.Logging;
@@ -19,7 +18,7 @@ namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
         IAccessDataRepository accessDataRepository,
         IJwtTokenGenerator jwtTokenGenerator,
         IUserManagementServiceClient userManagementServiceClient,
-        RedisDistributedSynchronizationProvider lockProvider,
+        IDistributedLockProvider  lockProvider,
         ILogger<RefreshTokenCommandHandler> logger) : IRequestHandler<RefreshTokenCommand, Result<AuthResponse>>
     {
         public async Task<Result<AuthResponse>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)

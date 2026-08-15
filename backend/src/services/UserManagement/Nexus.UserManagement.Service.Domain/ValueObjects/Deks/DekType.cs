@@ -13,10 +13,10 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.Deks
         private DekType(int value, string name)
         {
             if (value <= 0) 
-                throw new ArgumentException("DekType value must be positive.", nameof(value));
+                throw new ArgumentException("Значение DekType должно быть положительным.", nameof(value));
             
             if (string.IsNullOrWhiteSpace(name)) 
-                throw new ArgumentException("DekType name cannot be null or empty.", nameof(name));
+                throw new ArgumentException("Название DekType не может быть пустым или отсутствовать.", nameof(name));
 
             Value = value;
             Name = name;
@@ -25,12 +25,12 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.Deks
         public static DekType FromName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Name cannot be null or empty.", nameof(name));
+                throw new ArgumentException("Название не должно быть пустым или отсутствовать.", nameof(name));
 
             var isType = All.Any(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
             if (!isType)
-                throw new ArgumentException($"Unknown DekType name: '{name}'", nameof(name));
+                throw new ArgumentException($"Неизвестное название DekType: '{name}'", nameof(name));
 
             return All.FirstOrDefault(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
@@ -40,7 +40,7 @@ namespace Nexus.UserManagement.Service.Domain.ValueObjects.Deks
             var isType = All.Any(t => t.Value == value);
 
             if (!isType)
-                throw new ArgumentException($"Unknown DekType value: {value}", nameof(value));
+                throw new ArgumentException($"Неизвестное значение DekType: {value}", nameof(value));
 
             return All.FirstOrDefault(t => t.Value == value);
         }

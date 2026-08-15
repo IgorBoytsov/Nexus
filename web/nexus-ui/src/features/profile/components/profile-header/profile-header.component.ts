@@ -29,40 +29,46 @@ export class ProfileHeaderComponent {
         return this.avatarUrlInput() || '/assets/images/default-avatar.png';
     });
 
-    registrationDuration = computed(() => {
+    yearsOnPlatform = computed(() => {
         const regDate = this.dateRegistration();
-
-        if (!regDate)
-            return '0 лет 0 месяцев';
+        
+        if (!regDate) 
+            return 0;
 
         const now = new Date();
-
         let years = now.getFullYear() - regDate.getFullYear();
         let months = now.getMonth() - regDate.getMonth();
         let days = now.getDate() - regDate.getDate();
 
-        if (days < 0){
+        if (days < 0) 
             months--;
 
-            const prevMount = new Date(now.getFullYear(), now.getMonth(), 0);
-            days += prevMount.getDate();
-        }
-
-        if (months < 0) {
+        if (months < 0) 
             years--;
-            months += 12;
-        }
 
-        if (years < 0) {
-            years = 0;
-            months = 0;
-        }
-
-        const yearWord = pluralize(years, ['год', 'года', 'лет']);
-        const monthWord = pluralize(months, ['месяц', 'месяца', 'месяцев']);
-
-        return `${years} ${yearWord} ${months} ${monthWord}`;
+        return Math.max(0, years);
     });
+
+    monthsOnPlatform = computed(() => {
+        const regDate = this.dateRegistration();
+        if (!regDate) 
+            return 0;
+
+        const now = new Date();
+        let months = now.getMonth() - regDate.getMonth();
+        let days = now.getDate() - regDate.getDate();
+
+        if (days < 0) 
+            months--;
+
+        if (months < 0) 
+            months += 12;
+
+        return Math.max(0, months);
+    });
+
+    yearLabel = computed(() => pluralize(this.yearsOnPlatform(), ['год', 'года', 'лет']));
+    monthLabel = computed(() => pluralize(this.monthsOnPlatform(), ['месяц', 'месяца', 'месяцев']));
 
     async onFileSelected(event: Event): Promise<void> {
         const input = event.target as HTMLInputElement;

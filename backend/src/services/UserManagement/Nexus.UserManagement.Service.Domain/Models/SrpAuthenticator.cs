@@ -56,6 +56,6 @@ namespace Nexus.UserManagement.Service.Domain.Models
             CryptoVersion = cryptoVersion;
         }
 
-        internal Verificator GetVerificator() => EncryptedVerifier ?? throw new InvalidOperationException("SRP Verificator not initialized");
+        internal Verificator GetVerificator() => EncryptedVerifier ?? throw new InvalidOperationException("SRP Verificator не инициализирован");
     }
 }

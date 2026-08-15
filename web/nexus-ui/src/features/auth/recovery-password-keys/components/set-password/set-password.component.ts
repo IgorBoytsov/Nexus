@@ -89,7 +89,7 @@ export class StepSetPasswordComponent {
                     encryptedVerifier: encryptedVerifier,
                     srpSalt: base64SrpAuthSalt,
                     srpVersion: srpGroup,
-                    newCryptoVersion: cryptoVersion,
+                    srpCryptoVersion: cryptoVersion,
                     encryptedVerifierWrapKey: encryptedVerifierWrapKeyBase64,
                     keyWrapVersion: cryptoVersion,
                     asymmetricKeyId: 'env_v1',

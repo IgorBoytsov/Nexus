@@ -146,23 +146,151 @@
             color: black;
           }
         }
+        
+        .date-registration-container {
+          margin-left: auto;
+          align-self: flex-start;
+          display: flex;
+          align-items: center;
 
-    // Experience
-    .date-registration-container {
-        margin-left: auto;
-        align-self: flex-start;
-        display: flex;
-        gap: 10px;
+          .service-badge {
+              display: inline-flex;
+              align-items: center;
+              gap: 14px;
+              padding: 10px 16px;
+              border-radius: 0;
+              background: $bg-card;
+              transition: border-color 0.2s;
 
-        svg {
-          flex-shrink: 0;
-          width: 24px;
-          height: 24px;
+              .service-icon {
+                  width: 36px;
+                  height: 36px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-radius: 0;
+                  background: transparent;
+                  color: $color-a-primary;
+                  flex-shrink: 0;
+                  transition: color 0.2s;
+
+                  svg {
+                      width: 18px;
+                      height: 18px;
+                  }
+              }
+          }
+
+          .service-body {
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+
+              .service-label {
+                  font-size: 11px;
+                  font-weight: 500;
+                  color: $text-secondary;
+                  text-transform: uppercase;
+                  letter-spacing: 0.04em;
+                  line-height: 1;
+              }
+
+              .service-counters {
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+
+                  .service-chip {
+                      display: flex;
+                      align-items: baseline;
+                      gap: 4px;
+                  }
+
+                  .service-num {
+                      font-size: 22px;
+                      font-weight: 600;
+                      color: $text-primary;
+                      font-variant-numeric: tabular-nums;
+                      line-height: 1;
+                  }
+
+                  .service-unit {
+                      font-size: 13px;
+                      color: $text-secondary;
+                      line-height: 1;
+                  }
+
+                  .service-divider {
+                      width: 1px;
+                      height: 18px;
+                      background: $card-bg-border;
+                      border-radius: 0;
+                  }
+              }
+          }
         }
 
-        span {
-          font-size: 20px;
-          align-self: center;
-          line-height: 1;
+@media (max-width: 768px) {
+    .header-container {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .date-registration-container {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-start;
+
+        .service-badge {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            width: 100%;
+            min-width: 0;
+
+            .service-icon {
+                width: 28px;
+                height: 28px;
+                flex-shrink: 0;
+
+                svg {
+                    width: 14px;
+                    height: 14px;
+                }
+            }
+        }
+
+        .service-body {
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+
+            .service-label {
+                display: none;
+            }
+        }
+
+        .service-counters {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6px;
+            margin-left: 0;
+
+            .service-num {
+                font-size: 16px;
+            }
+
+            .service-unit {
+                font-size: 11px;
+            }
+
+            .service-divider {
+                height: 12px;
+            }
         }
     }
+}

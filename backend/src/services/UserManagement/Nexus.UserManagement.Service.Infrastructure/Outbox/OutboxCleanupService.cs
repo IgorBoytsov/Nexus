@@ -45,7 +45,7 @@ namespace Nexus.UserManagement.Service.Infrastructure.Outbox
             var failedThreshold = DateTime.UtcNow - _failedRetention;
 
             var deletedSuccess = await context.Set<OutboxMessage>()
-                .Where(m => m.ProcessedOnUtc != null && m.ProcessedOnUtc < successfulThreshold && m.Error != null)
+                .Where(m => m.ProcessedOnUtc != null && m.ProcessedOnUtc < successfulThreshold && m.Error == null)
                 .ExecuteDeleteAsync(stoppingToken);
 
             var deletedFailed = await context.Set<OutboxMessage>()

@@ -43,4 +43,7 @@
     <Folder Include="Persistence\Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Nexus.UserManagement.Service.Integration.Tests" />
+  </ItemGroup>
 </Project>

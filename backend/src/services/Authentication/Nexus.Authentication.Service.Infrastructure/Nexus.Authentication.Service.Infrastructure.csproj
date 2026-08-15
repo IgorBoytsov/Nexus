@@ -31,4 +31,7 @@
     <ProjectReference Include="..\Nexus.Authentication.Service.Domain\Nexus.Authentication.Service.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Nexus.Authentication.Service.Integration.Tests" />
+  </ItemGroup>
 </Project>
