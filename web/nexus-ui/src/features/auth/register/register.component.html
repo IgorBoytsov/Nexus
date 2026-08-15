@@ -1,0 +1,54 @@
+<div class="auth-page">
+	<div class="form-container" [class.wide-mode]="showRecoveryKeys()">
+        @if (!showRecoveryKeys()) {
+            <p class="title">Регистрация</p>
+
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="login-form">
+                <div class="form-field">
+                    <label for="login">Логин</label>
+                    <input id="login" type="text" name="login" formControlName="login" [class.error]="registerForm.get('login')?.invalid && registerForm.get('login')?.touched"/>
+                    @if (registerForm.get('login')?.hasError('minlength') && registerForm.get('login')?.touched) {
+                        <small class="error-message">Логин должен быть не менее {{minLoginLength}} символов</small>
+                    }   
+                </div>
+
+                <div class="form-field">
+                    <label for="password">Пароль</label>
+                    <input id="password" type="password" name="password" formControlName="password" [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"/>
+                    @if (registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched) {
+                        <small class="error-message">Минимум 8 символов</small>
+                    }
+                </div>
+
+                <div class="form-field">
+                    <label for="username">Никнейм</label>
+                    <input id="username" type="text" name="username" formControlName="username" [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"/>
+                    @if (registerForm.get('username')?.hasError('minlength') && registerForm.get('username')?.touched) {
+                        <small class="error-message">Минимум {{minUsernameLength}} символа</small>
+                    }
+                </div>
+
+                <div class="form-field">
+                    <label for="email">Электронная почта</label>
+                    <input id="email" type="email" name="email" formControlName="email" [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"/>
+                    @if (registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched) {
+                        <small class="error-message">Введите корректный email</small>
+                    }
+                </div>
+
+                @if (errorMessage()) {
+                    <small class="alert alert-error">{{errorMessage()}}</small>
+                }
+                    
+                <button type="submit" [disabled]="registerForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Регистрация..' : 'Зарегистрироваться'}}</button>
+            </form>
+            <p class="auth-link">
+                <a routerLink="/login" class="">Уже есть аккаунт?</a>
+            </p>
+        }
+        
+        @if (showRecoveryKeys()) {
+            <recovery-keys-list [recoveryKeys]="generatedRecoveryKeys()" (confirmed)="onRecoveryKeysConfirmed()"></recovery-keys-list>
+        }
+	</div>
+</div>

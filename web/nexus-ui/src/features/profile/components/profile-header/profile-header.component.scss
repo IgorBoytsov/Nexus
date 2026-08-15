@@ -1,0 +1,296 @@
+@use '../../../../scss/variables' as *;
+
+.header-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+    // Avatar
+    .avatar-picker {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      cursor: pointer;
+      overflow: hidden;
+      border: 2px solid #ddd;
+      transition: border-color 0.3s;
+      flex-shrink: 0;
+    }
+
+      .avatar-picker:hover {
+        border-color: #007bff;
+      }
+
+      .avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .avatar-overlay {
+        position: absolute;
+        inset: 0; 
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .avatar-picker:hover .avatar-overlay {
+        opacity: 1;
+      }
+
+      .camera-icon {
+        font-size: 32px;
+        color: white;
+      }
+
+    .error {
+      color: #dc3545;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    // Name
+    .nick-name-container {
+        align-self: flex-start; 
+        margin-top: 0px;       
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        gap: 8px;               
+        height: 30px;
+    }
+
+        .nick-name {
+          flex-shrink: 0;
+          field-sizing: content;
+          max-width: 100%;
+          
+          border: 1px solid transparent;
+          background-color: transparent;
+          font: inherit;
+          color: inherit;
+          padding: 2px 4px;
+          border-radius: 4px;
+          outline: none;
+          transition: all 0.2s ease;
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 600;
+
+            &:disabled {
+              cursor: default;
+              -webkit-text-fill-color: inherit;
+              opacity: 1;
+              columns: inherit;
+            }
+
+            &.editing {
+              background-color: transparent;
+              border-color: #0e3e72;
+              box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+              cursor: text;
+
+              &:focus {
+                border-color: #80bdff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+              }
+            }
+        }
+
+        .btn-edit, .btn-save, .btn-cancel {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 5px 0px 0px 0px;
+          padding: 6px;
+          background: transparent;
+          border: none;
+          border-radius: 8px;
+          color: $text-primary;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          svg {
+            width: 18px;
+            height: 18px;
+            color: currentColor;
+          }
+        }
+
+        .btn-edit {
+          &:hover {
+            background: rgb(255, 255, 63);
+            color: black;
+          }
+        }
+
+        .btn-save {
+          &:hover {
+            background: rgb(0, 243, 0);
+            color: black;
+          }
+        }
+
+        .btn-cancel {
+          &:hover {
+            background: rgb(151, 22, 22);
+            color: black;
+          }
+        }
+        
+        .date-registration-container {
+          margin-left: auto;
+          align-self: flex-start;
+          display: flex;
+          align-items: center;
+
+          .service-badge {
+              display: inline-flex;
+              align-items: center;
+              gap: 14px;
+              padding: 10px 16px;
+              border-radius: 0;
+              background: $bg-card;
+              transition: border-color 0.2s;
+
+              .service-icon {
+                  width: 36px;
+                  height: 36px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-radius: 0;
+                  background: transparent;
+                  color: $color-a-primary;
+                  flex-shrink: 0;
+                  transition: color 0.2s;
+
+                  svg {
+                      width: 18px;
+                      height: 18px;
+                  }
+              }
+          }
+
+          .service-body {
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+
+              .service-label {
+                  font-size: 11px;
+                  font-weight: 500;
+                  color: $text-secondary;
+                  text-transform: uppercase;
+                  letter-spacing: 0.04em;
+                  line-height: 1;
+              }
+
+              .service-counters {
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+
+                  .service-chip {
+                      display: flex;
+                      align-items: baseline;
+                      gap: 4px;
+                  }
+
+                  .service-num {
+                      font-size: 22px;
+                      font-weight: 600;
+                      color: $text-primary;
+                      font-variant-numeric: tabular-nums;
+                      line-height: 1;
+                  }
+
+                  .service-unit {
+                      font-size: 13px;
+                      color: $text-secondary;
+                      line-height: 1;
+                  }
+
+                  .service-divider {
+                      width: 1px;
+                      height: 18px;
+                      background: $card-bg-border;
+                      border-radius: 0;
+                  }
+              }
+          }
+        }
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .date-registration-container {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-start;
+
+        .service-badge {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            width: 100%;
+            min-width: 0;
+
+            .service-icon {
+                width: 28px;
+                height: 28px;
+                flex-shrink: 0;
+
+                svg {
+                    width: 14px;
+                    height: 14px;
+                }
+            }
+        }
+
+        .service-body {
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+
+            .service-label {
+                display: none;
+            }
+        }
+
+        .service-counters {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6px;
+            margin-left: 0;
+
+            .service-num {
+                font-size: 16px;
+            }
+
+            .service-unit {
+                font-size: 11px;
+            }
+
+            .service-divider {
+                height: 12px;
+            }
+        }
+    }
+}

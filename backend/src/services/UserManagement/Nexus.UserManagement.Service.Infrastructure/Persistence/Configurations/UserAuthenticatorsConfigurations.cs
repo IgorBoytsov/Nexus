@@ -1,0 +1,56 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Nexus.UserManagement.Service.Domain.Enums;
+using Nexus.UserManagement.Service.Domain.Models;
+using Nexus.UserManagement.Service.Domain.ValueObjects.User;
+using Nexus.UserManagement.Service.Domain.ValueObjects.UserAuthenticator;
+using Nexus.UserManagement.Service.Infrastructure.Persistence.Constants;
+
+namespace Nexus.UserManagement.Service.Infrastructure.Persistence.Configurations
+{
+    internal sealed class UserAuthenticatorsConfigurations : IEntityTypeConfiguration<UserAuthenticator>
+    {
+        public void Configure(EntityTypeBuilder<UserAuthenticator> builder)
+        {
+            builder.ToTable(TableNames.UserAuthenticators);
+
+            builder.HasKey(ua => ua.Id);
+
+            builder.Property(ua => ua.Id)
+                .HasConversion(
+                    id => id.Value,
+                    dbValue => UserAuthenticatorId.From(dbValue))
+                .HasColumnName("id")
+                .ValueGeneratedNever();
+
+            builder.Property(ua => ua.UserId)
+                .HasColumnName("user_id")
+                .HasConversion(
+                    id => id.Value,
+                    dbValue => UserId.From(dbValue))
+                .IsRequired();
+
+            builder.HasDiscriminator<UserAuthenticatorType>(nameof(UserAuthenticator.Method))
+                .HasValue<SrpAuthenticator>(UserAuthenticatorType.SRP)
+                .HasValue<EmailAuthenticator>(UserAuthenticatorType.Email);
+
+            builder.Property(ua => ua.Method)
+                .HasColumnName("method");
+
+            builder.Property(ua => ua.CreatedAt)
+                .HasColumnName("created_at")
+                .IsRequired();
+
+            builder.Property(ua => ua.LastUsedAt)
+                .HasColumnName("last_used_at")
+                .IsRequired(false);
+
+            builder.Property(ua => ua.IsActive)
+                .HasColumnName("is_active")
+                .HasDefaultValue(true)
+                .IsRequired();
+            
+            builder.HasIndex(x => x.UserId).HasDatabaseName($"IX_{TableNames.UserAuthenticators}_UserId");
+        }
+    }
+}

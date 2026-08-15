@@ -1,0 +1,125 @@
+.recovery-keys-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.title-left {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.subtitle {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.top-actions {
+    margin-bottom: 8px;
+    .btn-copy-all {
+        width: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: #374151;
+        color: white;
+        font-size: 14px;
+        border-radius: 6px;
+        margin: 0;
+        &:hover { background: #4b5563; }
+    }
+}
+
+.keys-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; // Две колонки
+    gap: 12px 24px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.key-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: 1px solid transparent;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        .key-code {
+            border-color: rgba(167, 139, 250, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+        }
+    }
+}
+
+.key-index {
+    font-size: 13px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.key-code {
+    font-family: 'SF Mono', 'Consolas', monospace;
+    font-size: 12px;
+    color: #f1f5f9;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    white-space: nowrap;      // Текст в одну строку
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.2s;
+}
+
+/* Нижняя секция с кнопкой и чекбоксом */
+.confirm-section {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        user-select: none;
+        
+        input { width: 18px; height: 18px; margin: 0; cursor: pointer; }
+    }
+
+    .btn-confirm {
+        width: 160px; // Фиксированная ширина кнопки, чтобы не тянулась
+        margin: 0;
+        padding: 10px;
+        background: #a78bfa;
+        color: #111827;
+        
+        &:disabled {
+            background: #374151;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .keys-grid { grid-template-columns: 1fr; }
+    .confirm-section { flex-direction: column; align-items: flex-start; }
+    .btn-confirm { width: 100%; }
+}

@@ -1,0 +1,39 @@
+<div class="recovery-keys-wrapper">
+    <h3 class="title-left">Коды восстановления</h3>
+    <p class="subtitle">
+        Сохраните их в надёжном месте. После закрытия окна коды больше не будут доступны.
+    </p>
+
+    <div class="top-actions">
+        <button type="button" class="btn-copy-all" (click)="copyAll()">
+            <span>📋</span> Копировать все
+        </button>
+    </div>
+
+    <div class="keys-scroll-container">
+        <ul class="keys-grid">
+            @for (key of recoveryKeys; track key; let i = $index) {
+                <li class="key-item" (click)="copyKey(key, i)">
+                    <!-- <span class="key-index">{{ i + 1 }}.</span> -->
+                    <code class="key-code">{{ key }}</code>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="confirm-section">
+        <label class="checkbox-label">
+            <input type="checkbox" (change)="onCheckboxChange($event)" />
+            <span class="checkmark"></span>
+            <span class="label-text">Я сохранил коды в надёжном месте</span>
+        </label>
+        
+        <button 
+            type="button" 
+            class="btn-confirm" 
+            [disabled]="!isSaved()"
+            (click)="onConfirmSaved()">
+            Продолжить
+        </button>
+    </div>
+</div>

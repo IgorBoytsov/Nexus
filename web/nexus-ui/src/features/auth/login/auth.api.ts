@@ -1,0 +1,41 @@
+import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, map, Observable, of } from 'rxjs';
+import { SrpChallengeRequest } from './models/srp-challenge.request'
+import { SrpVerifyRequest } from './models/srp-verify.request'
+import { Result } from '@crossdyne/toolkit';
+import { ResultHttp } from '../../../core/result-helper/result-http';
+import { CompleteSrpRequest } from './models/complete-srp.request';
+import { SrpChallengeResponse } from './models/srp-challenge.response';
+import { AuthResponse } from './models/auth.response';
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AuthApi {
+    private http: HttpClient = inject(HttpClient);
+
+    getCrpChallenge(data: SrpChallengeRequest): Observable<Result<SrpChallengeResponse>> {
+        return this.http.post<SrpChallengeResponse>(`/srp/challenge`, data)
+        .pipe(
+            map(response => ResultHttp.success<SrpChallengeResponse>(response)),
+            catchError((error: HttpErrorResponse) => of(ResultHttp.failure<SrpChallengeResponse>(error)))
+        );
+    }
+    
+    srpVerifyProof(data: SrpVerifyRequest): Observable<Result<AuthResponse>> {
+        return this.http.post<AuthResponse>(`/srp/verify`, data, { withCredentials: true })
+        .pipe(
+            map(response => ResultHttp.success<AuthResponse>(response)),
+            catchError((error: HttpErrorResponse) => of(ResultHttp.failure<AuthResponse>(error)))
+        );
+    }
+
+    srpComplete(data: CompleteSrpRequest): Observable<Result<any>> {
+        return this.http.post(`/srp/complete`, data, { withCredentials: true })
+        .pipe(
+            map(response => ResultHttp.success(response)),
+            catchError((error: HttpErrorResponse) => of(ResultHttp.failure(error)))
+        );
+    }
+}

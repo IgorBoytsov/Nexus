@@ -1,0 +1,35 @@
+<div class="auth-page">
+    <div class="form-container">
+        <p class="title">Авторизация</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+            <div class="form-field">
+                <label for="login">Логин</label>
+                <input id="login" type="text" name="login" formControlName="login" [class.error]="loginForm.get('login')?.invalid && loginForm.get('login')?.touched"/>
+                @if (loginForm.get('login')?.hasError('minlength') && loginForm.get('login')?.touched) {
+                    <small class="error-message">Логин должен быть не менее {{minLoginLength}} символов</small>
+                }   
+            </div>
+
+            <div class="form-field">
+                <label for="password">Пароль</label>
+                <input id="password" type="password" name="password" formControlName="password" [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"/>
+                @if (loginForm.get('password')?.hasError('minlength') && loginForm.get('password')?.touched) {
+                    <small class="error-message">Минимум 8 символов</small>
+                }
+            </div>
+
+            @if (errorMessage()) {
+                <small class="error-message">{{errorMessage()}}</small>
+            }
+                
+            <button type="submit" [disabled]="loginForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Вход..' : 'Войти'}}</button>
+        </form>
+        <p class="auth-link">
+            <a routerLink="/register" class="">Еще нету аккаунта?</a>
+        </p>
+        <p class="auth-link">
+        <a routerLink="/recovery/keys" class="">Не удается войти?</a>
+        </p>
+    </div>
+</div>

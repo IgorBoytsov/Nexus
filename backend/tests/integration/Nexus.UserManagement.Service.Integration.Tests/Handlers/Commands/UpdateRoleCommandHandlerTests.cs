@@ -1,0 +1,69 @@
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using Nexus.UserManagement.Service.Application.Features.Roles.Commands.Update;
+using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Domain.Models;
+using Nexus.UserManagement.Service.Infrastructure.Outbox;
+using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
+using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Roles;
+using Xunit;
+
+namespace Nexus.UserManagement.Service.Integration.Tests.Handlers.Commands
+{
+    public class UpdateRoleCommandHandlerTests: IClassFixture<TestFixture>, IAsyncLifetime
+    {
+        private readonly TestFixture _fixture;
+        private readonly UserManagementContext _context;
+        private readonly RoleRepository _repo;
+        private readonly IUnitOfWork _uow;
+        private readonly OutboxSignal _outboxSignal;
+        private readonly UpdateRoleCommandHandler _handler;
+        private readonly CancellationToken _ct = default;
+
+        public UpdateRoleCommandHandlerTests(TestFixture fixture)
+        {
+            _fixture = fixture;
+
+            _context = fixture.CreateDbContext();
+            _repo = new RoleRepository(_context);
+            _outboxSignal = (OutboxSignal)fixture.CreateOutboxSignal();
+            _uow = fixture.CreateUnitOfWork(_context);
+
+            _handler = new UpdateRoleCommandHandler(_uow, _repo);
+        }
+
+        public async ValueTask InitializeAsync() => await _fixture.ResetDatabaseAsync();
+
+        public async ValueTask DisposeAsync()
+        {
+            _outboxSignal.Dispose();
+            await _context.DisposeAsync();
+        }
+
+        [Fact]
+        public async Task Handle_ExistingId_ShouldUpdatedRole()
+        {
+            var role = Role.Create("Админ");
+            await _context.Roles.AddAsync(role, _ct);
+            await _context.SaveChangesAsync(_ct);
+
+            string newName = "NewName";
+
+            var command = new UpdateRoleCommand(role.Id, newName);
+
+            var result = await _handler.Handle(command, _ct);
+
+            result.IsSuccess.Should().BeTrue();
+            var updated = await _context.Roles.FirstOrDefaultAsync(r => r.Id == role.Id, _ct);
+            updated?.Name.Value.Should().Be(newName);
+        }
+
+        [Fact]
+        public async Task Handle_NonExistingId_ShouldReturnFailure()
+        {
+            var command = new UpdateRoleCommand(Guid.NewGuid(), "NewName");
+            var result = await _handler.Handle(command, _ct);
+            result.IsSuccess.Should().BeFalse();
+        }
+    }
+}

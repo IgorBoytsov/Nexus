@@ -1,0 +1,29 @@
+<div class="auth-page">
+    <div class="form-container" [class.wide-mode]="showRecoveryKeys()">
+        @if (!showRecoveryKeys()) {
+            <p class="title">Установка пароля</p>
+
+            <form [formGroup]="resetForm" (ngSubmit)="onSubmit()" class="login-form">
+                <div class="form-field">
+                    <label for="newPassword">Новый пароль</label>
+                    <input id="newPassword" type="password" name="newPassword" formControlName="newPassword" [class.error]="resetForm.get('newPassword')?.invalid && resetForm.get('newPassword')?.touched"/>
+                    @if (resetForm.get('newPassword')?.hasError('required') && resetForm.get('newPassword')?.touched) {
+                        <small class="error-message">Пароль обязателен</small>
+                    }
+                    @if (resetForm.get('newPassword')?.hasError('minlength') && resetForm.get('newPassword')?.touched) {
+                        <small class="error-message">Пароль состоит минимум из 8 символов</small>
+                    }   
+                </div>
+
+                @if (errorMessage()) {
+                    <small class="error-message">{{errorMessage()}}</small>
+                }
+                    
+                <button type="submit" [disabled]="resetForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Установка..' : 'Установить'}}</button>
+            </form>
+        } @else {
+            <recovery-keys-list [recoveryKeys]="generatedRecoveryKeys()" (confirmed)="onRecoveryKeysConfirmed()"></recovery-keys-list>
+        }
+
+    </div>
+</div>

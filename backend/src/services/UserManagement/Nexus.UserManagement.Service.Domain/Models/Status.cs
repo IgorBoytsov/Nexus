@@ -1,0 +1,27 @@
+﻿using Nexus.UserManagement.Service.Domain.ValueObjects.Status;
+using Shared.Kernel.Primitives;
+
+namespace Nexus.UserManagement.Service.Domain.Models
+{
+    public sealed class Status : AggregateRoot<Guid>
+    {
+        public StatusName Name { get; set; } = null!;
+
+        private Status() { }
+
+        private Status(Guid id, StatusName name) : base(id) => Name = name;
+
+        public static Status Create(string name)
+        {
+            var statusName = StatusName.Create(name);
+
+            return new Status(Guid.NewGuid(), statusName);
+        }
+
+        public void UpdateName(StatusName statusName)
+        {
+            if (Name != statusName)
+                Name = statusName;
+        }
+    }
+}

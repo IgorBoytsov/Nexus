@@ -1,0 +1,150 @@
+$card-background-color: #0A0D16;
+$border-background-color: #191a1b;
+$shadow-card: #061b33;
+
+$bg-card: #111524;
+$card-bg-border: #1E212A;
+$button-bg: #13161E;
+$button-bg-hover: #2D3039;
+$button-active: #5983e4;
+$text-primary: #f1f5f9;
+$text-secondary: #9999aa;
+
+:host {
+    display: block;
+}
+
+.modal-container {
+    background: $bg-card;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 460px;
+    margin: 20px;
+    border: 1.5px solid $card-bg-border;
+    box-shadow:
+        0 0 0 1px rgba(30, 33, 42, 0.5),
+        0 20px 60px rgba(6, 27, 51, 0.6),
+        0 0 40px rgba(21, 152, 228, 0.04);
+    overflow: hidden;
+    animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalIn {
+    from {
+        transform: scale(0.92) translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 24px 24px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(89, 131, 228, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $button-active;
+    flex-shrink: 0;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: $text-primary;
+    letter-spacing: -0.01em;
+}
+
+.modal-body {
+    padding: 16px 24px 24px 72px;
+    color: $text-secondary;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.modal-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $card-bg-border, transparent);
+    margin: 0 24px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    padding: 0 24px 24px 24px;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    outline: none;
+    font-family: inherit;
+    letter-spacing: 0.01em;
+
+    &:active {
+        transform: scale(0.97);
+    }
+}
+
+.btn-secondary {
+    background: transparent;
+    color: $text-secondary;
+    border: 1.5px solid $card-bg-border;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: #2D3039;
+        color: $text-primary;
+    }
+}
+
+.btn-primary {
+    background: $button-active;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(89, 131, 228, 0.25);
+
+    &:hover {
+        background: #6b94f0;
+        box-shadow: 0 6px 20px rgba(89, 131, 228, 0.35);
+        transform: translateY(-1px);
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-container {
+        margin: 16px;
+        max-width: 100%;
+    }
+    .modal-body {
+        padding-left: 24px;
+    }
+    .modal-actions {
+        flex-direction: column-reverse;
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+}

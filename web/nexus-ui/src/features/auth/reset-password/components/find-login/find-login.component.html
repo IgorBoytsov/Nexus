@@ -1,0 +1,28 @@
+<div class="auth-page">
+    <div class="form-container">
+        <p class="title">Сбросить пароль.</p>
+        <p class="title alert-title">Все зашифрованные данные будут утеряны!</p>
+
+        <form [formGroup]="stepLoginForm" (ngSubmit)="onSubmit()" class="login-form">
+            <div class="form-field">
+                <label for="login">Логин</label>
+                <input id="login" type="text" name="login" formControlName="login" [class.error]="stepLoginForm.get('login')?.invalid && stepLoginForm.get('login')?.touched"/>
+                @if (stepLoginForm.get('login')?.hasError('required') && stepLoginForm.get('login')?.touched) {
+                    <small class="error-message">Логин нужно обязательно указать</small>
+                }   
+            </div>
+
+            @if (errorMessage()) {
+                <small class="error-message">{{errorMessage()}}</small>
+            }
+                
+            <button type="submit" [disabled]="stepLoginForm.invalid || isLoading()" class="btn-sumbit">{{ isLoading() ? 'Поиск..' : 'Найти'}}</button>
+        </form>
+        <p class="auth-link">
+         <a routerLink="/login" class="">Войти</a>
+        </p>
+        <p class="auth-link">
+         <a routerLink="/recovery/keys" class="">Восстановить через ключ</a>
+        </p>
+    </div>
+</div>
