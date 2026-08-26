@@ -1,6 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
+using Nexus.Authentication.Service.Application.Abstractions.UnitOfWork;
 using Nexus.Authentication.Service.Infrastructure.Persistence;
 using Nexus.Authentication.Service.Infrastructure.Persistence.Contexts;
 using WireMock.Server;

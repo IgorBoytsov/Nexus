@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Nexus.Authentication.Service.Application.Interfaces.Repositories;
+using Nexus.Authentication.Service.Application.Abstractions.Repositories;
 using Nexus.Authentication.Service.Domain.Models;
 using Nexus.Authentication.Service.Infrastructure.Persistence.Contexts;
 using Shared.EntityFramework;

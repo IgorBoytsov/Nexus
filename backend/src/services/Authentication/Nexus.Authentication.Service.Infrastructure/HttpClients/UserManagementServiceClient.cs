@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
+using Nexus.Authentication.Service.Application.Abstractions.Clients;
 using Shared.Contracts.UserManagement.Responses;
 using System.Net.Http.Json;
 using System.Text.Json;

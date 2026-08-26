@@ -1,4 +1,4 @@
-using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
+using Nexus.Authentication.Service.Application.Abstractions.UnitOfWork;
 using Nexus.Authentication.Service.Infrastructure.Persistence.Contexts;
 
 namespace Nexus.Authentication.Service.Infrastructure.Persistence

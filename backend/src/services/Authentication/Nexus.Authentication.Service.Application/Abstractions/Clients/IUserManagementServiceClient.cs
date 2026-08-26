@@ -1,6 +1,6 @@
 ﻿using Shared.Contracts.UserManagement.Responses;
 
-namespace Nexus.Authentication.Service.Application.Interfaces.HttpClients
+namespace Nexus.Authentication.Service.Application.Abstractions.Clients
 {
     public interface IUserManagementServiceClient
     {

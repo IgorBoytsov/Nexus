@@ -1,8 +1,8 @@
 using Crossdyne.Toolkit.Primitives;
 using Crossdyne.Toolkit.Results;
 using MediatR;
-using Nexus.Authentication.Service.Application.Interfaces.Repositories;
-using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
+using Nexus.Authentication.Service.Application.Abstractions.Repositories;
+using Nexus.Authentication.Service.Application.Abstractions.UnitOfWork;
 using Nexus.Authentication.Service.Domain.Models;
 using Unit = Crossdyne.Toolkit.Primitives.Unit;
 

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using Nexus.Authentication.Service.Application.Interfaces.Repositories;
+using Nexus.Authentication.Service.Application.Abstractions.Repositories;
 using Shared.Abstractions.Messaging;
 using Shared.Contracts.UserManagement.Events;
 

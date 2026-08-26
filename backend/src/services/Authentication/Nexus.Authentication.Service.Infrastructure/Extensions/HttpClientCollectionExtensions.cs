@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
+using Nexus.Authentication.Service.Application.Abstractions.Clients;
 using Nexus.Authentication.Service.Infrastructure.HttpClients;
 
 namespace Nexus.Authentication.Service.Infrastructure.Extensions

@@ -1,4 +1,4 @@
-namespace Nexus.Authentication.Service.Application.Interfaces.UnitOfWork
+namespace Nexus.Authentication.Service.Application.Abstractions.UnitOfWork
 {
     public interface IUnitOfWork
     {
