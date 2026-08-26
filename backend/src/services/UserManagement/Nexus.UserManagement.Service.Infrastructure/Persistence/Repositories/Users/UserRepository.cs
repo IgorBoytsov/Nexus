@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Application.Abstractions.Repositories;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;

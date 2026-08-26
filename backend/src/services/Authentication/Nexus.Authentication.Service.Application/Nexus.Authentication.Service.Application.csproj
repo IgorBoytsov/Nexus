@@ -20,10 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\abstractions\Shared.Abstractions\Shared.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\shared\contracts\Shared.Contracts\Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\..\shared\core\Shared.Application\Shared.Application.csproj" />
     <ProjectReference Include="..\..\..\shared\core\Shared.Kernel\Shared.Kernel.csproj" />
-    <ProjectReference Include="..\..\..\shared\security\Shared.Security\Shared.Security.csproj" />
     <ProjectReference Include="..\..\..\shared\validations\Shared.Validations\Shared.Validations.csproj" />
     <ProjectReference Include="..\Nexus.Authentication.Service.Domain\Nexus.Authentication.Service.Domain.csproj" />
   </ItemGroup>

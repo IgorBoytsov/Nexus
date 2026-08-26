@@ -2,14 +2,14 @@
 using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Domain.Models;
 using Crossdyne.Toolkit.Results;
-using Nexus.Authentication.Service.Application.Interfaces.HttpClients;
-using Nexus.Authentication.Service.Application.Interfaces.Repositories;
-using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
 using Shared.Contracts.Authentication.Responses;
 using Nexus.Authentication.Service.Application.Extensions;
 using Medallion.Threading;
 using Microsoft.Extensions.Logging;
 using Shared.Contracts.UserManagement.Responses;
+using Nexus.Authentication.Service.Application.Abstractions.Clients;
+using Nexus.Authentication.Service.Application.Abstractions.Repositories;
+using Nexus.Authentication.Service.Application.Abstractions.UnitOfWork;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.Refresh
 {

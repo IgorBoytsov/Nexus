@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Shared.Contracts.Cache.Abstractions;
+using Shared.Abstractions.Cache;
 
 namespace Shared.Test.Cache
 {

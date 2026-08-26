@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Nexus.Authentication.Service.Application.Interfaces.Repositories;
+using Nexus.Authentication.Service.Application.Abstractions.Repositories;
 using Nexus.Authentication.Service.Infrastructure.Persistence.Repositories.AccessDatas;
 
 namespace Nexus.Authentication.Service.Infrastructure.Extensions

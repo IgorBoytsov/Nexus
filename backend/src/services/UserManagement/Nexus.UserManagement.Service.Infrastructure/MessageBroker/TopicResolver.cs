@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
-using Nexus.UserManagement.Service.Application.Interfaces.Events;
-using Shared.Contracts.Messaging.Abstractions;
+using Nexus.UserManagement.Service.Application.Abstractions.Events;
+using Shared.Abstractions.Messaging;
 
 namespace Nexus.UserManagement.Service.Infrastructure.MessageBroker
 {

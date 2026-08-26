@@ -5,7 +5,7 @@ using Medallion.Threading.Redis;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Authentication.Service.Application.Secure;
 using Nexus.Authentication.Service.Application.Services;
-using Shared.Contracts.Security.Interfaces;
+using Shared.Abstractions.Security;
 using StackExchange.Redis;
 
 namespace Nexus.Authentication.Service.Application.Extensions

@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Application.Abstractions.Repositories;
 using Shared.Contracts.UserManagement.Responses;
 
 namespace Nexus.UserManagement.Service.Application.Features.Countries.Queries.GetAll

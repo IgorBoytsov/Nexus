@@ -1,11 +1,11 @@
 using Crossdyne.Toolkit.Primitives;
 using Crossdyne.Toolkit.Results;
 using MediatR;
-using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
-using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Application.Abstractions.Repositories;
+using Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
-using Shared.Contracts.Cache.Abstractions;
+using Shared.Abstractions.Cache;
 using Unit = Crossdyne.Toolkit.Primitives.Unit;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangeEmailSendCode

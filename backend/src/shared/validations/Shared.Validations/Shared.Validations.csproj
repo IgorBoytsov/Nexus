@@ -9,12 +9,12 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
-    <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Crossdyne.Toolkit" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\abstractions\Shared.Abstractions\Shared.Abstractions.csproj" />
     <ProjectReference Include="..\..\contracts\Shared.Contracts\Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\core\Shared.Kernel\Shared.Kernel.csproj" />
   </ItemGroup>

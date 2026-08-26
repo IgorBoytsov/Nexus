@@ -2,7 +2,7 @@ using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Authentication.Service.Application.Features.EventHandlers;
-using Shared.Contracts.Messaging.Abstractions;
+using Shared.Abstractions.Messaging;
 using Shared.Contracts.UserManagement.Events;
 using Shared.Messaging;
 

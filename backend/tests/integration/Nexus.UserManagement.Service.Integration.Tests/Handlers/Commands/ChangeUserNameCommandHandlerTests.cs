@@ -1,8 +1,8 @@
 using Crossdyne.Toolkit.Results;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangeUserName;
-using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 using Nexus.UserManagement.Service.Infrastructure.Outbox;

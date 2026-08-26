@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Nexus.UserManagement.Service.Application.Interfaces.Transactions;
-using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Application.Abstractions.Transactions;
+using Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork;
 using Nexus.UserManagement.Service.Infrastructure.Persistence;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
 

@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using Crossdyne.Toolkit.Results;
-using Shared.Contracts.Validation.Abstractions;
 using Nexus.UserManagement.Service.Application.Abstractions.Messaging;
+using Shared.Abstractions.Validations;
+using Nexus.UserManagement.Service.Application.Abstractions.Validators;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPassword
 {

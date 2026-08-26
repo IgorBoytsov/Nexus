@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Application.Abstractions.Repositories;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Countries;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Genders;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Repositories.Roles;

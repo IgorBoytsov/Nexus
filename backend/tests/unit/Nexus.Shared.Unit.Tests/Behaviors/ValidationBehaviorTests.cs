@@ -4,7 +4,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Moq;
-using Shared.Validations.Behaviors;
+using Shared.Application.Behaviors;
 using Xunit;
 
 namespace Nexus.Shared.Unit.Tests.Behaviors

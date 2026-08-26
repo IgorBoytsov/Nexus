@@ -1,6 +1,6 @@
 using Confluent.Kafka;
 using Nexus.Bff.Features.Auth.EventHandlers;
-using Shared.Contracts.Messaging.Abstractions;
+using Shared.Abstractions.Messaging;
 using Shared.Contracts.UserManagement.Events;
 using Shared.Messaging;
 

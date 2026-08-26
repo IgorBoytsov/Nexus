@@ -1,4 +1,4 @@
-using Shared.Contracts.Messaging.Abstractions;
+using Shared.Abstractions.Messaging;
 using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Outbox

@@ -1,9 +1,9 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Nexus.UserManagement.Service.Application.Abstractions.Events;
 using Nexus.UserManagement.Service.Application.Abstractions.Messaging;
-using Nexus.UserManagement.Service.Application.Interfaces.Events;
-using Nexus.UserManagement.Service.Application.Interfaces.Transactions;
-using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Application.Abstractions.Transactions;
+using Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork;
 
 namespace Nexus.UserManagement.Service.Application.Behaviors;
 

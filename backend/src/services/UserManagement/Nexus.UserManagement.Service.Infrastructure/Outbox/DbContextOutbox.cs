@@ -1,6 +1,6 @@
 using System.Text.Json;
 using AutoMapper;
-using Nexus.UserManagement.Service.Application.Interfaces.Outbox;
+using Nexus.UserManagement.Service.Application.Abstractions.Outbox;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
 using Shared.Kernel.Primitives;

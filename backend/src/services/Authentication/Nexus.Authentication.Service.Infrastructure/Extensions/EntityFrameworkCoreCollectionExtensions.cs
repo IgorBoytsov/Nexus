@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nexus.Authentication.Service.Application.Interfaces.UnitOfWork;
+using Nexus.Authentication.Service.Application.Abstractions.UnitOfWork;
 using Nexus.Authentication.Service.Infrastructure.Persistence;
 using Nexus.Authentication.Service.Infrastructure.Persistence.Contexts;
 

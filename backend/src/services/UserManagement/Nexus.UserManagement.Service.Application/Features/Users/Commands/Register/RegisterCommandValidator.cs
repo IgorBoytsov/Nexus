@@ -1,4 +1,5 @@
 using FluentValidation;
+using Nexus.UserManagement.Service.Application.Validators;
 using Shared.Validations.Validators;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Register

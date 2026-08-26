@@ -9,7 +9,7 @@ using Shared.Contracts.Authentication.Requests;
 using Shared.Contracts.Authentication.Responses;
 using Crossdyne.Security.Abstractions;
 using Nexus.Bff.Constants;
-using Shared.Contracts.Cache.Abstractions;
+using Shared.Abstractions.Cache;
 
 namespace Nexus.Bff.Features.Auth.Command.VerifySrpProof
 {

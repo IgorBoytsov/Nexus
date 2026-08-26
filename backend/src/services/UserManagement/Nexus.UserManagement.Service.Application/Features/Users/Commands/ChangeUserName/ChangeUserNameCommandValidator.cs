@@ -1,5 +1,5 @@
 using FluentValidation;
-using Shared.Validations.Validators;
+using Nexus.UserManagement.Service.Application.Validators;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ChangeUserName
 {

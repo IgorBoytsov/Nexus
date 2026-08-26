@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore.Storage;
-using Nexus.UserManagement.Service.Application.Interfaces.Transactions;
+using Nexus.UserManagement.Service.Application.Abstractions.Transactions;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Persistence

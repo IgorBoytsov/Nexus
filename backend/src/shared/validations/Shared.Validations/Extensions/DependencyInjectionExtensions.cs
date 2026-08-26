@@ -1,8 +1,6 @@
 using System.Reflection;
 using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Validations.Behaviors;
 
 namespace Shared.Validations.Extensions
 {
@@ -13,8 +11,7 @@ namespace Shared.Validations.Extensions
             List<Assembly> assemblies = [assembly, Assembly.GetExecutingAssembly()];
 
             services.AddValidatorsFromAssemblies(assemblies);
-            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
+            
             return services;
         }
     }

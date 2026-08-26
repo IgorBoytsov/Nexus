@@ -2,11 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Nexus.UserManagement.Service.Application.Interfaces.Events;
-using Nexus.UserManagement.Service.Application.Interfaces.Outbox;
+using Nexus.UserManagement.Service.Application.Abstractions.Events;
+using Nexus.UserManagement.Service.Application.Abstractions.Outbox;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
-using Shared.Contracts.Messaging.Abstractions;
+using Shared.Abstractions.Messaging;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Outbox
 {

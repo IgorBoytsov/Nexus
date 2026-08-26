@@ -1,6 +1,6 @@
 
 
-using Shared.Contracts.Security.Interfaces;
+using Shared.Abstractions.Security;
 
 namespace Nexus.Authentication.Service.Integration.Tests
 {

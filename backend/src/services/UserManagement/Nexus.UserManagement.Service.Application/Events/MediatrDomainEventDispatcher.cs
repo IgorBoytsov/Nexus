@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Nexus.UserManagement.Service.Application.Interfaces.Events;
+using Nexus.UserManagement.Service.Application.Abstractions.Events;
 using Shared.Kernel.Primitives;
 
 namespace Nexus.UserManagement.Service.Application.Events

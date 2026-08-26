@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using Crossdyne.Toolkit.Primitives;
 using Crossdyne.Toolkit.Results;
-using Nexus.UserManagement.Service.Application.Interfaces.Clients;
+using Nexus.UserManagement.Service.Application.Abstractions.Clients;
 using Shared.Kernel.Errors;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Clients
