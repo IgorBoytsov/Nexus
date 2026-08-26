@@ -1,4 +1,4 @@
-namespace Shared.Contracts.Messaging.Abstractions
+namespace Shared.Abstractions.Messaging.Abstractions
 {
     public interface IIntegrationEvent 
     {
