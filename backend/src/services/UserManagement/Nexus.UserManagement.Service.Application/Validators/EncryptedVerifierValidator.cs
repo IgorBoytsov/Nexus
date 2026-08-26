@@ -1,7 +1,7 @@
 using FluentValidation;
-using Shared.Contracts.Validation.Abstractions;
+using Nexus.UserManagement.Service.Application.Abstractions.Validators;
 
-namespace Shared.Validations.Validators
+namespace Nexus.UserManagement.Service.Application.Validators
 {
     public sealed class EncryptedVerifierValidator : AbstractValidator<IHasEncryptedVerifier>
     {

@@ -1,4 +1,4 @@
-namespace Shared.Contracts.Validation.Abstractions
+namespace Shared.Abstractions.Validations
 {
     public interface IHasGuidUserId
     {

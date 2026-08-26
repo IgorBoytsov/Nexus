@@ -1,7 +1,7 @@
 using FluentValidation;
-using Shared.Contracts.Validation.Abstractions;
+using Nexus.Authentication.Service.Application.Abstractions.Validators;
 
-namespace Shared.Validations.Validators
+namespace Nexus.Authentication.Service.Application.Validators
 {
     public sealed class SrpProofValidator : AbstractValidator<IHasSrpProof>
     {

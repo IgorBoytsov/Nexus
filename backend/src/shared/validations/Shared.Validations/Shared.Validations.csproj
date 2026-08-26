@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\abstractions\Shared.Abstractions\Shared.Abstractions.csproj" />
     <ProjectReference Include="..\..\contracts\Shared.Contracts\Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\core\Shared.Kernel\Shared.Kernel.csproj" />
   </ItemGroup>

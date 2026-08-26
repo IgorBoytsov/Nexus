@@ -1,4 +1,5 @@
 using FluentValidation;
+using Nexus.Authentication.Service.Application.Validators;
 using Shared.Validations.Validators;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof

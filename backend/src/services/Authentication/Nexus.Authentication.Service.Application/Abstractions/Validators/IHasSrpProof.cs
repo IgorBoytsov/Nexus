@@ -1,4 +1,4 @@
-namespace Shared.Contracts.Validation.Abstractions
+namespace Nexus.Authentication.Service.Application.Abstractions.Validators
 {
     public interface IHasSrpProof
     {
