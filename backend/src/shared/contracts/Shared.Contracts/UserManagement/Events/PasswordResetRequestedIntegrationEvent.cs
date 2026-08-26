@@ -1,4 +1,4 @@
-using Shared.Abstractions.Messaging.Abstractions;
+using Shared.Abstractions.Messaging;
 
 namespace Shared.Contracts.UserManagement.Events
 {

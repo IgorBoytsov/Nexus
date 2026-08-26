@@ -13,7 +13,7 @@ using Shared.Contracts.Authentication.Responses;
 using Microsoft.Extensions.Logging;
 using Shared.Contracts.UserManagement.Responses;
 using Shared.Kernel.Exceptions;
-using Shared.Abstractions.Cache.Abstractions;
+using Shared.Abstractions.Cache;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.VerifySrpProof
 {

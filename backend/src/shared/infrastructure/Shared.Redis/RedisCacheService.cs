@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using Shared.Abstractions.Cache.Abstractions;
+using Shared.Abstractions.Cache;
 using StackExchange.Redis;
 using System.Text.Json;
 using System.Text.Json.Serialization;

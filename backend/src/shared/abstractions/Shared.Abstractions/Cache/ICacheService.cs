@@ -1,4 +1,4 @@
-﻿namespace Shared.Abstractions.Cache.Abstractions
+﻿namespace Shared.Abstractions.Cache
 {
     public interface ICacheService
     {

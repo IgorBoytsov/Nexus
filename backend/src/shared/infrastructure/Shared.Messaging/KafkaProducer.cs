@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Confluent.Kafka;
-using Shared.Abstractions.Messaging.Abstractions;
+using Shared.Abstractions.Messaging;
 
 namespace Shared.Messaging
 {

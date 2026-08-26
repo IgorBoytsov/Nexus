@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Nexus.Authentication.Service.Application.Interfaces.Repositories;
-using Shared.Abstractions.Messaging.Abstractions;
+using Shared.Abstractions.Messaging;
 using Shared.Contracts.UserManagement.Events;
 
 namespace Nexus.Authentication.Service.Application.Features.EventHandlers

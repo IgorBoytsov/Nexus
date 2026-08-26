@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shared.Abstractions.Messaging.Abstractions;
+using Shared.Abstractions.Messaging;
 
 namespace Shared.Messaging
 {

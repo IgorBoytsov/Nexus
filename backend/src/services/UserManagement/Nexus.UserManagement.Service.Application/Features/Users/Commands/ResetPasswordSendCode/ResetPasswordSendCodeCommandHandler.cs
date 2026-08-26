@@ -4,7 +4,7 @@ using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
 using Crossdyne.Toolkit.Primitives;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
-using Shared.Abstractions.Cache.Abstractions;
+using Shared.Abstractions.Cache;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPasswordSendCode
 {

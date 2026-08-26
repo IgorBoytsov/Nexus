@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Nexus.UserManagement.Service.Application.Events;
 using Nexus.UserManagement.Service.Application.Interfaces.Events;
 using Nexus.UserManagement.Service.Infrastructure.MessageBroker;
-using Shared.Abstractions.Messaging.Abstractions;
+using Shared.Abstractions.Messaging;
 using Shared.Contracts.UserManagement.Events;
 using Shared.Messaging;
 

@@ -1,7 +1,7 @@
 using Crossdyne.Toolkit.Results;
 using MediatR;
 using Nexus.Bff.Extensions;
-using Shared.Abstractions.Cache.Abstractions;
+using Shared.Abstractions.Cache;
 using Shared.Contracts.Authentication.Responses;
 using Shared.Contracts.Common;
 

@@ -2,7 +2,7 @@ using Crossdyne.Toolkit.Results;
 using MediatR;
 using Nexus.Bff.Extensions;
 using Nexus.Bff.Infrastructure.Clients;
-using Shared.Abstractions.Cache.Abstractions;
+using Shared.Abstractions.Cache;
 using Shared.Contracts.Authentication.Requests;
 using Shared.Contracts.Common;
 using Unit = Crossdyne.Toolkit.Primitives.Unit;
