@@ -1,7 +1,7 @@
 using Nexus.UserManagement.Service.Domain.Models;
 using Shared.Kernel.Interfaces;
 
-namespace Nexus.UserManagement.Service.Application.Interfaces.Repositories
+namespace Nexus.UserManagement.Service.Application.Abstractions.Repositories
 {
     public interface IRoleRepository : IRepository<Role>
     {

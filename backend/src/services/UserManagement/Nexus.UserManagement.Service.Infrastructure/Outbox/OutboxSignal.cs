@@ -1,5 +1,5 @@
 using System.Threading.Channels;
-using Nexus.UserManagement.Service.Application.Interfaces.Outbox;
+using Nexus.UserManagement.Service.Application.Abstractions.Outbox;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Outbox
 {

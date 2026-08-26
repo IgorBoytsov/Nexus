@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Country;
 using Crossdyne.Toolkit.Results;
-using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
-using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
 using Crossdyne.Toolkit.Primitives;
 using Nexus.UserManagement.Service.Domain.Models;
+using Nexus.UserManagement.Service.Application.Abstractions.Repositories;
+using Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork;
 
 namespace Nexus.UserManagement.Service.Application.Features.Countries.Commands.Update
 {

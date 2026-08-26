@@ -1,6 +1,6 @@
 using AutoMapper;
-using Nexus.UserManagement.Service.Application.Interfaces.Outbox;
-using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Application.Abstractions.Outbox;
+using Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;
 using Shared.Kernel.Primitives;
 

@@ -1,6 +1,6 @@
 using Shared.Kernel.Primitives;
 
-namespace Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork
+namespace Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork
 {
     public interface IUnitOfWork
     {

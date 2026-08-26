@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nexus.UserManagement.Service.Application.Interfaces.Clients;
+using Nexus.UserManagement.Service.Application.Abstractions.Clients;
 using Nexus.UserManagement.Service.Infrastructure.Clients;
 
 namespace Nexus.UserManagement.Service.Infrastructure.Extension

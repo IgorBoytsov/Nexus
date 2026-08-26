@@ -1,8 +1,8 @@
 using System.Security.Cryptography;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork;
 using Nexus.UserManagement.Service.Application.Features.Users.Commands.ResetPassword;
-using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.SmartEnums;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Deks;

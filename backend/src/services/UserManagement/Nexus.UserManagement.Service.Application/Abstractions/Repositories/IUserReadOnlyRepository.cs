@@ -1,6 +1,6 @@
 using Shared.Contracts.UserManagement.Responses;
 
-namespace Nexus.UserManagement.Service.Application.Interfaces.Repositories
+namespace Nexus.UserManagement.Service.Application.Abstractions.Repositories
 {
     public interface IUserReadOnlyRepository
     {

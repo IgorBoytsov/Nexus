@@ -1,6 +1,6 @@
 using Crossdyne.Toolkit.Results;
 using MediatR;
-using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Application.Abstractions.Repositories;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Queries.ExistByLogin
 {

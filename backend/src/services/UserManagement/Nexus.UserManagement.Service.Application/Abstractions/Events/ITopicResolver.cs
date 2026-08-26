@@ -1,6 +1,6 @@
 using Shared.Abstractions.Messaging;
 
-namespace Nexus.UserManagement.Service.Application.Interfaces.Events
+namespace Nexus.UserManagement.Service.Application.Abstractions.Events
 {
     public interface ITopicResolver
     {

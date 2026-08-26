@@ -1,4 +1,4 @@
-namespace Nexus.UserManagement.Service.Application.Interfaces.Transactions
+namespace Nexus.UserManagement.Service.Application.Abstractions.Transactions
 {
     public interface ITransactionManager
     {

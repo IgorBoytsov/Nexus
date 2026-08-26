@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork;
 using Nexus.UserManagement.Service.Application.Features.Countries.Commands.Update;
-using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Infrastructure.Outbox;
 using Nexus.UserManagement.Service.Infrastructure.Persistence.Contexts;

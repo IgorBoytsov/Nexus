@@ -1,6 +1,6 @@
 using System.Threading.Channels;
 
-namespace Nexus.UserManagement.Service.Application.Interfaces.Outbox
+namespace Nexus.UserManagement.Service.Application.Abstractions.Outbox
 {
     public interface IOutboxSignal
     {

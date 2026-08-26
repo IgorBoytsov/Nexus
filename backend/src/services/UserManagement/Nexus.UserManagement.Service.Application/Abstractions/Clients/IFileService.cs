@@ -1,7 +1,7 @@
 using Crossdyne.Toolkit.Primitives;
 using Crossdyne.Toolkit.Results;
 
-namespace Nexus.UserManagement.Service.Application.Interfaces.Clients
+namespace Nexus.UserManagement.Service.Application.Abstractions.Clients
 {
     public interface IFileService
     {

@@ -1,6 +1,6 @@
 using System.Data;
 using Dapper;
-using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Application.Abstractions.Repositories;
 using Nexus.UserManagement.Service.Infrastructure.Helpers;
 using Shared.Contracts.UserManagement.Responses;
 

@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Crossdyne.Toolkit.Results;
-using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
-using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
 using Crossdyne.Toolkit.Primitives;
 using Nexus.UserManagement.Service.Domain.Models;
+using Nexus.UserManagement.Service.Application.Abstractions.Repositories;
+using Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork;
 
 namespace Nexus.UserManagement.Service.Application.Features.Roles.Commands.Delete
 {

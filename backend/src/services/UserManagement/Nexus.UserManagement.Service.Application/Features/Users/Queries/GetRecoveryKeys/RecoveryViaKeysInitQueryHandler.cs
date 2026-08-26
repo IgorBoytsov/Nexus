@@ -1,7 +1,7 @@
 using Crossdyne.Toolkit.Primitives;
 using Crossdyne.Toolkit.Results;
 using MediatR;
-using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
+using Nexus.UserManagement.Service.Application.Abstractions.Repositories;
 using Nexus.UserManagement.Service.Domain.Models;
 using Shared.Contracts.UserManagement.Responses;
 using Shared.Kernel.Errors;

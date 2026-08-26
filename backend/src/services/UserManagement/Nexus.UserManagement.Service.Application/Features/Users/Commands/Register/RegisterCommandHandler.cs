@@ -7,8 +7,8 @@ using Nexus.UserManagement.Service.Domain.ValueObjects.UserSecurityAsset;
 using Crossdyne.Toolkit.Results;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
 using Nexus.UserManagement.Service.Domain.ValueObjects.Deks;
-using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
-using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
+using Nexus.UserManagement.Service.Application.Abstractions.Repositories;
+using Nexus.UserManagement.Service.Application.Abstractions.UnitOfWork;
 
 namespace Nexus.UserManagement.Service.Application.Features.Users.Commands.Register
 {

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Nexus.UserManagement.Service.Application.Interfaces.Outbox;
+using Nexus.UserManagement.Service.Application.Abstractions.Outbox;
 using Nexus.UserManagement.Service.Domain.Events;
 using Nexus.UserManagement.Service.Infrastructure.Outbox;
 using Shared.Contracts.UserManagement.Events;
