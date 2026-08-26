@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Shared.Contracts.Security.Interfaces;
+using Shared.Abstractions.Security;
 using System.Security.Cryptography;
 
 namespace Nexus.Authentication.Service.Application.Secure

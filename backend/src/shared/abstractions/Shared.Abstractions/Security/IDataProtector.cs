@@ -1,4 +1,4 @@
-﻿namespace Shared.Contracts.Security.Interfaces
+﻿namespace Shared.Abstractions.Security
 {
     public interface IDataProtector
     {
