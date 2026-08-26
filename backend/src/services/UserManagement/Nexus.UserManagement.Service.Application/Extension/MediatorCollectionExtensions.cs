@@ -13,6 +13,7 @@ namespace Nexus.UserManagement.Service.Application.Extension
             var currentAssembly = Assembly.GetExecutingAssembly();
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(currentAssembly));
 
