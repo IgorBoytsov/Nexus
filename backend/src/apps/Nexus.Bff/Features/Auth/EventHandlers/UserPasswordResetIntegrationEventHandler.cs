@@ -1,5 +1,5 @@
 using Nexus.Bff.Extensions;
-using Shared.Contracts.Cache.Abstractions;
+using Shared.Abstractions.Cache.Abstractions;
 using Shared.Contracts.Messaging.Abstractions;
 using Shared.Contracts.UserManagement.Events;
 

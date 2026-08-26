@@ -8,7 +8,7 @@ using Shared.Contracts.Security.Interfaces;
 using Shared.Contracts.Authentication.Responses;
 using Shared.Contracts.UserManagement.Responses;
 using Microsoft.Extensions.Logging;
-using Shared.Contracts.Cache.Abstractions;
+using Shared.Abstractions.Cache.Abstractions;
 
 namespace Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge
 {

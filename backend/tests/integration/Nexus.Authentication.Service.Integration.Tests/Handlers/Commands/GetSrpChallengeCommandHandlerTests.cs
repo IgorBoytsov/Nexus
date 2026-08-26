@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Nexus.Authentication.Service.Application.Extensions;
 using Nexus.Authentication.Service.Application.Features.Commands.SrpChallenge;
 using Nexus.Authentication.Service.Infrastructure.HttpClients;
-using Shared.Contracts.Cache.Abstractions;
+using Shared.Abstractions.Cache.Abstractions;
 using Shared.Contracts.UserManagement.Responses;
 using Shared.Test.Cache;
 using WireMock.RequestBuilders;

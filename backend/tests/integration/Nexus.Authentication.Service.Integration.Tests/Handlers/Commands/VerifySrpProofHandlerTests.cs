@@ -14,7 +14,7 @@ using Nexus.Authentication.Service.Application.Services;
 using Nexus.Authentication.Service.Infrastructure.HttpClients;
 using Nexus.Authentication.Service.Infrastructure.Persistence.Contexts;
 using Nexus.Authentication.Service.Infrastructure.Persistence.Repositories.AccessDatas;
-using Shared.Contracts.Cache.Abstractions;
+using Shared.Abstractions.Cache.Abstractions;
 using Shared.Contracts.UserManagement.Responses;
 using Shared.Kernel.Errors;
 using Shared.Test.Cache;

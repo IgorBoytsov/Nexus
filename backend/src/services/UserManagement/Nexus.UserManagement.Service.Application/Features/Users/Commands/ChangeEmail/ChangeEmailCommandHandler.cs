@@ -5,7 +5,7 @@ using Nexus.UserManagement.Service.Application.Interfaces.Repositories;
 using Nexus.UserManagement.Service.Application.Interfaces.UnitOfWork;
 using Nexus.UserManagement.Service.Domain.Models;
 using Nexus.UserManagement.Service.Domain.ValueObjects.User;
-using Shared.Contracts.Cache.Abstractions;
+using Shared.Abstractions.Cache.Abstractions;
 using Shared.Kernel.Errors;
 using Unit = Crossdyne.Toolkit.Primitives.Unit;
 
