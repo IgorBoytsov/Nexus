@@ -1,11 +1,10 @@
 import { Routes } from "@angular/router";
-import { ResetPasswordPageComponent } from "./reset-password-page.component";
 import { resetPasswordStepGuard } from "./reset-password-step.guard";
 
 export const RESET_PASSWORD_ROUTES: Routes = [
     {
         path: 'reset',
-        loadComponent: () => ResetPasswordPageComponent,
+        loadComponent: () => import('./reset-password-page.component').then(c => c.ResetPasswordPageComponent),
         children: [
             {
                 path: '',
