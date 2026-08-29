@@ -1,0 +1,57 @@
+import { Component, inject, signal } from "@angular/core";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { firstValueFrom } from "rxjs";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { AuthenticationService } from "../../../services/authentication.service";
+import { RecoveryPasswordStateService } from "../recovery-password-state.service";
+
+@Component({
+    selector: 'app-find-login',
+    templateUrl: './find-login.component.html',
+    styleUrls: ['./find-login.component.scss'],
+    standalone: true,
+    imports: [ReactiveFormsModule, RouterLink]
+})
+export class FindLoginComponent {
+    private fb = inject(FormBuilder);
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
+    private http = inject(AuthenticationService);
+    private state = inject(RecoveryPasswordStateService)
+
+    stepLoginForm: FormGroup;
+    isLoading = signal(false);
+    errorMessage = signal<string | null>(null);
+
+    constructor(){
+        this.stepLoginForm = this.fb.group({
+            login: ['', [Validators.required]]
+        })
+    }
+
+    async onSubmit(): Promise<void> {
+        if (this.stepLoginForm.valid){
+            try {
+                this.isLoading.set(true);
+                this.errorMessage.set(null);
+                
+                const login = this.stepLoginForm.value.login as string;
+                const normalizeLogin = login.trim().toLowerCase();
+
+                const result = await firstValueFrom(this.http.existLogin(normalizeLogin));
+
+                if (result.isFailure){
+                    this.errorMessage.set(result.stringMessage);
+                    return;
+                }
+
+                this.state.setLogin(normalizeLogin);
+                this.router.navigate(['code'], { relativeTo: this.route });
+            } catch (error) {
+                console.error('Ошибка: ', error);
+            } finally{
+                this.isLoading.set(false);
+            }
+        }
+    }
+}
