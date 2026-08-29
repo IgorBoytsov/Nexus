@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from '../core/layout/main/main-layout.component';
-import { ProfilePage } from '../features/profile/page/profile.page';
+import { ProfilePageComponent } from '../features/profile/page/profile-page.component';
 import { ChangePasswordComponent } from '../features/profile/components/change-password/change-password.component';
 import { ChangeEmailComponent } from '../features/profile/components/change-email/change-email.component';
 import { ChangeEmailInitComponent } from '../features/profile/components/change-email/components/init/change-email-init.component';
@@ -17,7 +17,7 @@ export const routes: Routes = [
     path: 'user',
     loadComponent: () => MainLayoutComponent,
     children: [
-      { path: 'profile', loadComponent: () => ProfilePage },
+      { path: 'profile', loadComponent: () => ProfilePageComponent },
       { path: 'change/password', loadComponent: () => ChangePasswordComponent},
       { path: '', redirectTo: 'profile', pathMatch: 'full' }
     ]

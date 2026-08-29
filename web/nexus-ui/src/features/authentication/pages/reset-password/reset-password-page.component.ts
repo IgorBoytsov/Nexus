@@ -3,8 +3,8 @@ import { RouterOutlet } from "@angular/router";
 
 @Component({
     selector: 'reset-password',
-    templateUrl: './reset-password.page.html',
-    styleUrls: ['./reset-password.page.scss'],
+    templateUrl: './reset-password-page.component.html',
+    styleUrls: ['./reset-password-page.component.scss'],
     standalone: true,
     imports: [RouterOutlet],
 })

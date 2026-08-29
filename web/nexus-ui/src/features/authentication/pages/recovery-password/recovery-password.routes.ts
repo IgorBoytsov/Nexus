@@ -1,5 +1,5 @@
 import { Routes } from "@angular/router";
-import { RecoveryPasswordPageComponent } from "./recovery-password.page";
+import { RecoveryPasswordPageComponent } from "./recovery-password-page.component";
 import { guestGuard } from "../../../../core/guards/guest.guard";
 import { recoveryPasswordStepGuard } from "./recovery-password-step.guard";
 

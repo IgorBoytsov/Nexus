@@ -17,8 +17,8 @@ import { AuthenticationService } from "../../services/authentication.service";
 
 @Component({
     selector: 'register-page',
-    templateUrl: './register.page.html',
-    styleUrls: ['./register.page.scss'],
+    templateUrl: './register-page.component.html',
+    styleUrls: ['./register-page.component.scss'],
     standalone: true,
     imports: [ReactiveFormsModule, RouterLink, RecoveryKeysListComponent],
 })

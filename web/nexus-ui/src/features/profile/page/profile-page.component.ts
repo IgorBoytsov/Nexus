@@ -19,12 +19,12 @@ import { ManagementAccountService } from "../services/management-account.service
 
 @Component({
     selector: 'app-profile-page',
-    templateUrl: './profile.page.html',
-    styleUrls: ['./profile.page.scss'],
+    templateUrl: './profile-page.component.html',
+    styleUrls: ['./profile-page.component.scss'],
     standalone: true,
     imports: [CommonModule, ProfileInfoComponent, ProfileHeaderComponent, SettingsComponent, ProjectsComponent, OverlayModule],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePageComponent implements OnInit {
     private profileInfoService = inject(ProfileInfoService);
     private logoutService = inject(LogoutService);
     private router = inject(Router);

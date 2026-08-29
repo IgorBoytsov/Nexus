@@ -11,8 +11,8 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'login-page',
-    templateUrl: './login.page.html',
-    styleUrls: ['./login.page.scss'],
+    templateUrl: './login-page.component.html',
+    styleUrls: ['./login-page.component.scss'],
     standalone: true,
     imports: [ReactiveFormsModule, RouterLink],
 })

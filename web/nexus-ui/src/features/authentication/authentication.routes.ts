@@ -12,11 +12,11 @@ export const AUTHENTICATION_ROUTES: Routes = [
         children: [
             {
                 path: 'login',
-                loadComponent: () => import('./pages/login/login.page').then(c => c.LoginPageComponent)
+                loadComponent: () => import('./pages/login/login-page.component').then(c => c.LoginPageComponent)
             },
             {
                 path: 'register',
-                loadComponent: () => import('./pages/register/register.page').then(c => c.RegisterPageComponent)
+                loadComponent: () => import('./pages/register/register-page.component').then(c => c.RegisterPageComponent)
             },
             ...RECOVERY_PASSWORD_ROUTES,
             ...RESET_PASSWORD_ROUTES
