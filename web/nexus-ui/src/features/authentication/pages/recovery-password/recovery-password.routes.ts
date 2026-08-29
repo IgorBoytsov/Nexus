@@ -1,0 +1,33 @@
+import { Routes } from "@angular/router";
+import { RecoveryPasswordPageComponent } from "./recovery-password.page";
+import { guestGuard } from "../../../../core/guards/guest.guard";
+import { recoveryPasswordStepGuard } from "../../guards/recovery-password-step.guard";
+
+export const RECOVERY_PASSWORD_ROUTES: Routes = [
+    {
+        path: 'recovery/keys',
+        component: RecoveryPasswordPageComponent,
+        canActivate: [guestGuard],
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./find-login/find-login.component').then(c => c.FindLoginComponent),
+                canActivate: [recoveryPasswordStepGuard]
+            },
+            {
+                path: 'code',
+                loadComponent: () => import('./enter-code/enter-code.component').then(c => c.EnterCodeComponent),
+                canActivate: [recoveryPasswordStepGuard]
+            },
+            {
+                path: 'set',
+                loadComponent: () => import('./set-password/set-password.component').then(c => c.SetPasswordComponent),
+                canActivate: [recoveryPasswordStepGuard]
+            },
+            {
+                path: '**',
+                redirectTo: ''
+            }
+        ]
+    }
+]
