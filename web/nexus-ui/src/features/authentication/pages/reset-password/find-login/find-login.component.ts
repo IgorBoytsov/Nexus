@@ -2,7 +2,7 @@ import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
-import { ResetPasswordStateService } from "../../../services/reset-password-state.service";
+import { ResetPasswordStateService } from "../reset-password-state.service";
 import { AuthenticationService } from "../../../services/authentication.service";
 
 @Component({

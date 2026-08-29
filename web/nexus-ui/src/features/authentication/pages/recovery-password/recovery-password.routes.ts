@@ -1,7 +1,7 @@
 import { Routes } from "@angular/router";
 import { RecoveryPasswordPageComponent } from "./recovery-password.page";
 import { guestGuard } from "../../../../core/guards/guest.guard";
-import { recoveryPasswordStepGuard } from "../../guards/recovery-password-step.guard";
+import { recoveryPasswordStepGuard } from "./recovery-password-step.guard";
 
 export const RECOVERY_PASSWORD_ROUTES: Routes = [
     {

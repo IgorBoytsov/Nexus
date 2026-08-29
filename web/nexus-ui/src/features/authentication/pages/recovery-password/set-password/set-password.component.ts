@@ -12,7 +12,7 @@ import { SrpVerifierService } from "../../../../../core/services/srp-verifier.se
 import { KeyManagementService } from "../../../../../core/services/key-management.service";
 import { CryptoConfigurationService } from "../../../../../core/services/crypto-configuration.service";
 import { AuthenticationService } from "../../../services/authentication.service";
-import { RecoveryPasswordStateService } from "../../../services/recovery-password-state.service";
+import { RecoveryPasswordStateService } from "../recovery-password-state.service";
 import { RecoveryViaKeysSetRequest } from "../../../models/recovery-via-keys-set.request";
 
 @Component({

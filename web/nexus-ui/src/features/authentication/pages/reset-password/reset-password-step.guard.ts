@@ -1,6 +1,6 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router, UrlTree } from "@angular/router";
-import { ResetPasswordStateService } from "../services/reset-password-state.service";
+import { ResetPasswordStateService } from "./reset-password-state.service";
 
 export const resetPasswordStepGuard: CanActivateFn = (route): UrlTree | boolean => {
     const state = inject(ResetPasswordStateService);

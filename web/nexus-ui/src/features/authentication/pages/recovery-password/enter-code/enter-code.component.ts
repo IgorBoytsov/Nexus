@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { firstValueFrom } from "rxjs";
 import { CryptoService, SecurityUtils } from "@crossdyne/security";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RecoveryPasswordStateService } from "../../../services/recovery-password-state.service";
+import { RecoveryPasswordStateService } from "../recovery-password-state.service";
 import { AuthenticationService } from "../../../services/authentication.service";
 
 @Component({

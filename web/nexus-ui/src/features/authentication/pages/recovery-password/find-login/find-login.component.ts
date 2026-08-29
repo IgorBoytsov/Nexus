@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { firstValueFrom } from "rxjs";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { AuthenticationService } from "../../../services/authentication.service";
-import { RecoveryPasswordStateService } from "../../../services/recovery-password-state.service";
+import { RecoveryPasswordStateService } from "../recovery-password-state.service";
 
 @Component({
     selector: 'app-find-login',

@@ -12,7 +12,7 @@ import { SrpVerifierService } from "../../../../../core/services/srp-verifier.se
 import { KeyManagementService } from "../../../../../core/services/key-management.service";
 import { CryptoConfigurationService } from "../../../../../core/services/crypto-configuration.service";
 import { AuthenticationService } from "../../../services/authentication.service";
-import { ResetPasswordStateService } from "../../../services/reset-password-state.service";
+import { ResetPasswordStateService } from "../reset-password-state.service";
 import { ResetPasswordCompleteRequest } from "../../../models/reset-password-complete.request";
 
 @Component({
